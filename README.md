@@ -24,7 +24,7 @@
 
 + The forms will be approved by the coordinators in the application. 
 
-+ For each course in the list information whether that course has been approved by Bilkent in previous years will be provided. If that particular course has not been approved before, the  student will be able to ask the coordinator of their approval.
++ For each course in the list information whether that course has been approved by Bilkent in previous years will be provided. If that particular course has not been approved before, the  student will be able to ask the coordinator of their approval. The course list will be updated at the end of each ERASMUS application process.
 
 + In case of course conflicts, the student will be notified. The courses  will be re-selected, and based on the specific condition, alternative proposals or new pre-approval form will be sent to the person in charge of the administration and moderation of the application process.
 
@@ -35,3 +35,7 @@
 [Bilkent CS checklist](http://www.cs.bilkent.edu.tr/~exchange/procedure.html).
 
 + Important deadlines during the application process such as due dates of file uploads will be notified to students.
+
++ The students will be sorted according to their ERASMUS points. Each student will be placed according to a greedy placement algorithm. Those who couldn't be placed will be put on a wait list.
+
++ Messaging system between coordinators, administrative staff and students.
