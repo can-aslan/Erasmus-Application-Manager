@@ -38,4 +38,6 @@
 
 + The students will be sorted according to their ERASMUS points. Each student will be placed according to a greedy placement algorithm. Those who couldn't be placed will be put on a wait list.
 
-+ Messaging system between coordinators, administrative staff and students.
++ A messaging system between coordinators, administrative staff and students will be implemented.
+
++ A system for incoming students to make their course choices will be implemented.
