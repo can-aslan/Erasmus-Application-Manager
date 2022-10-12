@@ -1,5 +1,5 @@
 ## Group Members:
-+ Can Ersoy TBD
++ Can Ersoy 22003216
 + İlkim Elif Kervan 22002223
 + Kemal Kubilay Yılmaz 21901556
 + Selim Can Güler 22002811
@@ -31,7 +31,7 @@
 + Student's progress in the application process will be separated by stages. The current state of the application will be shown like a progress bar.
 
 + Checklist of the whole Erasmus application process will be provided to the outgoing students (links below). Based on the nature of the checklist item, either the student or the coordinator will be able to check the checklist item. The provided links will be the source of the checklist below:
-[Link 1](https://www.bilkent.edu.tr/bilkent/admission/outgoing_exchange/checklist.html),
-[Link 2](http://www.cs.bilkent.edu.tr/~exchange/procedure.html).
+[Bilkent checklist](https://www.bilkent.edu.tr/bilkent/admission/outgoing_exchange/checklist.html),
+[Bilkent CS checklist](http://www.cs.bilkent.edu.tr/~exchange/procedure.html).
 
 + Important deadlines during the application process such as due dates of file uploads will be notified to students.
