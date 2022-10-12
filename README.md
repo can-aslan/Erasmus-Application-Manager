@@ -1,5 +1,5 @@
 ## Group Members:
-+ Can Ersoy TBD
++ Can Ersoy 22003216
 + İlkim Elif Kervan 22002223
 + Kemal Kubilay Yılmaz 21901556
 + Selim Can Güler 22002811
