@@ -25,6 +25,7 @@ We will use react-query to handle the interactions with the backend. react-query
 react-router handles the client side routing. In an ideal world we would have used Next.js or Remix but we are not in an ideal world and I have no clue how to work with those frameworks. 
 
 #### [Mantine UI](https://mantine.dev/pages/basics/)
+Mantine UI is the component library we are going to use. It will help us focus on the logic of the application without worrying about the look and feel of the user interface.
 ### Folder Structure
 Most of our work will go under `/src`. `main.tsx` and `App.tsx` are the default files that must be in the folder in order for `React` to work. 
 
