@@ -21,9 +21,10 @@ Vite supports **Hot Module Replacement**. This means whenever you make some chan
 #### [React-Query](https://tanstack.com/query/v4/docs/overview)
 We will use react-query to handle the interactions with the backend. react-query comes with ways to manage the server state that are not available in React.
 
-#### [React-Router](https://v5.reactrouter.com/web/guides/quick-start)
+#### [React-Router](https://reactrouter.com/en/main/start/tutorial#adding-a-router)
 react-router handles the client side routing. In an ideal world we would have used Next.js or Remix but we are not in an ideal world and I have no clue how to work with those frameworks. 
 
+#### [Mantine UI](https://mantine.dev/pages/basics/)
 ### Folder Structure
 Most of our work will go under `/src`. `main.tsx` and `App.tsx` are the default files that must be in the folder in order for `React` to work. 
 
