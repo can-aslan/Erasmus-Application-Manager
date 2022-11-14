@@ -19,9 +19,6 @@ function App() {
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
-        <Center>
-          <ToggleThemeIcon />
-        </Center>
       </MantineProvider>
     </ColorSchemeProvider>
   );
