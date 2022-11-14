@@ -1,6 +1,5 @@
-import { Center, ColorScheme, ColorSchemeProvider, MantineProvider, Text } from '@mantine/core';
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
-import ToggleThemeIcon from './components/ToggleThemeIcon';
 
 function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
