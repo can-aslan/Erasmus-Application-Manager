@@ -35,6 +35,44 @@ Most of our work will go under `/src`. `main.tsx` and `App.tsx` are the default 
 
 + `/src/hooks` and `/src/providers` are too long for me to describe here. Either watch a youtube video or come and ask me face-to-face.
 
+### About Types
+We are going to need to create types if we would like to use the power of strong typing that comes with TypeScript. **The rule of thumb for creating types is to keep them as close as possible to where they are needed.** See below for more details.
+#### Location of types
+Types that are only used by the immediate component should be placed inside that component. Becase those types are almost 100% specific to that component and will not be re-used anywhere else.<br>
+More generic types like `User` (user type) can be placed in the folder where it is used. For example:
+```
+/src/components/auth
+    --- index.ts
+    --- user.ts
+    --- utils.ts
+    --- types.ts
+
+```
+Here, index.ts is the file exporting all the files:
+```ts
+export * from './user'
+export * from './types'
+```
+
+#### Naming types
+To ensure consisting naming among the codebase, just make sure using pascal case when writing types, interfaces, and enums.
+```ts
+/src/components/auth/types.ts
+
+type User = {
+    Authorization: {
+        accessToken: string
+    }
+}
+
+interface SaferUser extends User {
+    TwoFactorAuth: boolean
+}
+```
+
 
 ### Config
 Config is config. Just don't change any of the config files.
+
+### Testing
+I don't have much idea about how we will do the testing but we are going to be using [react-testing-library](https://testing-library.com/docs/react-testing-library/intro/). This library will be used to test our components.
