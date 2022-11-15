@@ -12,6 +12,7 @@
     "@emotion/react": "^11.10.5",
     "@mantine/core": "^5.7.1",
     "@mantine/hooks": "^5.7.1",
+    "@tabler/icons": "^1.111.0",
     "@tanstack/react-query": "^4.14.5",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
