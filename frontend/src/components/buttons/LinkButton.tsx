@@ -7,16 +7,8 @@ interface LinkButtonProps {
     link: NavbarLink,
 }
 
-let activeClassName = "underline";
-
 const LinkButton = forwardRef<HTMLButtonElement, LinkButtonProps>(
     ({ link, ...others }: LinkButtonProps, ref) => (
-    // <NavLink 
-    //     to={link.to}
-    //     className={({ isActive }) => {
-    //         return isActive ? activeClassName : undefined
-    //     }}
-    // >
         <UnstyledButton
             ref={ref}
             sx={(theme) => ({
@@ -37,6 +29,8 @@ const LinkButton = forwardRef<HTMLButtonElement, LinkButtonProps>(
                 <Text 
                     size="md" 
                     weight={600}
+                    component={NavLink}
+                    to={link.to}
                     sx={(theme) => ({
                         color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
                         '&:hover': {
@@ -48,7 +42,6 @@ const LinkButton = forwardRef<HTMLButtonElement, LinkButtonProps>(
                 </Text>
             </Group>
         </UnstyledButton>
-    // </NavLink>
     )
   );
 

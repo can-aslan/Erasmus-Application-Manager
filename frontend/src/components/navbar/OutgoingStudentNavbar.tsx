@@ -16,10 +16,10 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
     const NAVBAR_LINKS: Array<NavbarLink> = [
         {label: 'Universities', to:'/universities', icon: <IconSchool />}
     ]
-
+    
     return (
         <Navbar width={{ base: 250 }} height="100%" p="xs">
-            <Navbar.Section grow>
+            <Navbar.Section>
                 <NavbarLinks links={NAVBAR_LINKS}></NavbarLinks>
             </Navbar.Section>
             <Navbar.Section>
