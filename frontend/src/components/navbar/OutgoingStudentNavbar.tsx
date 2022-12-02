@@ -18,14 +18,20 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
     ]
     
     return (
-        <Navbar width={{ base: 250 }} height="100%" p="xs">
+        <Navbar 
+            styles={(theme) => ({
+                main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
+            })} 
+            width={{ base: 250 }} 
+            height="100vh"
+            p="xs"
+        >
             <Navbar.Section>
                 <NavbarLinks links={NAVBAR_LINKS}></NavbarLinks>
             </Navbar.Section>
             <Navbar.Section>
                 <GenericMenu menuLabel="Options" menuItems={MENU_ITEMS} target={<UserButton email={user.email} name={user.name} userType={user.userType}/>}/>
             </Navbar.Section>
-
         </Navbar>
     );
 }

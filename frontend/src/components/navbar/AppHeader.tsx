@@ -1,7 +1,7 @@
 import { Group, Header, Title } from "@mantine/core";
 import ToggleThemeIcon from "../ToggleThemeIcon";
 
-const AppShellHeader = () => {
+const AppHeader = () => {
     return (
         <Header
             height={80}
@@ -15,4 +15,4 @@ const AppShellHeader = () => {
     );
 }
  
-export default AppShellHeader;
+export default AppHeader;
