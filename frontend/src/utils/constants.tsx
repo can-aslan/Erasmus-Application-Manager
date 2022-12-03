@@ -52,8 +52,8 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     ],
     [UserEnum.FACMember]: [
         {
-            label: 'Waiting Pre-approvals',
-            to: '/coordinator/student-wishlists',
+            label: 'Approve Pre-Approvals',
+            to: '/fac-member/approve-pre-approvals',
             icon: <IconFileSearch />
         },
         {
