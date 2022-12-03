@@ -1,5 +1,7 @@
 import { Navbar } from "@mantine/core";
 import { IconLogout, IconSchool } from '@tabler/icons';
+import { useNavigate } from "react-router-dom";
+import { useUserDispatch } from "../../provider/UserProvider";
 import { MenuItem, NavbarLink, User } from "../../types";
 import UserButton from "../buttons/UserButton";
 import GenericMenu from "../menu/GenericMenu";
@@ -10,8 +12,25 @@ interface OutgoingStudentNavbarProps {
 }
 
 const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
+    const dispatch = useUserDispatch()
+    const navigate = useNavigate()
+
+    const onSignOut = () => {
+        dispatch({
+            type: 'LOGOUT',
+            payload: null
+        })
+        navigate('/login')
+    }
+
     const MENU_ITEMS: Array<MenuItem> = [
-        {icon: <IconLogout size={18}/>, label: 'Sign Out', color: 'red', bgColor: 'red' }
+        {
+            icon: <IconLogout size={18}/>, 
+            label: 'Sign Out', 
+            color: 'red', 
+            bgColor: 'red',
+            action: onSignOut
+        }
     ]
     const NAVBAR_LINKS: Array<NavbarLink> = [
         {label: 'Universities', to:'/universities', icon: <IconSchool />}
@@ -30,7 +49,17 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
                 <NavbarLinks links={NAVBAR_LINKS}></NavbarLinks>
             </Navbar.Section>
             <Navbar.Section>
-                <GenericMenu menuLabel="Options" menuItems={MENU_ITEMS} target={<UserButton email={user.email} name={user.name} userType={user.userType}/>}/>
+                <GenericMenu 
+                    menuLabel="Options" 
+                    menuItems={MENU_ITEMS} 
+                    target={<UserButton 
+                                email={user.email} 
+                                name={user.name} 
+                                userType={user.userType}
+                                accessToken={user.accessToken}
+                            />
+                    }
+                />
             </Navbar.Section>
         </Navbar>
     );
