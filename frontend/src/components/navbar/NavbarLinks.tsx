@@ -21,6 +21,7 @@ const NavbarLinks = ({links}: NavbarLinksProps) => {
         return (
             <NavLink 
                 end 
+                key={link.to}
                 to={link.to}
                 style={({ isActive }) => isActive ? activeLinkStyle : defaultStyle}
             >

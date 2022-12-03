@@ -5,6 +5,7 @@ import GenericNavbar from "./GenericNavbar";
 
 const AppNavbar = () => {
     const userContext = useUser()
+    console.log(userContext)
 
     if (userContext.user) {
         const user = userContext.user
@@ -15,6 +16,7 @@ const AppNavbar = () => {
 
     return (
         <>
+        {console.log("why tho")}
             <Unauthorized />
         </>
     );

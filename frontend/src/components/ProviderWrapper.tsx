@@ -21,13 +21,13 @@ const ProviderWrapper = ({ children }: ProviderWrapperProps) => {
     useHotkeys([['mod+J', () => toggleColorScheme()]])
 
     return (
-        <UserProvider>
-            <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-                <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+            <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
+                <UserProvider>
                     {children}
-                </MantineProvider>
-            </ColorSchemeProvider>
-        </UserProvider>
+                </UserProvider> 
+            </MantineProvider>
+        </ColorSchemeProvider>
     );
 }
  

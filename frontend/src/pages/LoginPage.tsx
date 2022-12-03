@@ -1,6 +1,5 @@
-import { Box, Center, Stack, TextInput, Title } from "@mantine/core";
+import { Box, Center, Stack, Title } from "@mantine/core";
 import LoginForm from "../components/auth/LoginForm";
-import { useUser, useUserDispatch } from "../provider/UserProvider";
 
 const LoginPage = () => {
     return (
