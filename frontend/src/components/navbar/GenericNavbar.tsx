@@ -39,10 +39,10 @@ const GenericNavbar = ({user, navlinks}: GenericNavbarProps) => {
                 main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
             })} 
             width={{ base: 250 }} 
-            height="100vh"
+            height="100"
             p="xs"
         >
-            <Navbar.Section>
+            <Navbar.Section grow>
                 <NavbarLinks links={navlinks}></NavbarLinks>
             </Navbar.Section>
             <Divider my={'sm'} />
