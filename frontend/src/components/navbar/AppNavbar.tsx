@@ -1,13 +1,21 @@
-import { User, UserEnum } from "../../types";
-import OutgoingStudentNavbar from "./OutgoingStudentNavbar";
+import Unauthorized from "../../pages/UnauthorizedPage";
+import { useUser } from "../../provider/UserProvider";
+import { NAVBAR_LINK_OBJECTS } from "../../utils/constants";
+import GenericNavbar from "./GenericNavbar";
 
 const AppNavbar = () => {
-    const userType = UserEnum.OutgoingStudent
-	const mockUser: User = {email: 'sss@gmail.com', name: 'Selim', userType}
+    const userContext = useUser()
+
+    if (userContext.user) {
+        const user = userContext.user
+        const navlinks = NAVBAR_LINK_OBJECTS[user.userType]
+
+        return <GenericNavbar user={user} navlinks={navlinks}/>
+    }
 
     return (
         <>
-            <OutgoingStudentNavbar user={mockUser}/>
+            <Unauthorized />
         </>
     );
 }

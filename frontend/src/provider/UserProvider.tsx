@@ -9,7 +9,7 @@ interface UserProviderProps {
     children: React.ReactNode
 }
 
-const UserContext = createContext<UserContextProps | null>(null)
+const UserContext = createContext<UserContextProps>(null!)
 const UserDispatchContext = createContext<React.Dispatch<ACTION_TYPE>>(null!)
 
 type ACTION_TYPE = {type: "LOGIN", payload: User} | {type: "LOGOUT", payload: User | null}

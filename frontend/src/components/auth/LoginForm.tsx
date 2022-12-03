@@ -1,5 +1,6 @@
 import { Anchor, Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useHotkeys } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch } from "../../provider/UserProvider";
 import { User, UserEnum } from "../../types";
@@ -7,6 +8,8 @@ import { User, UserEnum } from "../../types";
 const LoginForm = () => {
     const navigate = useNavigate()
     const dispatch = useUserDispatch()
+
+    useHotkeys([['Enter', () => handleSignIn()]]) // Enter is mapped as shortcut sign in
     
     const form = useForm({
         initialValues: {
@@ -19,7 +22,8 @@ const LoginForm = () => {
         }
     })
 
-    const onClick = () => {
+
+    const handleSignIn = () => {
         const validate = form.validate()
         if (!validate.hasErrors) {
             // TODO: Make a request to backend, replace the mock data with data coming from backend
@@ -55,7 +59,7 @@ const LoginForm = () => {
                 >
                 </PasswordInput>
                 <Button 
-                    onClick={onClick}
+                    onClick={handleSignIn}
                     loaderPosition='left'
                 >
                         Sign In

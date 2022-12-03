@@ -1,4 +1,4 @@
-import { Navbar } from "@mantine/core";
+import { Divider, Navbar } from "@mantine/core";
 import { IconLogout, IconSchool } from '@tabler/icons';
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch } from "../../provider/UserProvider";
@@ -7,11 +7,12 @@ import UserButton from "../buttons/UserButton";
 import GenericMenu from "../menu/GenericMenu";
 import NavbarLinks from "./NavbarLinks";
 
-interface OutgoingStudentNavbarProps {
-    user: User
+interface GenericNavbarProps {
+    user: User,
+    navlinks: Array<NavbarLink>
 }
 
-const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
+const GenericNavbar = ({user, navlinks}: GenericNavbarProps) => {
     const dispatch = useUserDispatch()
     const navigate = useNavigate()
 
@@ -22,8 +23,7 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
         })
         navigate('/login')
     }
-
-    const MENU_ITEMS: Array<MenuItem> = [
+    const USER_BUTTON_MENU_ITEMS: Array<MenuItem> = [
         {
             icon: <IconLogout size={18}/>, 
             label: 'Sign Out', 
@@ -31,9 +31,6 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
             bgColor: 'red',
             action: onSignOut
         }
-    ]
-    const NAVBAR_LINKS: Array<NavbarLink> = [
-        {label: 'Universities', to:'/universities', icon: <IconSchool />}
     ]
     
     return (
@@ -46,12 +43,12 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
             p="xs"
         >
             <Navbar.Section>
-                <NavbarLinks links={NAVBAR_LINKS}></NavbarLinks>
+                <NavbarLinks links={navlinks}></NavbarLinks>
             </Navbar.Section>
-            <Navbar.Section>
+            <Divider my={'sm'} />
                 <GenericMenu 
                     menuLabel="Options" 
-                    menuItems={MENU_ITEMS} 
+                    menuItems={USER_BUTTON_MENU_ITEMS} 
                     target={<UserButton 
                                 email={user.email} 
                                 name={user.name} 
@@ -60,9 +57,10 @@ const OutgoingStudentNavbar = ({user}: OutgoingStudentNavbarProps) => {
                             />
                     }
                 />
+            <Navbar.Section>
             </Navbar.Section>
         </Navbar>
     );
 }
  
-export default OutgoingStudentNavbar;
+export default GenericNavbar;
