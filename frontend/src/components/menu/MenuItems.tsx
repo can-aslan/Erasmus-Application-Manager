@@ -9,7 +9,7 @@ const MenuItems = ({items}: MenuItemsInterface) => {
     const menuItems = items.map((item) => {
         return (
             <Menu.Item  
-                
+                key={item.to}
                 color={item.color}
                 icon={item.icon}
                 onClick={item.action}

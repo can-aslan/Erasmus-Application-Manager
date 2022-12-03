@@ -8,7 +8,7 @@ const AppHeader = () => {
             p="lg"
         >
             <Group position="apart">
-                <Title ml={20}>Desiderius</Title>
+                <Title ml={20}>Beam</Title>
                 <ToggleThemeIcon mr={50}/>
             </Group>
         </Header>
