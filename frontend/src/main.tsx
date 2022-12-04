@@ -11,6 +11,7 @@ import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import LoginPage from './pages/LoginPage'
 import MissingPage from './pages/MissingPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
+import CourseWishlistPage from './pages/OutgoingStudent/CourseWishlistPage'
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import { UserEnum } from './types'
 
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
                   {
                     path: '/student/course-request',
                     element: <CourseRequestPage />
+                  },
+                  {
+                    path: '/student/course-wishlist',
+                    element: <CourseWishlistPage />
                   }
                 ]
               },
