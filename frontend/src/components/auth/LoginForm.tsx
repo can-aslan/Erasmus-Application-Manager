@@ -22,7 +22,6 @@ const LoginForm = () => {
         }
     })
 
-
     const handleSignIn = () => {
         const validate = form.validate()
         if (!validate.hasErrors) {

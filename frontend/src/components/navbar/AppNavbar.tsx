@@ -6,7 +6,7 @@ import GenericNavbar from "./GenericNavbar";
 
 const AppNavbar = () => {
     const { user } = useUser()
-
+    console.log(user)
     const isUser = (x: any): x is User => Object.keys(x).length !== 0
 
     if (isUser(user)) {
