@@ -1,5 +1,5 @@
 import { Divider, Navbar } from "@mantine/core";
-import { IconLogout, IconSchool } from '@tabler/icons';
+import { IconLogout } from '@tabler/icons';
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch } from "../../provider/UserProvider";
 import { MenuItem, NavbarLink, User } from "../../types";
