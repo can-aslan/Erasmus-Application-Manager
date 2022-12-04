@@ -1,5 +1,5 @@
-import { Center, Table, ScrollArea, Box, Stack, Title } from "@mantine/core";
-import ApproveWishlistsTable from "../components/tables/ApproveWishlistsTable";
+import { Box, Center, ScrollArea, Stack, Table, Title } from "@mantine/core";
+import ApproveWishlistsTable from "../../components/tables/ApproveWishlistsTable";
 
 const ApproveWishlistsPage = () => {
     return(

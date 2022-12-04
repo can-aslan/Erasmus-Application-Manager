@@ -1,5 +1,5 @@
-import { Center, Table, ScrollArea, Box, Stack, Title } from "@mantine/core";
-import ApprovePreApprovalsTable from "../components/tables/ApprovePreApprovalsTable";
+import { Box, Center, ScrollArea, Stack, Table, Title } from "@mantine/core";
+import ApprovePreApprovalsTable from "../../components/tables/ApprovePreApprovalsTable";
 
 const ApprovePreApprovalsPage = () => {
     return (
