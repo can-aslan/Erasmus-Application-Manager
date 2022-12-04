@@ -1,7 +1,7 @@
 import { Divider, Navbar } from "@mantine/core";
-import { IconLogout, IconSchool } from '@tabler/icons';
+import { IconLogout } from '@tabler/icons';
 import { useNavigate } from "react-router-dom";
-import { useUserDispatch } from "../../provider/UserProvider";
+import useLogout from "../../hooks/useLogout";
 import { MenuItem, NavbarLink, User } from "../../types";
 import UserButton from "../buttons/UserButton";
 import GenericMenu from "../menu/GenericMenu";
@@ -13,14 +13,11 @@ interface GenericNavbarProps {
 }
 
 const GenericNavbar = ({user, navlinks}: GenericNavbarProps) => {
-    const dispatch = useUserDispatch()
     const navigate = useNavigate()
+    const logout = useLogout()
 
     const onSignOut = () => {
-        dispatch({
-            type: 'LOGOUT',
-            payload: null
-        })
+        logout()
         navigate('/login')
     }
     const USER_BUTTON_MENU_ITEMS: Array<MenuItem> = [
@@ -53,7 +50,6 @@ const GenericNavbar = ({user, navlinks}: GenericNavbarProps) => {
                                 email={user.email} 
                                 name={user.name} 
                                 userType={user.userType}
-                                accessToken={user.accessToken}
                             />
                     }
                 />
