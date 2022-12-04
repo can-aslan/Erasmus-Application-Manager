@@ -1,4 +1,4 @@
-import { Button, Table, Center, Modal } from "@mantine/core";
+import { Button, Table, Center, Modal, Group, Space } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useState } from "react";
 
@@ -76,12 +76,12 @@ const ApprovePreApprovalsTable = () => {
     return (
         <><Modal
             opened={opened}
-            fullScreen={true}
+            size={"auto"}
             centered={true}
             onClose={() => setOpened(false)}
             title={"Student Name: " + selectedStudentName + "   Student ID: " + selectedStudentID}
         >
-            {<Table striped withBorder withColumnBorders>
+            <Center><Table striped withBorder withColumnBorders>
                 <thead>
                     <tr>
                         <th></th>
@@ -97,9 +97,12 @@ const ApprovePreApprovalsTable = () => {
                 </thead>
                 <tbody>{preApprovalRows}</tbody>
 
-            </Table>}
-            {selectedIsApproved && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
-            <Button color={'red'} onClick={() => { rejectPreApproval(selectedStudentID) }}>Reject</Button>
+            </Table></Center>
+            <Space h="xs"></Space>
+            <Group position="right">
+                {selectedIsApproved && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
+                <Button color={'red'} onClick={() => { rejectPreApproval(selectedStudentID) }}>Reject</Button>
+            </Group>
         </Modal>
             <Table striped withBorder withColumnBorders>
                 <thead>
