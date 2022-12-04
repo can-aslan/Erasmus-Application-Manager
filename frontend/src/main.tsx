@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
 import LoginPage from './pages/LoginPage'
 import MissingPage from './pages/MissingPage'
+import { UserEnum } from './types'
 
 const router = createBrowserRouter([
   {
@@ -18,8 +20,44 @@ const router = createBrowserRouter([
     errorElement: <MissingPage />,
     children: [
       {
-        path: 'hey',
-        element: <div>test</div>
+        element: <RequireAuth allowedUsers={[UserEnum.OutgoingStudent]} />,
+        children: [
+          {
+            // Outgoing student pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.IncomingStudent]} />,
+        children: [
+          {
+            // Incoming student pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.FACMember]} />,
+        children: [
+          {
+            // FACMember pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.Coordinator]} />,
+        children: [
+          {
+            // Coordinator pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.Admin]} />,
+        children: [
+          {
+            // Admin pages
+          }
+        ]
       }
     ]
   }
