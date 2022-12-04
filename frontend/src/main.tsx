@@ -23,10 +23,42 @@ const router = createBrowserRouter([
         element: <RequireAuth allowedUsers={[UserEnum.OutgoingStudent]} />,
         children: [
           {
-            
+            // Outgoing student pages
           }
         ]
       },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.IncomingStudent]} />,
+        children: [
+          {
+            // Incoming student pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.FACMember]} />,
+        children: [
+          {
+            // FACMember pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.Coordinator]} />,
+        children: [
+          {
+            // Coordinator pages
+          }
+        ]
+      },
+      {
+        element: <RequireAuth allowedUsers={[UserEnum.Admin]} />,
+        children: [
+          {
+            // Admin pages
+          }
+        ]
+      }
     ]
   }
 ])
