@@ -5,8 +5,12 @@ import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
+import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
+import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import LoginPage from './pages/LoginPage'
 import MissingPage from './pages/MissingPage'
+import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
+import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import { UserEnum } from './types'
 
 const router = createBrowserRouter([
@@ -23,7 +27,12 @@ const router = createBrowserRouter([
         element: <RequireAuth allowedUsers={[UserEnum.OutgoingStudent]} />,
         children: [
           {
-            // Outgoing student pages
+            path: '/student/pre-approval-form',
+            element: <PreApprovalFormPage />
+          },
+          {
+            path: '/student/course-request',
+            element: <CourseRequestPage />
           }
         ]
       },
@@ -39,7 +48,8 @@ const router = createBrowserRouter([
         element: <RequireAuth allowedUsers={[UserEnum.FACMember]} />,
         children: [
           {
-            // FACMember pages
+            path: '/fac-member/approve-pre-approvals',
+            element: <ApprovePreApprovalsPage />
           }
         ]
       },
@@ -47,7 +57,8 @@ const router = createBrowserRouter([
         element: <RequireAuth allowedUsers={[UserEnum.Coordinator]} />,
         children: [
           {
-            // Coordinator pages
+            path: '/coordinator/student-wishlists',
+            element: <ApproveWishlistsPage />
           }
         ]
       },
