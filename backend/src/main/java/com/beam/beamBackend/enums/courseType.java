@@ -1,6 +1,6 @@
 package com.beam.beamBackend.enums;
 
-public enum courseType {
+public enum CourseType {
     MANDATORY,
     GENERAL_ELECTIVE,
     SOCIAL_SCIENCE_ELECTIVE,
