@@ -1,4 +1,4 @@
-import { Button, Table, Center, Modal } from "@mantine/core";
+import { Button, Table, Center, Modal, Group, Space } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useState } from "react";
 
@@ -89,8 +89,11 @@ const ApproveWishlistsTable = () => {
                 <tbody>{wishlistRows}</tbody>
 
             </Table>}
-            {selectedIsApproved && <Button color={'green'} onClick={() => { approveWishlist(selectedStudentID) }}>Approve</Button>}
-            <Button color={'red'} onClick={() => { rejectWishlist(selectedStudentID) }}>Reject</Button>
+            <Space h="xs"/>
+            <Group position={"right"}>
+                {selectedIsApproved && <Button color={'green'} onClick={() => { approveWishlist(selectedStudentID) }}>Approve</Button>}
+                <Button color={'red'} onClick={() => { rejectWishlist(selectedStudentID) }}>Reject</Button>
+            </Group>
         </Modal>
             <Table striped withBorder withColumnBorders>
                 <thead>
