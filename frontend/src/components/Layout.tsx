@@ -1,8 +1,5 @@
-import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { useHotkeys, useLocalStorage } from "@mantine/hooks";
+import { AppShell } from "@mantine/core";
 import { Outlet } from "react-router-dom";
-import { UserProvider } from "../provider/UserProvider";
-import { User, UserEnum } from "../types";
 import AppHeader from "./navbar/AppHeader";
 import AppNavbar from "./navbar/AppNavbar";
 

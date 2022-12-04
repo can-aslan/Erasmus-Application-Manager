@@ -2,12 +2,12 @@ import { Anchor, Button, Group, PasswordInput, Stack, TextInput } from "@mantine
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
-import { useUserDispatch } from "../../provider/UserProvider";
+import { useUser } from "../../provider/UserProvider";
 import { User, UserEnum } from "../../types";
 
 const LoginForm = () => {
     const navigate = useNavigate()
-    const dispatch = useUserDispatch()
+    const { setUser } = useUser()
 
     useHotkeys([['Enter', () => handleSignIn()]]) // Enter is mapped as shortcut sign in
     
@@ -33,13 +33,10 @@ const LoginForm = () => {
                 name: "hey",
                 email: "hey@email.com",
                 userType: UserEnum.OutgoingStudent,
-                accessToken: "token123"
+                accessToken: "token123",
+                refreshToken: 'hello',
             }
-            dispatch({
-                type: 'LOGIN',
-                payload: userCredentials,
-            })
-
+            setUser(userCredentials)
             navigate('/')
         }
     }

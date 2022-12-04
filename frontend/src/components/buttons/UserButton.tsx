@@ -8,10 +8,14 @@ interface ButtonProps {
     image?: string
 }
 
-type UserButtonProps = ButtonProps & User
+type UserButtonProps = ButtonProps & {
+  email: string,
+  name: string,
+  userType: UserEnum
+}
 
 const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
-    ({ name, email, icon, userType, image, ...others }: UserButtonProps, ref) => (
+    ({ name, email, userType, icon, image, ...others }: UserButtonProps, ref) => (
       <UnstyledButton
         ref={ref}
         sx={(theme) => ({

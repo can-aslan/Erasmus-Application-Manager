@@ -12,7 +12,8 @@ export type User = {
     name: string,
     email: string,
     userType: UserEnum,
-    accessToken: string
+    accessToken: string,
+    refreshToken: string,
 }
 
 export type MenuItem = {
