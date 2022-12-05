@@ -1,10 +1,12 @@
 package com.beam.beamBackend.model;
 
+import java.util.UUID;
+
 import com.beam.beamBackend.enums.*;
 public class Student extends User{
 
     // Properties
-    long id;
+    UUID id;
     String name;
     String surname;
     String email;
@@ -24,7 +26,7 @@ public class Student extends User{
 
     // Constructors
     public Student(
-        long id,
+        UUID id,
         String name,
         String surname,
         String email,
@@ -42,6 +44,7 @@ public class Student extends User{
         String dateOfBirth,
         Sex sex
     ){
+        super(name, surname, email, bilkentId, password, userType);
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -61,11 +64,11 @@ public class Student extends User{
     }
 
 
-    public long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
