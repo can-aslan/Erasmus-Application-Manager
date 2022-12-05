@@ -1,4 +1,4 @@
-import { Flex, Modal, Text } from "@mantine/core";
+import { Flex, Group, Modal, Text } from "@mantine/core";
 import { useState } from 'react';
 import { WishlistItemType } from "../../types";
 import WishlistButton from "./WishlistButton";
@@ -32,9 +32,17 @@ const WishlistItem = ({ item, id }: WishlistItemProps) => {
                 </Flex>
             </Modal>
             <WishlistButton 
-                wishDetails={item}
                 onClick={handleClick}
-            />
+            >
+                <Group>
+                    <Text 
+                        size="lg" 
+                        weight={500}
+                    >
+                        {item?.courseCode}: {item?.courseName}
+                    </Text>
+                </Group>
+            </WishlistButton>
         </div>
     );
 }

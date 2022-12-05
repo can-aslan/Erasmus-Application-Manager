@@ -9,12 +9,12 @@ interface ButtonProps {
 }
 
 type WishlistButtonProps = ButtonProps & {
-  wishDetails?: WishlistItemType,
   onClick: React.MouseEventHandler,
+  children: React.ReactNode,
 }
 
 const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>(
-    ({ wishDetails, onClick, icon, image, ...others }: WishlistButtonProps, ref) => (
+    ({ onClick, children, icon, image, ...others }: WishlistButtonProps, ref) => (
       <UnstyledButton
         onClick={onClick}
         ref={ref}
@@ -35,14 +35,7 @@ const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>(
         })}
         {...others}
       >
-        <Group>
-            <Text 
-                size="lg" 
-                weight={500}
-            >
-                {wishDetails?.courseCode}: {wishDetails?.courseName}
-            </Text>
-        </Group>
+        {children}
       </UnstyledButton>
     )
   );
