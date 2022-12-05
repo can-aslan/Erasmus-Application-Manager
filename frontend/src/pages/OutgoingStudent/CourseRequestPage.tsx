@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Center, Divider, FileButton, Group, Select, Stack, Table, Text, TextInput, Title } from "@mantine/core";
+import { Anchor, Box, Button, Center, Divider, FileButton, Flex, Group, Select, Stack, Table, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useState } from "react";
@@ -91,18 +91,18 @@ const CourseRequestPage = () => {
                                 {...form.getInputProps('webpage')}
                             >
                             </TextInput>
-                            <Group position="center">
+                            <Flex direction='row' align='center' justify="center" gap='lg'>
                                 <FileButton onChange={setSyllabusFile} accept="application/pdf">
-                                    {(props) => <Button  {...props}>Upload Syllabus</Button>}
+                                    {(props) => <Button {...props}>Upload Syllabus</Button>}
                                 </FileButton>
-                                <Title order={1}>OR</Title>
+                                <Title order={2}>OR</Title>
                                 <TextInput
                                     label="Syllabus Link"
                                     placeholder="Syllabus link of the course at host university"
                                     {...form.getInputProps('syllabusLink')}
                                 />
                                     
-                            </Group>
+                            </Flex>
                             <Select
                                 searchable
                                 allowDeselect
