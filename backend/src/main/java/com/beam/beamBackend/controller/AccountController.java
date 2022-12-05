@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.User;
+import com.beam.beamBackend.service.AccountService;
 
 @RequestMapping("api/v1/auth")
 @RestController
