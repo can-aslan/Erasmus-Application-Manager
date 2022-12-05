@@ -4,10 +4,11 @@ import { WishlistItemType } from "../../types";
 import WishlistButton from "./WishlistButton";
 
 interface WishlistItemProps {
-    item: WishlistItemType
+    item: WishlistItemType,
+    id: string,
 }
 
-const WishlistItem = ({ item }: WishlistItemProps) => {
+const WishlistItem = ({ item, id }: WishlistItemProps) => {
     const [openModal, setOpenModal] = useState(false)
 
     const handleClick = () => {

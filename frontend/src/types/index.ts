@@ -32,6 +32,7 @@ export type NavbarLink = {
 }
 
 export type WishlistItemType = {
+    uuid: string,
     courseCode: string,
     courseName: string,
     bilkentCredits: number,

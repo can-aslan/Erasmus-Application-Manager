@@ -5,44 +5,51 @@ import Wishlist from "../../components/wishlist/Wishlist";
 import { WishlistItemType } from "../../types";
 
 const CourseWishlistPage = () => {
-    // TODO: Add save button. Enable it in the case there are unsaved changes. Keep track of unsaved
-    // changes by using newItems. Add to new items on each new wish addition
-
     // TODO: Fetch already existing wishlist items from the database.
     const [openModal, setOpenModal] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState('')
-    const [newItems, setNewItems] = useState(Array<WishlistItemType>)
+    const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
     const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>([
         {
+            uuid: 'xxxyyy',
             ECTSCredits: 5,
             bilkentCredits: 3,
-            courseName: 'Intro to Programming',
+            courseName: 'Intro to Programming I',
             courseCode: 'CS 101',
         },
         {
+            uuid: 'aaabbb',
             ECTSCredits: 5,
             bilkentCredits: 3,
-            courseName: 'Intro to Programming',
-            courseCode: 'CS 101',
+            courseName: 'Intro to Programming II',
+            courseCode: 'CS 102',
         }
     ]) 
     // TODO: Fetch available courses from the database
     const availableCourses = [
         {
             value: 'CS 101',
+            uuid: 'aaabbb',
             ECTSCredits: 5,
             bilkentCredits: 3,
-            courseName: 'Intro to Programming',
+            courseName: 'Intro to Programming I',
             courseCode: 'CS 101',
         },
         {
             value: 'CS 102',
+            uuid: 'aaabbb',
             ECTSCredits: 5,
             bilkentCredits: 3,
-            courseName: 'Intro to Programming',
+            courseName: 'Intro to Programming II',
             courseCode: 'CS 102',
         }
     ]
+
+    const handleDeleteWish = (e: React.MouseEvent) => {
+        const id = e.currentTarget.id
+        setWishlistItems(wishlistItems.filter((w) => w.uuid !== id))
+        setNewItems(newItems.filter((n => n.uuid !== id)))
+    }
 
     const handleAddWish = () => {
         const selected = availableCourses.find((c) => c.value === selectedCourse)
@@ -59,35 +66,46 @@ const CourseWishlistPage = () => {
                 ]
             )
         })
+        setNewItems((prev) => {
+            return (
+                [
+                    ...prev,
+                    selected
+                ]
+            )
+        })
         setOpenModal(false)
     }
 
     return (
         <Center sx={{height: '50vh'}}>
-            <Card
-                p='xl'
-                shadow='lg'
-                radius='lg'
-                sx={(theme) => ({
-                    bacgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-                })}
-                
-            >
-                <Flex gap={24} direction='column' align='center'>
-                    <Title order={2}>
-                        Your Wishlist
-                    </Title>
-                    <Wishlist wishlistItems={wishlistItems}/>
-                    <div>
-                        <Button
-                            onClick={() => setOpenModal(true)}
-                            leftIcon={<IconPlus />}
-                        >
-                            Add New Wish
-                        </Button>
-                    </div>
-                </Flex>
-            </Card>
+            <Flex direction='column' gap='xl'>
+                <Card
+                    p='xl'
+                    shadow='lg'
+                    radius='lg'
+                    sx={(theme) => ({
+                        bacgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
+                    })}
+                    
+                >
+                    <Flex gap={24} direction='column' align='center'>
+                        <Title order={2}>
+                            Your Wishlist
+                        </Title>
+                        <Wishlist wishlistItems={wishlistItems} handleDeleteWish={handleDeleteWish}/>
+                        <div>
+                            <Button
+                                onClick={() => setOpenModal(true)}
+                                leftIcon={<IconPlus />}
+                            >
+                                Add New Wish
+                            </Button>
+                        </div>
+                    </Flex>
+                </Card> 
+                <Button disabled={newItems.length === 0}>Save</Button>
+            </Flex>
             <Modal
                 opened={openModal}
                 onClose={() => setOpenModal(false)}
