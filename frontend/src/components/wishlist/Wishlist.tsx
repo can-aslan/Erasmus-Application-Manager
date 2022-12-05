@@ -1,4 +1,4 @@
-import { Autocomplete, Button, CloseButton, Flex, Modal, Stack } from "@mantine/core";
+import { Autocomplete, Button, CloseButton, Flex, Modal, Stack, Text } from "@mantine/core";
 import { IconPlus } from '@tabler/icons';
 import { useState } from 'react';
 import { WishlistItemType } from "../../types";
@@ -34,7 +34,7 @@ const Wishlist = ({ wishlistItems, handleDeleteWish }: WishlistProps) => {
         <div>
             <Stack spacing='xl' align='center'>
                 <div>
-                    {list}
+                    {list.length !== 0 ? list : <Text color='dimmed'>Your wishlist appears to be empty. <br />Try adding a new wish with the button below!</Text>}
                 </div>
             </Stack>
         </div>
