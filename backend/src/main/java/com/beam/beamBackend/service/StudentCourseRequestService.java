@@ -21,7 +21,10 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
         String webpage)
     {
         // TODO Auto-generated method stub
-        return false;
+        return (code.length() != 0)
+            && (name.length() != 0)
+            && (bilkentCourse.length() != 0)
+            && (webpage.length() != 0); // temporary for test purposes
     }
 
     @Override
@@ -34,7 +37,10 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
         File additionalInfo) 
     {
         // TODO Auto-generated method stub
-        return false;
+        return (code.length() != 0)
+            && (name.length() != 0)
+            && (bilkentCourse.length() != 0)
+            && (webpage.length() != 0); // temporary for test purposes
     }
 
     @Override

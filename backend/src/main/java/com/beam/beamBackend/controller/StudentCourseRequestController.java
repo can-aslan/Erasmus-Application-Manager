@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,21 +28,21 @@ public class StudentCourseRequestController {
         this.studentCourseRequestService = studentCourseRequestService;
     }
 
-    @PutMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}") // <- temporary
+    @PostMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}") // <- temporary
     public ResponseEntity<Boolean> requestCourse(
-        @PathVariable("studentId") UUID studentId,
+        @PathVariable("studentId") String studentId,
         @PathVariable("code") String code,
         @PathVariable("name") String name,
         @PathVariable("bilkentCourse") String bilkentCourse,
         @PathVariable("webpage") String webpage
     )
     {
-        return ResponseEntity.ok(studentCourseRequestService.requestCourse(studentId, code, name, bilkentCourse, webpage));
+        return ResponseEntity.ok(studentCourseRequestService.requestCourse(UUID.fromString(studentId), code, name, bilkentCourse, webpage));
     }
 
-    @PutMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}/{additionalInfo}") // <- temporary
+    @PostMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}/{additionalInfo}") // <- temporary
     public ResponseEntity<Boolean> requestCourse(
-        @PathVariable("studentId") UUID studentId,
+        @PathVariable("studentId") String studentId,
         @PathVariable("code") String code,
         @PathVariable("name") String name,
         @PathVariable("bilkentCourse") String bilkentCourse,
@@ -50,7 +50,7 @@ public class StudentCourseRequestController {
         @PathVariable("additionalInfo") File additionalInfo
     )
     {
-        return ResponseEntity.ok(studentCourseRequestService.requestCourse(studentId, code, name, bilkentCourse, webpage, additionalInfo));
+        return ResponseEntity.ok(studentCourseRequestService.requestCourse(UUID.fromString(studentId), code, name, bilkentCourse, webpage, additionalInfo));
     }
 
     @GetMapping("getPreviouslyRequestedCourses") // <- temporary
