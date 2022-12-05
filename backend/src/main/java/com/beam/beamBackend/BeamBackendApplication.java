@@ -8,7 +8,6 @@ public class BeamBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BeamBackendApplication.class, args);
-		System.out.println("yubii");
+		System.out.println("Spring Boot server initialized");
 	}
-
 }
