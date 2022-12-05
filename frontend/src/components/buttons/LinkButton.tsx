@@ -1,4 +1,4 @@
-import { Anchor, Group, Text, UnstyledButton } from "@mantine/core";
+import { Group, Text, UnstyledButton } from "@mantine/core";
 import { forwardRef } from "react";
 import { NavLink } from 'react-router-dom';
 import { NavbarLink } from "../../types";

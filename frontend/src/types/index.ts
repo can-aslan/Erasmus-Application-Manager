@@ -30,3 +30,11 @@ export type NavbarLink = {
     to: string,
     icon?: React.ReactNode,
 }
+
+export type WishlistItemType = {
+    uuid: string,
+    courseCode: string,
+    courseName: string,
+    bilkentCredits: number,
+    ECTSCredits: number
+}

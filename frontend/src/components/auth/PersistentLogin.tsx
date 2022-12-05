@@ -1,4 +1,4 @@
-import { Loader } from '@mantine/core';
+import { Center, Loader, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useRefreshToken from '../../hooks/useRefreshToken';
@@ -34,7 +34,14 @@ const PersistentLogin = () => {
     }, [])
     
     return (
-        isLoading ? <Loader /> : <Outlet />
+        isLoading ? (
+            <Center sx={{height: '100vh'}}>
+                <Stack align='center'>
+                    <Loader size={60}/>
+                    <Text size={22} color='blue'>Please wait while we get things ready for you!</Text>
+                </Stack>
+            </Center>
+        ) : <Outlet />
     );
 }
  
