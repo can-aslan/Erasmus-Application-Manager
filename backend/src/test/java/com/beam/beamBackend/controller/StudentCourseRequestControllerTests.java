@@ -8,7 +8,8 @@ import org.springframework.test.context.ContextConfiguration;
 // import com.beam.beamBackend.enums.StudentType;
 import com.beam.beamBackend.service.IStudentCourseRequestService;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
@@ -25,16 +26,51 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
     public void requestValidCourse() throws Exception {
         this.mockMvc
             .perform(
-                put("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/CS-XYZ/Other_Course/CS-319/https://www.othercourselink.com")
+                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/CS-XYZ/Other_Course/CS-319/www.othercourselink.com")
             )
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string("true"));
 
+        when(studentCourseRequestService.requestCourse(
+            UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
+            "CS-XYZ",
+            "Other_Course",
+            "CS-319",
+            "www.othercourselink.com"
+        )).thenReturn(true);
+        
         verify(studentCourseRequestService).requestCourse(
             UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
             "CS-XYZ",
             "Other_Course",
             "CS-319",
-            "https://www.othercourselink.com"
+            "www.othercourselink.com"
+        );
+    }
+
+    @Test
+    public void requestInvalidCourse() throws Exception {
+        this.mockMvc
+            .perform(
+                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/a/Other_Course/b/www.othercourselink.com")
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().string("false"));
+
+        when(studentCourseRequestService.requestCourse(
+            UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
+            "a",
+            "Other_Course",
+            "b",
+            "www.othercourselink.com"
+        )).thenReturn(false);
+        
+        verify(studentCourseRequestService).requestCourse(
+            UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
+            "a",
+            "Other_Course",
+            "b",
+            "www.othercourselink.com"
         );
     }
 }
