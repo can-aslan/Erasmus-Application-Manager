@@ -17,7 +17,7 @@ import com.beam.beamBackend.model.File;
 import com.beam.beamBackend.service.IStudentCourseRequestService;
 
 @RestController
-@Secured("OUTGOING") // Temporary user role for outgoing student
+@Secured({"OUTGOING"}) // Temporary user role for outgoing student
 @RequestMapping("courses/request") // <- temporary
 // @RequiredArgsConstructor
 public class StudentCourseRequestController {
