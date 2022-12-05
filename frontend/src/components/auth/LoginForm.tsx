@@ -1,7 +1,7 @@
-import { Anchor, Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../provider/UserProvider";
 import { User, UserEnum } from "../../types";
 
@@ -61,8 +61,11 @@ const LoginForm = () => {
                         Sign In
                 </Button>
                 <Group position="center">
-                    {/* TODO: A new page for forgot password? Or just change the form? */}
-                    <Anchor>Forgot your password?</Anchor>
+                    <Link 
+                        to='/forgot-password'
+                    >
+                        Forgot your password?
+                    </Link>
                 </Group>
             </Stack>
         </form>

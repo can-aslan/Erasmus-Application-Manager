@@ -8,6 +8,7 @@ import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import LoginPage from './pages/LoginPage'
 import MissingPage from './pages/MissingPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />
   },
   {
     element: <PersistentLogin />,
