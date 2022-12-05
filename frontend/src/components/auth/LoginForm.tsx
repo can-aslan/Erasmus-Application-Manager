@@ -1,14 +1,19 @@
 import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
+import { AxiosError, isAxiosError } from "axios";
+import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
+import { login } from "../../api/User/UserService";
 import { useUser } from "../../provider/UserProvider";
 import { User, UserEnum } from "../../types";
 
 const LoginForm = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState('')
     const navigate = useNavigate()
     const { setUser } = useUser()
-
     useHotkeys([['Enter', () => handleSignIn()]]) // Enter is mapped as shortcut sign in
     
     const form = useForm({
@@ -21,22 +26,42 @@ const LoginForm = () => {
             password: (value) => value.length > 0 ? null : "Password cannot be empty."
         }
     })
-
-    const handleSignIn = () => {
+    const handleSignIn = async () => {
+        setIsLoading(true)
         const validate = form.validate()
         if (!validate.hasErrors) {
-            // TODO: Make a request to backend, replace the mock data with data coming from backend
-            // Handle invalid login case.
-            // TODO: Set loading state for the button.
-            const userCredentials: User = {
-                name: "hey",
-                email: "hey@email.com",
-                userType: UserEnum.OutgoingStudent,
-                accessToken: "token123",
-                refreshToken: 'hello',
+            try {
+                // const response = await login(form.values.bilkentID, form.values.password)
+                // if (!response) {
+                //     setError('No server response.')
+                // }
+                // else if (response.status === 400) {
+                //     setError('Username or password is incorrect.')
+                // }
+                // else if (response.status === 401) {
+                //     setError('Unauthorized.')
+                // }
+                // else {
+                //     setUser(response.data)
+                //     navigate('/')
+                // }
+
+                const mockUser: User = {
+                    uuid: 'heyo',
+                    accessToken: 'hey',
+                    refreshToken: 'ho',
+                    email: 'hey@email.com',
+                    name: 'heyo',
+                    userType: UserEnum.FACMember,
+                }
+                setUser(mockUser)
+                navigate('/')
+            } catch (err) {
+                setError('Login unsuccessful')
             }
-            setUser(userCredentials)
-            navigate('/')
+            finally {
+                setIsLoading(false)
+            }
         }
     }
 
@@ -57,6 +82,7 @@ const LoginForm = () => {
                 <Button 
                     onClick={handleSignIn}
                     loaderPosition='left'
+                    loading={isLoading}
                 >
                         Sign In
                 </Button>

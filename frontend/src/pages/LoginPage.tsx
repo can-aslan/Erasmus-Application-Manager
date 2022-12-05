@@ -2,6 +2,7 @@ import { Box, Center, Stack, Title } from "@mantine/core";
 import LoginForm from "../components/auth/LoginForm";
 
 const LoginPage = () => {
+
     return (
         <Center sx={{height: '100vh'}}>
             <Box 
