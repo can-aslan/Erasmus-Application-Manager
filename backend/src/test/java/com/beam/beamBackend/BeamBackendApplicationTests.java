@@ -8,6 +8,6 @@ class BeamBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+        assert true;
 	}
-
 }

@@ -10,7 +10,7 @@ public interface IStudentCourseRequestService {
         UUID studentId,
         String code,
         String name,
-        Course bilkentCourse,
+        String bilkentCourse,
         String webpage
     );
 
@@ -18,7 +18,7 @@ public interface IStudentCourseRequestService {
         UUID studentId,
         String code,
         String name,
-        Course bilkentCourse,
+        String bilkentCourse,
         String webpage,
         File additionalInfo
     );

@@ -17,7 +17,7 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
         UUID studentId,
         String code,
         String name,
-        Course bilkentCourse,
+        String bilkentCourse,
         String webpage)
     {
         // TODO Auto-generated method stub
@@ -29,7 +29,7 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
         UUID studentId,
         String code,
         String name,
-        Course bilkentCourse,
+        String bilkentCourse,
         String webpage,
         File additionalInfo) 
     {

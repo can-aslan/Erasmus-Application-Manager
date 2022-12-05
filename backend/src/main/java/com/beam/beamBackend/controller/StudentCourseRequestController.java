@@ -33,7 +33,7 @@ public class StudentCourseRequestController {
         @PathVariable("studentId") UUID studentId,
         @PathVariable("code") String code,
         @PathVariable("name") String name,
-        @PathVariable("bilkentCourse") Course bilkentCourse,
+        @PathVariable("bilkentCourse") String bilkentCourse,
         @PathVariable("webpage") String webpage
     )
     {
@@ -45,7 +45,7 @@ public class StudentCourseRequestController {
         @PathVariable("studentId") UUID studentId,
         @PathVariable("code") String code,
         @PathVariable("name") String name,
-        @PathVariable("bilkentCourse") Course bilkentCourse,
+        @PathVariable("bilkentCourse") String bilkentCourse,
         @PathVariable("webpage") String webpage,
         @PathVariable("additionalInfo") File additionalInfo
     )
