@@ -13,16 +13,15 @@ public class CoordinatorWishlistService {
     private final CoordinatorWishlistRepository coordinatorWishlistRepository;
 
     @Autowired
-    public CoordinatorWishlistService( CoordinatorWishlistRepository coordinatorWishlistRepository){
+    public CoordinatorWishlistService(CoordinatorWishlistRepository coordinatorWishlistRepository){
         this.coordinatorWishlistRepository = coordinatorWishlistRepository;
     }
 
     public ArrayList<CourseWishlist> getWaitingWishlist() {
-        return coordinatorWishlistRepository.findWishlist();
+        return null;//coordinatorWishlistRepository.findWishlist();
     }
 
     public ArrayList<Course> viewWishList(long studentId) {
-        return coordinatorWishlistRepository.viewWishList(studentId);
+        return null;//coordinatorWishlistRepository.viewWishList(studentId);
     }
-
 }
