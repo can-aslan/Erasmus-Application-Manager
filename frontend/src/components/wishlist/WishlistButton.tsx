@@ -20,6 +20,7 @@ const WishlistButton = forwardRef<HTMLButtonElement, WishlistButtonProps>(
         ref={ref}
         sx={(theme) => ({
           display: 'block',
+          minWidth: '300px',
           width: '100%',
           padding: theme.spacing.lg,
           color: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,

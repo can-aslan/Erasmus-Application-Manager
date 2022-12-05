@@ -8,6 +8,7 @@ const CourseWishlistPage = () => {
     // TODO: Fetch already existing wishlist items from the database.
     const [openModal, setOpenModal] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState('')
+    const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
     const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
     const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>([
         {
@@ -47,6 +48,7 @@ const CourseWishlistPage = () => {
 
     const handleDeleteWish = (e: React.MouseEvent) => {
         const id = e.currentTarget.id
+        setDeletedItems(wishlistItems.filter((w) => w.uuid === id))
         setWishlistItems(wishlistItems.filter((w) => w.uuid !== id))
         setNewItems(newItems.filter((n => n.uuid !== id)))
     }
@@ -104,7 +106,7 @@ const CourseWishlistPage = () => {
                         </div>
                     </Flex>
                 </Card> 
-                <Button disabled={newItems.length === 0}>Save</Button>
+                <Button disabled={newItems.length === 0 && deletedItems.length === 0}>Save</Button>
             </Flex>
             <Modal
                 opened={openModal}
