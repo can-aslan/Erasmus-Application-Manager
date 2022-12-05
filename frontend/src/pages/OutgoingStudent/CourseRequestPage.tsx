@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Center, Divider, FileButton, Group, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Anchor, Box, Button, Center, Divider, FileButton, Group, Select, Stack, Table, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useState } from "react";
@@ -6,7 +6,8 @@ import { useState } from "react";
 const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
-    const [syllabus, setSyllabus] = useState<File | null>(null);
+    const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+    //const [syllabusLink, setSyllabusLink] = useState('');
 
     const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
     const form = useForm({
@@ -14,12 +15,13 @@ const CourseRequestPage = () => {
             hostCourseCode: '',
             courseName: '',
             webpage: '',
+            syllabusLink:''
         },
         validate: {
             hostCourseCode: (value) => value.length > 0 ? null : "Course code cannot be empty.",
             courseName: (value) => value.length > 0 ? null : "Course name cannot be empty.",
             webpage: (value) => value.length > 0 ? null : "Webpage cannot be empty.",
-
+            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link cannot be empty." : null
         }
     })
     const handleRequestCourse = () => {
@@ -30,11 +32,11 @@ const CourseRequestPage = () => {
         else {
             setIsBilkentCourseEmpty(false);
         }
-        if (!syllabus){
+        if (!syllabusFile){
             //TODO: warn the user about missing syllabus
             console.log("no syllabus");
         }
-        if (!validate.hasErrors && !isBilkentCourseEmpty && syllabus) {
+        if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
             // send request to api
             console.log("error yok");
         }
@@ -89,6 +91,18 @@ const CourseRequestPage = () => {
                                 {...form.getInputProps('webpage')}
                             >
                             </TextInput>
+                            <Group position="center">
+                                <FileButton onChange={setSyllabusFile} accept="application/pdf">
+                                    {(props) => <Button  {...props}>Upload Syllabus</Button>}
+                                </FileButton>
+                                <Title order={1}>OR</Title>
+                                <TextInput
+                                    label="Syllabus Link"
+                                    placeholder="Syllabus link of the course at host university"
+                                    {...form.getInputProps('syllabusLink')}
+                                />
+                                    
+                            </Group>
                             <Select
                                 searchable
                                 allowDeselect
@@ -98,14 +112,10 @@ const CourseRequestPage = () => {
                                 onSearchChange={setBilkentOnSearchChange}
                                 searchValue={searchedBilkentCourseInfo}
                                 data={allCoursesBilkent} />
-                            <Group position="center">
-                                <FileButton onChange={setSyllabus} accept="application/pdf">
-                                    {(props) => <Button  {...props}>Upload Syllabus</Button>}
-                                </FileButton>
-                            </Group>
-                            {syllabus && (
+                            
+                            {syllabusFile && (
                                 <Text size="sm" align="center" mt="sm">
-                                    Selected Syllabus: {syllabus.name}
+                                    Selected Syllabus: {syllabusFile.name}
                                 </Text>
                             )}
                             <Button onClick={handleRequestCourse}>Request Course</Button>
