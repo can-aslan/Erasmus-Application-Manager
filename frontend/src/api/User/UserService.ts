@@ -17,7 +17,7 @@ export const login = async (bilkentId: string, pwd: string) => {
 }
 
 // TODO: Mutate: Delete access and refresh tokens on the server side.
-export const logout = async (uuid: string) => {
-    const response = await axiosSecure.post('/api/auth/logout', JSON.stringify({uuid}))
+export const logout = async (userUuid: string) => {
+    const response = await axiosSecure.post('/api/auth/logout', JSON.stringify({userUuid}))
     return response
 }
