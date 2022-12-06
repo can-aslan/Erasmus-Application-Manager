@@ -9,6 +9,7 @@ export enum UserEnum {
 }
 
 export type User = {
+    uuid: string,
     name: string,
     email: string,
     userType: UserEnum,
@@ -37,4 +38,35 @@ export type WishlistItemType = {
     courseName: string,
     bilkentCredits: number,
     ECTSCredits: number
+}
+
+export type Course = {
+    uuid: string,
+    courseCode: string,
+    courseName: string,
+    bilkentCredits: number,
+    ectsCredits: number
+}
+
+export type PreviousCourseRequest = CourseRequest & {
+    uuid: string,
+    status: 'rejected' | 'pending' | 'approved',
+}
+
+export type CourseRequest = {
+    courseCode: string,
+    courseName: string,
+    courseWebPage: string,
+    syllabusLink: string,
+    correspondingCourseInBilkent: string,
+}
+
+export type StudentAssociatedCourse = Course & {
+    studentUuid: string,
+}
+
+export type PreApprovalForm = {
+    studentUuid: string,
+    file: File,
+    status?: 'rejected' | 'pending' | 'approved',
 }
