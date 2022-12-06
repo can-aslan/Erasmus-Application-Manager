@@ -3,7 +3,6 @@ package com.beam.beamBackend.controller;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,17 +15,14 @@ import com.beam.beamBackend.model.Course;
 import com.beam.beamBackend.model.File;
 import com.beam.beamBackend.service.IStudentCourseRequestService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @Secured({"OUTGOING"}) // Temporary user role for outgoing student
-@RequestMapping("courses/request") // <- temporary
-// @RequiredArgsConstructor
+@RequestMapping("api/v1/course/request") // <- temporary
+@RequiredArgsConstructor
 public class StudentCourseRequestController {
     private final IStudentCourseRequestService studentCourseRequestService;
-
-    @Autowired
-    public StudentCourseRequestController(IStudentCourseRequestService studentCourseRequestService) {
-        this.studentCourseRequestService = studentCourseRequestService;
-    }
 
     @PostMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}") // <- temporary
     public ResponseEntity<Boolean> requestCourse(
@@ -53,7 +49,7 @@ public class StudentCourseRequestController {
         return ResponseEntity.ok(studentCourseRequestService.requestCourse(UUID.fromString(studentId), code, name, bilkentCourse, webpage, additionalInfo));
     }
 
-    @GetMapping("getPreviouslyRequestedCourses") // <- temporary
+    @GetMapping
     public ResponseEntity<ArrayList<Course>> getPreviouslyRequestedCourses() {
         return ResponseEntity.ok(studentCourseRequestService.getPreviouslyRequestedCourses());
     }
