@@ -22,6 +22,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
     @MockBean
     private IStudentCourseRequestService studentCourseRequestService;
 
+    // !!! TESTS NEED TO BE UPDATED TO REQUESTBODY FORM !!!
     @Test
     public void requestValidCourse() throws Exception {
         when(studentCourseRequestService.requestCourse(

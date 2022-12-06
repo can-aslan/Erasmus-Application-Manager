@@ -17,31 +17,15 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
     @Override
     public boolean requestCourse(
         UUID studentId,
-        String code,
+        String hostCode,
         String name,
-        String bilkentCourse,
+        String bilkentCode,
         String webpage)
     {
         // TODO Auto-generated method stub
-        return (code.length() != 0)
+        return (hostCode.length() != 0)
             && (name.length() != 0)
-            && (bilkentCourse.length() != 0)
-            && (webpage.length() != 0); // temporary for test purposes
-    }
-
-    @Override
-    public boolean requestCourse(
-        UUID studentId,
-        String code,
-        String name,
-        String bilkentCourse,
-        String webpage,
-        File additionalInfo) 
-    {
-        // TODO Auto-generated method stub
-        return (code.length() != 0)
-            && (name.length() != 0)
-            && (bilkentCourse.length() != 0)
+            && (bilkentCode.length() != 0)
             && (webpage.length() != 0); // temporary for test purposes
     }
 

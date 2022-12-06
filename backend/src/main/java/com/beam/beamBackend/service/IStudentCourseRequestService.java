@@ -8,12 +8,13 @@ import com.beam.beamBackend.model.File;
 public interface IStudentCourseRequestService {
     boolean requestCourse(
         UUID studentId,
-        String code,
+        String hostCode,
         String name,
-        String bilkentCourse,
+        String bilkentCode,
         String webpage
     );
 
+    /* DEPRECATED, NOT USED
     boolean requestCourse(
         UUID studentId,
         String code,
@@ -22,6 +23,7 @@ public interface IStudentCourseRequestService {
         String webpage,
         File additionalInfo
     );
+    */
 
     ArrayList<Course> getPreviouslyRequestedCourses();
 }
