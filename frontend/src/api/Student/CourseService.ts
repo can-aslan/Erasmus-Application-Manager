@@ -25,25 +25,23 @@ export const getCourseWishlist = async (studentId: string) => {
 }
 
 export const saveWishlist = async (studentId: string, courses: Array<Course>) => {
-    const response = axiosSecure.post<Array<Course>>(`/api/student/courseWishlist`,
+    const response = axiosSecure.post<Array<Course>>(`/api/student/courseWishlist/${studentId}`,
         JSON.stringify({
             courses,
-            studentId
         })    
     )
     return response
 }
     
 export const getPreviouslyRequestedCourses = async (studentId: string) => {
-    const response = axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/courseRequest/${studentId}`)
+    const response = axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/previousCourseRequests/${studentId}`)
     return response
 }
 
 export const makeCourseRequest = async (course: Course, studentId: string) => {
-    const response = axiosSecure.post<CourseRequest>(`/api/student/courseRequest`,
+    const response = axiosSecure.post<CourseRequest>(`/api/student/courseRequest/${studentId}`,
         JSON.stringify({
             ...course,
-            studentId
         }
     ))
     return response
