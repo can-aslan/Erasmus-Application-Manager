@@ -24,13 +24,6 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
 
     @Test
     public void requestValidCourse() throws Exception {
-        this.mockMvc
-            .perform(
-                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/CS-XYZ/Other_Course/CS-319/www.othercourselink.com")
-            )
-            .andExpect(status().isOk())
-            .andExpect(content().string("true"));
-
         when(studentCourseRequestService.requestCourse(
             UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
             "CS-XYZ",
@@ -38,6 +31,13 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "CS-319",
             "www.othercourselink.com"
         )).thenReturn(true);
+        
+        this.mockMvc
+            .perform(
+                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/CS-XYZ/Other_Course/CS-319/www.othercourselink.com")
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().string("true"));
         
         verify(studentCourseRequestService).requestCourse(
             UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
@@ -50,13 +50,6 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
 
     @Test
     public void requestInvalidCourse() throws Exception {
-        this.mockMvc
-            .perform(
-                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/a/Other_Course/b/www.othercourselink.com")
-            )
-            .andExpect(status().isOk())
-            .andExpect(content().string("false"));
-
         when(studentCourseRequestService.requestCourse(
             UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
             "a",
@@ -65,6 +58,13 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "www.othercourselink.com"
         )).thenReturn(false);
         
+        this.mockMvc
+            .perform(
+                post("/courses/request/ed08d61c-d861-4ed4-8dc4-19299022ad44/a/Other_Course/b/www.othercourselink.com")
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().string("false"));
+
         verify(studentCourseRequestService).requestCourse(
             UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
             "a",
