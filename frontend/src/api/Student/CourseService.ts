@@ -1,30 +1,50 @@
 import useAxiosSecure from "../../hooks/useAxiosSecure"
+import { Course, CourseRequest, PreviousCourseRequest } from "../../types"
 
 const axiosSecure = useAxiosSecure()
 
-// TODO: Query: get previously requested courses
-export const getPreviouslyRequestedCourses = () => {
-    const response = axiosSecure.get('/api/student/getPreviouslyRequestedCourses', {
 
-    })
-}
-
-// TODO: Query: Get all courses
 export const getCourses = async () => {
-
+    const response = axiosSecure.get<Array<Course>>(`/api/student/courses`)
+    return response
 }
 
-// TODO: Query: Get Bilkent or any other school courses
-export const getSchoolCourses = async () => {
-
+export const getCourse = async (courseId: string) => {
+    const response = axiosSecure.get<Course>(`/api/student/courses/${courseId}`)
+    return response
 }
 
-// TODO: Mutation: Make course request
-export const makeCourseRequest = async () => {
-
+export const getSchoolCourses = async (schoolId: string) => {
+    const response = axiosSecure.get<Array<Course>>(`/api/student/school/${schoolId}/courses`)
+    return response
 }
 
-// TODO: Mutation: Save wishlist
-export const saveWishlist = async () => {
+export const getCourseWishlist = async (studentId: string) => {
+    const response = axiosSecure.get<Array<Course>>(`/api/student/courseWishlist/${studentId}`)
+    return response
+}
+
+export const saveWishlist = async (studentId: string, courses: Array<Course>) => {
+    const response = axiosSecure.post<Array<Course>>(`/api/student/courseWishlist`,
+        JSON.stringify({
+            courses,
+            studentId
+        })    
+    )
+    return response
+}
     
+export const getPreviouslyRequestedCourses = async (studentId: string) => {
+    const response = axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/courseRequest/${studentId}`)
+    return response
+}
+
+export const makeCourseRequest = async (course: Course, studentId: string) => {
+    const response = axiosSecure.post<CourseRequest>(`/api/student/courseRequest`,
+        JSON.stringify({
+            ...course,
+            studentId
+        }
+    ))
+    return response
 }

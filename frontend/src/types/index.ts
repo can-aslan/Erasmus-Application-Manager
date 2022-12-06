@@ -40,11 +40,33 @@ export type WishlistItemType = {
     ECTSCredits: number
 }
 
-export type PreviousCourseRequest = {
+export type Course = {
     uuid: string,
     courseCode: string,
     courseName: string,
     bilkentCredits: number,
-    ectsCredits: number,
+    ectsCredits: number
+}
+
+export type PreviousCourseRequest = CourseRequest & {
+    uuid: string,
     status: 'rejected' | 'pending' | 'approved',
+}
+
+export type CourseRequest = {
+    courseCode: string,
+    courseName: string,
+    courseWebPage: string,
+    syllabusLink: string,
+    correspondingCourseInBilkent: string,
+}
+
+export type StudentAssociatedCourse = Course & {
+    studentUuid: string,
+}
+
+export type PreApprovalForm = {
+    studentUuid: string,
+    file: File,
+    status?: 'rejected' | 'pending' | 'approved',
 }

@@ -4,7 +4,7 @@ import axios from "../axios"
 
 const axiosSecure = useAxiosSecure()
 
-// TODO: Mutate
+// TODO: Mutate: Create access and refresh tokens on the server side.
 export const login = async (bilkentId: string, pwd: string) => {
     const response = await axios.post<User>('/api/auth/login', 
         JSON.stringify({bilkentId, pwd}),
@@ -16,7 +16,7 @@ export const login = async (bilkentId: string, pwd: string) => {
 
 }
 
-// TODO: Mutate
+// TODO: Mutate: Delete access and refresh tokens on the server side.
 export const logout = async (uuid: string) => {
     const response = await axiosSecure.post('/api/auth/logout', JSON.stringify({uuid}))
     return response

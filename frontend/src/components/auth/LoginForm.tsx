@@ -52,7 +52,7 @@ const LoginForm = () => {
                     refreshToken: 'ho',
                     email: 'hey@email.com',
                     name: 'heyo',
-                    userType: UserEnum.FACMember,
+                    userType: UserEnum.OutgoingStudent,
                 }
                 setUser(mockUser)
                 navigate('/')
