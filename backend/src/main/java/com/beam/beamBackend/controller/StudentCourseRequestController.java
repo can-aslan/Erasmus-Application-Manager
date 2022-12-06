@@ -26,11 +26,9 @@ import lombok.RequiredArgsConstructor;
 public class StudentCourseRequestController {
     private final IStudentCourseRequestService studentCourseRequestService;
 
-    /*
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
     {
-        System.out.println("COURSE REQUEST MADE: " + courseRequest.toString());
         return ResponseEntity.ok(studentCourseRequestService.requestCourse(
             courseRequest.getStudentId(),
             courseRequest.getHostCode(),
@@ -38,25 +36,6 @@ public class StudentCourseRequestController {
             courseRequest.getBilkentCode(),
             courseRequest.getWebpage()
         ));
-    }
-    */
-
-    @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
-    {
-        System.out.println("COURSE REQUEST MADE: " + courseRequest.toString());
-        return ResponseEntity.ok(studentCourseRequestService.requestCourse(
-            courseRequest.getStudentId(),
-            courseRequest.getHostCode(),
-            courseRequest.getName(),
-            courseRequest.getBilkentCode(),
-            courseRequest.getWebpage()
-        ));
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("hi");
     }
 
     /* DEPRECATED, NOT USED ANYMORE
