@@ -28,6 +28,17 @@ public class AccountRepository {
         return DB.stream().filter(user -> user.getBilkentId() == bilkentId).findFirst().isPresent();
     }
 
+    public String getPasswordIfUserExist(long bilkentId) {
+        System.out.println("in account repo user exist paswor");
+        User user = DB.stream().filter(u -> u.getBilkentId() == bilkentId).findFirst().get();
+
+        if (user != null) {
+            return user.getPassword();
+        } else {
+            throw new Error("no user found");
+        }
+    }
+
     public RUserList getUsers() {
         return new RUserList(DB.size(), DB);
     }

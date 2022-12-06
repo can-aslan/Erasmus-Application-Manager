@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.User;
+import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.response.ResponseId;
@@ -29,6 +30,16 @@ public class AccountController {
     @Autowired
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
+    public ResponseEntity<Object> login(@Valid @RequestBody UserLogin userInfo) {
+        try {
+            ResponseId ids = accountService.login(userInfo);
+            return Response.create("account is created", HttpStatus.OK, ids);
+        } catch (Exception e) {
+            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+        }        
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
