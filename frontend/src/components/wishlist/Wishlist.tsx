@@ -2,7 +2,7 @@ import { Autocomplete, Button, CloseButton, Flex, Modal, Stack, Text } from "@ma
 import { IconPlus } from '@tabler/icons';
 import { useState } from 'react';
 import { WishlistItemType } from "../../types";
-import WishlistItem from "./WishlistItem";
+import WishlistItem from './WishlistItem';
 
 interface WishlistProps {
     wishlistItems: Array<WishlistItemType>,
