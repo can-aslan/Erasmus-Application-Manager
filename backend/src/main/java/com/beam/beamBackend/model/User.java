@@ -2,38 +2,58 @@ package com.beam.beamBackend.model;
 
 import java.util.UUID;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import com.beam.beamBackend.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 @Entity
 public class User{
-    
+    @Id
     private UUID id;
 
-    
+    @NotEmpty
     private String name;
+
+    @NotEmpty
     private String surname;
+
+    @NotEmpty
     private String email;
+
+    @NotNull
     private long bilkentId;
+
+    @NotEmpty
     private String password;
+
+    @NotNull
     private UserType userType;
 
-    public User(
-                @JsonProperty("name") String name,
-                @JsonProperty("surname") String surname,
-                @JsonProperty("email") String email,
-                @JsonProperty("bilkentId") long bilkentId,
-                @JsonProperty("password") String password,
-                @JsonProperty("userType") UserType userType) {
+    // public User(
+    //             @JsonProperty("name") String name,
+    //             @JsonProperty("surname") String surname,
+    //             @JsonProperty("email") String email,
+    //             @JsonProperty("bilkentId") long bilkentId,
+    //             @JsonProperty("password") String password,
+    //             @JsonProperty("userType") UserType userType) {
 
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.bilkentId = bilkentId;
-        this.password = password;
-        this.userType = userType;
-    }
+    //     this.name = name;
+    //     this.surname = surname;
+    //     this.email = email;
+    //     this.bilkentId = bilkentId;
+    //     this.password = password;
+    //     this.userType = userType;
+    // }
+
+    // public User(
+    //             @JsonProperty("name") String name) {
+
+    //     this.name = name;
+    // }
 
     public User(@JsonProperty("id") UUID id,
                 @JsonProperty("name") String name,
@@ -52,13 +72,8 @@ public class User{
         this.userType = userType;
     }
 
-    public boolean setUUID(UUID uuid) {
-        if (this.id != null) {
-            this.id = uuid;
-            return true;
-        }
-
-        return false;        
+    public void setUUID(UUID uuid) {
+        this.id = uuid;        
     }
 
     public UUID getId() {

@@ -44,7 +44,7 @@ public class Student extends User{
         String dateOfBirth,
         Sex sex
     ){
-        super(name, surname, email, bilkentId, password, userType);
+        super(id, name, surname, email, bilkentId, password, userType);
         this.id = id;
         this.name = name;
         this.surname = surname;

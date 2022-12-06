@@ -2,6 +2,7 @@ package com.beam.beamBackend.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.repository.AccountRepository;
+import com.beam.beamBackend.response.RUserList;
+import com.beam.beamBackend.response.ResponseId;
 
 @Service
 public class AccountService {
@@ -20,14 +23,15 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public boolean addUser(User user) {
+    public ResponseId addUser(User user) throws Exception {
         try {
             user.setUUID(UUID.randomUUID());
             boolean userExist = accountRepository.userExist(user.getBilkentId());
-
+            
             if (userExist) {
-                return false;
+                throw new Exception();
             } else {
+                System.out.println("no errror");
                 return accountRepository.insertUser(user);
             }
         } catch (Exception e) {
@@ -37,6 +41,7 @@ public class AccountService {
 
     public boolean addUserChunk(User[] users) {
         HashSet<User> usersSet = new HashSet<>(Arrays.asList(users));
+        HashSet<User> removedUsers = new HashSet<>();
 
         for (User user : usersSet) {
             try {
@@ -45,6 +50,9 @@ public class AccountService {
 
                 if (userExist) {
                     usersSet.remove(user);
+                    removedUsers.add(user);
+                } else {
+                    accountRepository.insertUser(user);
                 }
             } catch (Exception e) {
                 throw e;
@@ -52,10 +60,18 @@ public class AccountService {
         }
 
         try {
+            
             return true;
         } catch (Exception e) {
-            // TODO: handle exception
         }
         return false;
+    }
+
+    public RUserList getUsers() {
+        try {
+            return accountRepository.getUsers();
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }
