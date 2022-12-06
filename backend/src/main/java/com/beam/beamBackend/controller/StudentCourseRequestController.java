@@ -62,7 +62,12 @@ public class StudentCourseRequestController {
     */
 
     @GetMapping("/fetch")
-    public ResponseEntity<ArrayList<Course>> getPreviouslyRequestedCourses() {
-        return ResponseEntity.ok(studentCourseRequestService.getPreviouslyRequestedCourses());
+    public ResponseEntity<Object> getPreviouslyRequestedCourses() {
+        ArrayList<Course> responseResult = studentCourseRequestService.getPreviouslyRequestedCourses();
+        return 
+            responseResult != null ?
+                Response.create("course requests fetch successful", HttpStatus.OK, responseResult)
+                :
+                Response.create("course requests fetch unsuccessful", HttpStatus.BAD_REQUEST);
     }
 }
