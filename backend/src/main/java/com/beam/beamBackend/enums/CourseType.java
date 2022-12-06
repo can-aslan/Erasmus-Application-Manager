@@ -8,3 +8,4 @@ public enum CourseType {
     TECHNICAL_ELECTIVE,
     ARTS_CORE_ELECTIVE
 }
+
