@@ -34,13 +34,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "www.othercourselink.com"
         );
         
-        when(studentCourseRequestService.requestCourse(
-            courseRequest.getStudentId(),
-            courseRequest.getHostCode(),
-            courseRequest.getName(),
-            courseRequest.getBilkentCode(),
-            courseRequest.getWebpage()
-        )).thenReturn(true);
+        when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(true);
         
         this.mockMvc
             .perform(
@@ -48,6 +42,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     "{"
+                    +     "\"requestId\": \"" + courseRequest.getRequestId().toString() + "\","
                     +     "\"studentId\": \"" + courseRequest.getStudentId().toString() + "\","
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
@@ -60,13 +55,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             .andExpect(jsonPath("$.message").value("course requested")
         );
         
-        verify(studentCourseRequestService).requestCourse(
-            courseRequest.getStudentId(),
-            courseRequest.getHostCode(),
-            courseRequest.getName(),
-            courseRequest.getBilkentCode(),
-            courseRequest.getWebpage()
-        );
+        verify(studentCourseRequestService).requestCourse(courseRequest);
     }
 
     // Course Request with blank fields also generates BadRequest, but from directly Spring.
@@ -81,13 +70,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "www.othercourselink.com"
         );
         
-        when(studentCourseRequestService.requestCourse(
-            courseRequest.getStudentId(),
-            courseRequest.getHostCode(),
-            courseRequest.getName(),
-            courseRequest.getBilkentCode(),
-            courseRequest.getWebpage()
-        )).thenReturn(false);
+        when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(false);
         
         this.mockMvc
             .perform(
@@ -95,6 +78,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     "{"
+                    +     "\"requestId\": \"" + courseRequest.getRequestId().toString() + "\","
                     +     "\"studentId\": \"" + courseRequest.getStudentId().toString() + "\","
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
@@ -107,12 +91,6 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             .andExpect(jsonPath("$.message").value("course request failed")
         );
         
-        verify(studentCourseRequestService).requestCourse(
-            courseRequest.getStudentId(),
-            courseRequest.getHostCode(),
-            courseRequest.getName(),
-            courseRequest.getBilkentCode(),
-            courseRequest.getWebpage()
-        );
+        verify(studentCourseRequestService).requestCourse(courseRequest);
     }
 }

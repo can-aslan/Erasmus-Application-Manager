@@ -1,17 +1,13 @@
 package com.beam.beamBackend.service;
 
-import java.util.ArrayList;
-import com.beam.beamBackend.model.Course;
+import java.util.List;
+import com.beam.beamBackend.model.CourseRequest;
 
 public interface IStudentCourseRequestService {
-    boolean requestCourse(
-        Long studentId,
-        String hostCode,
-        String name,
-        String bilkentCode,
-        String webpage
-    );
-
+    boolean requestCourse(CourseRequest courseRequest);
+    List<CourseRequest> getAllCourseRequests();
+    List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId);
+    
     /* DEPRECATED, NOT USED
     boolean requestCourse(
         UUID studentId,
@@ -22,6 +18,4 @@ public interface IStudentCourseRequestService {
         File additionalInfo
     );
     */
-
-    ArrayList<Course> getPreviouslyRequestedCourses();
 }

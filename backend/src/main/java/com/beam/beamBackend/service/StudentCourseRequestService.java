@@ -1,33 +1,30 @@
 package com.beam.beamBackend.service;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
-import com.beam.beamBackend.model.Course;
+import com.beam.beamBackend.model.CourseRequest;
+import com.beam.beamBackend.repository.ICourseRequestRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class StudentCourseRequestService implements IStudentCourseRequestService {
 
+    private final ICourseRequestRepository courseRequestRepository;
+
     @Override
-    public boolean requestCourse(
-        Long studentId,
-        String hostCode,
-        String name,
-        String bilkentCode,
-        String webpage)
-    {
-        // TODO Auto-generated method stub
-        return (hostCode.length() != 0)
-            && (name.length() != 0)
-            && (bilkentCode.length() != 0)
-            && (webpage.length() != 0); // temporary for test purposes
+    public boolean requestCourse(CourseRequest courseRequest) {
+        return courseRequestRepository.saveRequest(courseRequest);
     }
 
     @Override
-    public ArrayList<Course> getPreviouslyRequestedCourses() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<CourseRequest> getAllCourseRequests() {
+        return courseRequestRepository.getAllCourseRequests();
+    }
+
+    @Override
+    public List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId) {
+        return courseRequestRepository.getCourseRequestsByStudentId(studentId);
     }
     
 }
