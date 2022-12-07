@@ -1,8 +1,13 @@
-import { Button, Table, Center, Modal, Group, Space } from "@mantine/core";
+import { Button, Center, Group, Modal, Space, Table } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useState } from "react";
+import { StudentAssociatedCourse } from "../../types";
 
-const ApproveWishlistsTable = () => {
+interface ApproveWishlistTableProps {
+    wishlists: Array<StudentAssociatedCourse>
+}
+
+const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
     const [opened, setOpened] = useState(false);
     const [selectedStudentName, setSelectedStudentName] = useState("");
     const [selectedStudentID, setSelectedStudentID] = useState(0);
@@ -25,7 +30,7 @@ const ApproveWishlistsTable = () => {
 
     // Below are mock data, they will be changed.
     //------------------------------------------ Mock Data Starts ----------------------------------------------------------------
-    const waitingApprovalList = [
+    const waitingWishlist = [
         { studentName: "Can Ersoy", studentID: 22003216, isApproved: 0 },
         { studentName: "Selim Can Güler", studentID: 22002811, isApproved: 1 },
         { studentName: "Selim Can Güler", studentID: 22002811, isApproved: 2 },
@@ -55,7 +60,7 @@ const ApproveWishlistsTable = () => {
                 }}>Syllabus</Button></Center></td>
         </tr>
     ));
-    const waitingApprovalRows = waitingApprovalList.map((element) => (
+    const waitingApprovalRows = waitingWishlist.map((element) => (
         <tr key={element.studentName}>
             <td>{element.studentName}</td>
             <td>{element.studentID}</td>

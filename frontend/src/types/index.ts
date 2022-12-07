@@ -45,7 +45,7 @@ export type Course = {
     courseCode: string,
     courseName: string,
     bilkentCredits: number,
-    ectsCredits: number
+    ECTSCredits: number
 }
 
 export type PreviousCourseRequest = CourseRequest & {
@@ -63,6 +63,8 @@ export type CourseRequest = {
 
 export type StudentAssociatedCourse = Course & {
     studentUuid: string,
+    studentName: string,
+    approvalStatus: 'rejected' | 'pending' | 'approved',
 }
 
 export type PreApprovalForm = {

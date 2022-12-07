@@ -1,19 +1,36 @@
 import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
-import { AxiosError, isAxiosError } from "axios";
-import { useState } from 'react';
+import { Mutation, useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
 import { login } from "../../api/User/UserService";
 import { useUser } from "../../provider/UserProvider";
 import { User, UserEnum } from "../../types";
 
+interface MutationFunctionProps {
+    bilkentID: string,
+    pwd: string,
+}
+
 const LoginForm = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
     const navigate = useNavigate()
+    const [error, setError] = useState('')
     const { setUser } = useUser()
+    const mutation = useMutation({
+        mutationFn: ({bilkentID, pwd}: MutationFunctionProps) => {
+            return login(bilkentID, pwd);
+        },
+        onSuccess: (data) => {
+            navigate('/')
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+            }
+        }
+    })
+    
     useHotkeys([['Enter', () => handleSignIn()]]) // Enter is mapped as shortcut sign in
     
     const form = useForm({
@@ -27,43 +44,25 @@ const LoginForm = () => {
         }
     })
     const handleSignIn = async () => {
-        setIsLoading(true)
         const validate = form.validate()
         if (!validate.hasErrors) {
-            try {
-                // const response = await login(form.values.bilkentID, form.values.password)
-                // if (!response) {
-                //     setError('No server response.')
-                // }
-                // else if (response.status === 400) {
-                //     setError('Username or password is incorrect.')
-                // }
-                // else if (response.status === 401) {
-                //     setError('Unauthorized.')
-                // }
-                // else {
-                //     setUser(response.data)
-                //     navigate('/')
-                // }
+            const bilkentID = form.values.bilkentID
+            const pwd = form.values.password
+            mutation.mutate({bilkentID, pwd})
 
-                const mockUser: User = {
-                    uuid: 'heyo',
-                    accessToken: 'hey',
-                    refreshToken: 'ho',
-                    email: 'hey@email.com',
-                    name: 'heyo',
-                    userType: UserEnum.OutgoingStudent,
-                }
-                setUser(mockUser)
-                navigate('/')
-            } catch (err) {
-                setError('Login unsuccessful')
+            const mockUser: User = {
+                uuid: 'heyo',
+                accessToken: 'hey',
+                refreshToken: 'ho',
+                email: 'hey@email.com',
+                name: 'heyo',
+                userType: UserEnum.OutgoingStudent,
             }
-            finally {
-                setIsLoading(false)
-            }
+            setUser(mockUser)
+            navigate('/')
         }
     }
+    
 
     return (
         <form>
@@ -82,7 +81,8 @@ const LoginForm = () => {
                 <Button 
                     onClick={handleSignIn}
                     loaderPosition='left'
-                    loading={isLoading}
+                    loading={mutation.isLoading}
+                    disabled={mutation.isLoading}
                 >
                         Sign In
                 </Button>

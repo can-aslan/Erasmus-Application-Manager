@@ -1,8 +1,13 @@
-import { Button, Table, Center, Modal, Group, Space, Text, Flex, TextInput, Select } from "@mantine/core";
+import { Button, Center, Flex, Group, Modal, Select, Space, Table, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import React, { useEffect, useState } from "react";
+import { PreApprovalForm } from "../../types";
 
-const ApprovePreApprovalsTable = () => {
+interface ApprovePreApprovalsTableProps {
+    preApprovals: Array<PreApprovalForm>
+}
+
+const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps) => {
     const [opened, setOpened] = useState(false);
     const [selectedStudentName, setSelectedStudentName] = useState("");
     const [selectedStudentID, setSelectedStudentID] = useState(0);

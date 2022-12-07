@@ -5,44 +5,44 @@ const axiosSecure = useAxiosSecure()
 
 
 export const getCourses = async () => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/courses`)
-    return response
+    const response = await axiosSecure.get<Array<Course>>(`/api/student/courses`)
+    return response.data
 }
 
 export const getCourse = async (courseId: string) => {
-    const response = axiosSecure.get<Course>(`/api/student/courses/${courseId}`)
-    return response
+    const response = await axiosSecure.get<Course>(`/api/student/courses/${courseId}`)
+    return response.data
 }
 
 export const getSchoolCourses = async (schoolId: string) => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/school/${schoolId}/courses`)
-    return response
+    const response = await axiosSecure.get<Array<Course>>(`/api/student/school/${schoolId}/courses`)
+    return response.data
 }
 
 export const getCourseWishlist = async (studentId: string) => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/courseWishlist/${studentId}`)
-    return response
+    const response = await axiosSecure.get<Array<Course>>(`/api/student/courseWishlist/${studentId}`)
+    return response.data
 }
 
 export const saveWishlist = async (studentId: string, courses: Array<Course>) => {
-    const response = axiosSecure.post<Array<Course>>(`/api/student/courseWishlist/${studentId}`,
+    const response = await axiosSecure.post<Array<Course>>(`/api/student/courseWishlist/${studentId}`,
         JSON.stringify({
             courses,
         })    
     )
-    return response
+    return response.data
 }
     
 export const getPreviouslyRequestedCourses = async (studentId: string) => {
-    const response = axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/previousCourseRequests/${studentId}`)
-    return response
+    const response = await axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/previousCourseRequests/${studentId}`)
+    return response.data
 }
 
 export const makeCourseRequest = async (course: Course, studentId: string) => {
-    const response = axiosSecure.post<CourseRequest>(`/api/student/courseRequest/${studentId}`,
+    const response = await axiosSecure.post<CourseRequest>(`/api/student/courseRequest/${studentId}`,
         JSON.stringify({
             ...course,
         }
     ))
-    return response
+    return response.data
 }

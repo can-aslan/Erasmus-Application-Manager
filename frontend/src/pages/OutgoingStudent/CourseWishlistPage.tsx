@@ -1,32 +1,39 @@
 import { Autocomplete, Button, Card, Center, Flex, Modal, Stack, Title } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { getCourseWishlist } from '../../api/Student/CourseService';
 import Wishlist from "../../components/wishlist/Wishlist";
+import { useUser } from '../../provider/UserProvider';
 import { WishlistItemType } from "../../types";
+import ErrorPage from '../ErrorPage';
+import LoadingPage from '../LoadingPage';
 
 const CourseWishlistPage = () => {
-    // TODO: Fetch already existing wishlist items from the database.
+    const { user } = useUser()
+    const { data: wishlist, isError, isLoading } = useQuery({
+        queryFn: () => getCourseWishlist(user?.uuid!)
+    })
+
+    if (isLoading) {
+        return (
+            <LoadingPage />
+        )
+    }
+
+    if (isError && !wishlist) {
+        return (
+            <ErrorPage />
+        )
+    }
+
     const [openModal, setOpenModal] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState('')
     const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
     const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
-    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>([
-        {
-            uuid: 'xxxyyy',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming I',
-            courseCode: 'CS 101',
-        },
-        {
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming II',
-            courseCode: 'CS 102',
-        }
-    ]) 
+    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist) 
     // TODO: Fetch available courses from the database
+    
     const availableCourses = [
         {
             value: 'CS 101',
