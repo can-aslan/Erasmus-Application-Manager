@@ -1,29 +1,24 @@
 package com.beam.beamBackend.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
-import com.beam.beamBackend.response.RToken;
+import com.beam.beamBackend.response.RLoginUser;
+import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.response.ResponseId;
-import com.beam.beamBackend.security.JWTUtils;
 import com.beam.beamBackend.service.AccountService;
-import com.beam.beamBackend.service.JWTUserService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -41,7 +36,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
     public ResponseEntity<Object> login(@Valid @RequestBody UserLogin userInfo) {
         try {
-            RToken token = accountService.login(userInfo);
+            RLoginUser token = accountService.login(userInfo);
             return Response.create("login is successful", HttpStatus.OK, token);
         } catch (Exception e) {
             return Response.create("login failed", 499); // might change later
@@ -65,6 +60,16 @@ public class AccountController {
             return ResponseEntity.ok(HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.ok(HttpStatus.FOUND); // might change later
+        }        
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<Object> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        try {
+            RRefreshToken newToken = accountService.refreshToken(auth);
+            return Response.create("new accsess token is created", HttpStatus.OK, newToken);
+        } catch (Exception e) {
+            return Response.create("auth failed", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 

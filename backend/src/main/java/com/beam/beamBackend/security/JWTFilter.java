@@ -25,62 +25,68 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
-    private final String tokenBearer = "Bearer";
+    private final static String tokenBearer = "Bearer";
     @Autowired
     private JWTUserService JWTUserService;
     @Autowired
     private JWTUtils JWTUtils;
 
+    /**
+     * @pre make sure that token is not null
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public static String getTokenWithoutBearer(String token) throws Exception {
+        return token.substring(tokenBearer.length());
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        System.out.println("hello: " + tokenBearer);
-        System.out.println("hello: " + tokenHeader);
+        System.out.println("path: " + request.getServletPath());
+
         String username = "";
         String token = "";
-
-        // HttpServletRequest httpRequest = (HttpServletRequest) request;
-        // Enumeration<String> headerNames = httpRequest.getHeaderNames();
-
-        // if (headerNames != null) {
-        //         while (headerNames.hasMoreElements()) {
-        //                 System.out.println("Header: " + headerNames.nextElement());
-        //                 System.out.println("Value: " + httpRequest.getHeader(headerNames.nextElement()));
-        //         }
-        // }
-
-        if (tokenHeader == null) {
-            System.out.println("token is null");
-        } else {
-            System.out.println("starts with: " + tokenHeader.startsWith(tokenBearer));
-        }
-        // if (tokenHeader.startsWith(tokenBearer)) {
-        //     System.out.println("token no start with beraer");
-        // }
-
-        // System.out.println("starts with: " + tokenHeader.startsWith(tokenBearer));
+        String currentEndpoint = request.getServletPath();
 
         if (tokenHeader == null || !tokenHeader.startsWith(tokenBearer)) {
-            System.out.println("no token is found in hereeee");
+            System.out.println("no token is found");
             filterChain.doFilter(request, response);
             return;
         }
-
-        System.out.println("starts with: " + tokenHeader.startsWith(tokenBearer));
-
-        System.out.println("beraer: " + tokenBearer);
-        System.out.println("length: " + tokenBearer.length());
         
-        token = tokenHeader.substring(tokenBearer.length());
+        try { //????
+            token = getTokenWithoutBearer(tokenHeader);
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            try {
+                throw exc;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        boolean isCurrentRefresh = currentEndpoint.equals("/api/v1/auth/refresh");
 
         try {
-            username = JWTUtils.extractUsername(token);
+            // set username according to the token type
+            if (isCurrentRefresh) {
+                username = JWTUtils.extractRefreshUsername(token);
+            } else {
+                username = JWTUtils.extractAccessUsername(token);
+            }            
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails user = JWTUserService.loadUserByUsername(username);
-    
-                if (JWTUtils.validateToken(token, user)) {
+                System.out.println("current refresh: " + currentEndpoint.equals("/api/v1/auth/refresh"));
+                if (isCurrentRefresh && JWTUtils.validateRefreshToken(token)) {
+                    System.out.println("here is here");
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else if (JWTUtils.validateAccessToken(token, user)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);

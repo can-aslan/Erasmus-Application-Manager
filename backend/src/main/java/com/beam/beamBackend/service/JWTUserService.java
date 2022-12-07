@@ -21,13 +21,30 @@ public class JWTUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User appUser = accountRepository.findUserByBilkentId(Long.parseLong(username));
+        try {
+            User appUser = accountRepository.findUserByBilkentId(Long.parseLong(username));
         
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                                    username, 
-                                    appUser.getPassword(), 
-                                    Collections.singleton(new SimpleGrantedAuthority(appUser.getUserType().toString())));
-        return userDetails; 
+            UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                                        username, 
+                                        appUser.getPassword(), 
+                                        Collections.singleton(new SimpleGrantedAuthority(appUser.getUserType().toString())));
+            return userDetails; 
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public UserDetails loadUserByUsername(User appUser) throws UsernameNotFoundException {
+        try {
+        
+            UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                                        appUser.getBilkentId() + "", 
+                                        appUser.getPassword(), 
+                                        Collections.singleton(new SimpleGrantedAuthority(appUser.getUserType().toString())));
+            return userDetails; 
+        } catch (Exception e) {
+            throw e;
+        }
     }
     
 }

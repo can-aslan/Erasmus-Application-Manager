@@ -1,6 +1,7 @@
 package com.beam.beamBackend.service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.AccountRepository;
-import com.beam.beamBackend.response.RToken;
+import com.beam.beamBackend.response.RLoginUser;
+import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.ResponseId;
+import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -44,25 +47,42 @@ public class AccountService {
     //     passwordEncoder  = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
     // }
 
-    public RToken login(UserLogin user) throws Exception {
+    public RLoginUser login(UserLogin user) throws Exception {
         try {
-            // passwordEncoder  = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
             String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(user.getBilkentId()));
             boolean passwordMatch = passwordEncoder.matches(user.getPassword(), hashedPassword);
 
             if (!passwordMatch) {
                 throw new Exception();
             } else {
-                System.out.println("paswor match");
+                System.out.println("passwords are matched");
 
                 // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
-
+                User appUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
                 final UserDetails userDetails = jwtUserService.loadUserByUsername(user.getBilkentId());
-                final String token = jwtUtils.createToken(userDetails);
-                return new RToken(token);
+                final String accessToken = jwtUtils.createAccessToken(userDetails);
+                final String refreshToken = jwtUtils.createRefreshToken(userDetails);
+                return new RLoginUser(appUser, accessToken, refreshToken);
             }
         } catch (Exception e) {
-            System.out.println("alo krdsm calisir misin");
+            System.out.println("login exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public RRefreshToken refreshToken(String auth) throws Exception {
+        try {
+            String username = jwtUtils.extractRefreshUsername(JWTFilter.getTokenWithoutBearer(auth));
+
+            // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
+
+            final UserDetails userDetails = jwtUserService.loadUserByUsername(username);
+            final String accessToken = jwtUtils.createAccessToken(userDetails);
+            return new RRefreshToken(accessToken);
+            
+        } catch (Exception e) {
+            System.out.println("refresh token exception");
             e.printStackTrace();
             throw e;
         }
