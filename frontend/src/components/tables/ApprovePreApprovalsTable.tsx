@@ -30,8 +30,6 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [selectedApprovalStatusFilter, setSelectedApprovalStatusFilter] = useState<string | null>(null);
     const [searchPreAppInput, setSearchPreAppInput] = useState('');
 
-    const { mutate: mutateApproval, isLoading: isApprovalLoading, isError: isApprovalError } = useApproveWishlist()
-    const { mutate: mutateRejection, isLoading: isRejectionLoading, isError: isRejectionError } = useRejectWishlist()
 
     const viewPreApproval = (wishlistId: string) => {
         // TODO: Send data to api, get student's wishlist
@@ -40,15 +38,11 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     }
     const approvePreApproval = (wishlistId: string) => {
         //Approve the selected student's wishlist
-        mutateApproval(wishlistId)
-
         // Close pop-up
         setOpened(false);
     }
     const rejectPreApproval = (wishlistId: string) => {
         // Reject the selected student's wishlist
-        mutateRejection(wishlistId)
-
         // Close pop-up
         setOpened(false);
     }

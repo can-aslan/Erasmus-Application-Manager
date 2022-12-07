@@ -56,7 +56,7 @@ const LoginForm = () => {
                 email: 'hey@email.com',
                 name: 'heyo',
                 surname: 'cart curt',
-                userType: UserEnum.OutgoingStudent,
+                userType: UserEnum.Coordinator,
             }
             setUser(mockUser)
             navigate('/')

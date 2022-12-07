@@ -43,6 +43,13 @@ export type WishlistItemType = {
     ECTSCredits: number
 }
 
+export type StudentAssociatedWishlist = {
+    wishlistItems: Array<WishlistItemType>,
+    studentName: string,
+    studentId: string,
+    status: 'rejected' | 'pending' | 'approved'
+}
+
 export type Course = {
     uuid: string,
     courseCode: string,
