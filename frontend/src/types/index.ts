@@ -1,16 +1,17 @@
 import React from "react";
 
 export enum UserEnum {
-    OutgoingStudent='Outgoing Student',
-    IncomingStudent='Incoming Student',
-    Coordinator='Coordinator',
-    FACMember='FAC Member',
-    Admin='Admin'
+    OutgoingStudent='OUTGOING_STUDENT',
+    IncomingStudent='INCOMING_STUDENT',
+    Coordinator='COORDINATOR',
+    FACMember='FAC_MEMBER',
+    Admin='ADMIN'
 }
 
 export type User = {
     uuid: string,
     name: string,
+    surname: string,
     email: string,
     userType: UserEnum,
     accessToken: string,
@@ -32,6 +33,8 @@ export type NavbarLink = {
     icon?: React.ReactNode,
 }
 
+
+// Models
 export type WishlistItemType = {
     uuid: string,
     courseCode: string,
@@ -40,12 +43,20 @@ export type WishlistItemType = {
     ECTSCredits: number
 }
 
+export type StudentAssociatedWishlist = {
+    wishlistItems: Array<WishlistItemType>,
+    wishlistUuid: string,
+    studentName: string,
+    studentId: string,
+    status: 'rejected' | 'pending' | 'approved'
+}
+
 export type Course = {
     uuid: string,
     courseCode: string,
     courseName: string,
     bilkentCredits: number,
-    ectsCredits: number
+    ECTSCredits: number
 }
 
 export type PreviousCourseRequest = CourseRequest & {
@@ -54,6 +65,7 @@ export type PreviousCourseRequest = CourseRequest & {
 }
 
 export type CourseRequest = {
+    courseRequestUuid: string,
     courseCode: string,
     courseName: string,
     courseWebPage: string,
@@ -63,9 +75,12 @@ export type CourseRequest = {
 
 export type StudentAssociatedCourse = Course & {
     studentUuid: string,
+    studentName: string,
+    approvalStatus: 'rejected' | 'pending' | 'approved',
 }
 
 export type PreApprovalForm = {
+    formUuid: string,
     studentUuid: string,
     file: File,
     status?: 'rejected' | 'pending' | 'approved',

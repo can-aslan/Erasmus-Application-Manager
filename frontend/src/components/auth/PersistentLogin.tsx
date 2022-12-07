@@ -7,7 +7,7 @@ import { useUser } from '../../provider/UserProvider';
 const PersistentLogin = () => {
     const [isLoading, setIsLoading] = useState(true)
     const refresh = useRefreshToken()
-    const { user, isUser } = useUser()
+    const { user } = useUser()
 
     useEffect(() => {
         let isMounted = true
@@ -24,10 +24,8 @@ const PersistentLogin = () => {
             }
         }
 
-        if (isUser(user)) {
-            !user?.accessToken ? verifyRefreshToken() : setIsLoading(false)
-        }
-
+        !user?.accessToken ? verifyRefreshToken() : setIsLoading(false)
+        
         return () => {
             isMounted = false
         }
@@ -37,7 +35,7 @@ const PersistentLogin = () => {
         isLoading ? (
             <Center sx={{height: '100vh'}}>
                 <Stack align='center'>
-                    <Loader size={60}/>
+                    <Loader  size={60}/>
                     <Text size={22} color='blue'>Please wait while we get things ready for you!</Text>
                 </Stack>
             </Center>

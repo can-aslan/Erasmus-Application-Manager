@@ -1,16 +1,26 @@
-import { Button, Table, Center, Modal, Group, Space, Text, Flex, TextInput, Select } from "@mantine/core";
+import { Button, Center, Flex, Group, Modal, Select, Space, Table, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
-import { useState } from "react";
 
-const ApprovePreApprovalsTable = () => {
+import React, { useEffect, useState } from "react";
+import { useApproveWishlist } from "../../hooks/useApproveWishlist";
+import { useRejectWishlist } from "../../hooks/useRejectWishlist";
+import { PreApprovalForm } from "../../types";
+import Wishlist from "../wishlist/Wishlist";
+
+interface ApprovePreApprovalsTableProps {
+    preApprovals: Array<PreApprovalForm>
+}
+const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps) => {   
     const [preApprovalDetailsOpened, setPreApprovalDetailsOpened] = useState(false);
     const [rejectionFeedbackOpened, setRejectionFeedbackOpened] = useState(false);
+
     const [selectedStudentName, setSelectedStudentName] = useState("");
-    const [selectedStudentID, setSelectedStudentID] = useState(0);
+    const [selectedStudentID, setSelectedStudentID] = useState("");
     const [showReject, setShowReject] = useState(false);
     const [showApprove, setShowApprove] = useState(false);
     const [rejectionFeedback, setRejectionFeedback] = useState("");
     const [allPendingApprovalList, setPendingApprovalList] = useState([
+
         { studentName: "Can Ersoy", studentID: 22003216, status: "Approved", rejectionFeedback: "Something is missing"},
         { studentName: "Selim Can Güler", studentID: 22002811, status: "Pending",rejectionFeedback: "Something is missing" },
         { studentName: "a", studentID: 22002811, status: "Rejected", rejectionFeedback: "Something is missing"},
@@ -19,23 +29,25 @@ const ApprovePreApprovalsTable = () => {
         { studentName: "d", studentID: 22002811, status: "Pending", rejectionFeedback: "" },
         { studentName: "e", studentID: 22002811, status: "Approved", rejectionFeedback: "" },
         { studentName: "f", studentID: 22002811, status: "Rejected", rejectionFeedback: "Just wanted to reject" },
+
     ])
     const [tempPendingApprovalList, setTempPendingApprovalList] = useState(allPendingApprovalList);
     const [selectedApprovalStatusFilter, setSelectedApprovalStatusFilter] = useState<string | null>(null);
     const [searchPreAppInput, setSearchPreAppInput] = useState('');
 
-    const viewPreApproval = (studentID: number) => {
-        //TODO: send data to api, get student's wishlist
+
+    const viewPreApproval = (wishlistId: string) => {
+        // TODO: Send data to api, get student's wishlist
         // setPreApprovalList(buraya apiden gelen isteğe göre list koy);
         setPreApprovalDetailsOpened(true);
     }
-    const approvePreApproval = (studentID: number) => {
-        //TODO: send request to api, approve the selected student's wishlist
+    const approvePreApproval = (wishlistId: string) => {
+        //Approve the selected student's wishlist
         // Close pop-up
         setPreApprovalDetailsOpened(false);
     }
-    const rejectPreApproval = (studentID: number) => {
-        //TODO: send request to api, reject the selected student's wishlist
+    const rejectPreApproval = (wishlistId: string) => {
+        // Reject the selected student's wishlist
         // Close pop-up
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
@@ -86,6 +98,7 @@ const ApprovePreApprovalsTable = () => {
     }
 
     return (
+
         <>
             <Modal opened={rejectionFeedbackOpened}
                 size={"50%"}
@@ -164,13 +177,21 @@ const ApprovePreApprovalsTable = () => {
                 <td>{element.studentName}</td>
                 <td>{element.studentID}</td>
                 <td>{""}
-                    <Center><Button sx={{ width: "100%" }} leftIcon={element.status == "Approved" ? <IconCheck /> : element.status == "Pending" ? <IconSearch /> : <IconX />} color={element.status == "Approved" ? "green" : element.status == "Pending" ? "blue" : "red"} onClick={() => {
-                        setSelectedStudentName(element.studentName);
-                        setSelectedStudentID(element.studentID);
-                        viewPreApproval(element.studentID);
-                        setShowApprove(element.status == "Pending" || element.status == "Rejected");
-                        setShowReject(element.status == "Approved" || element.status == "Pending");
-                    }}>{(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}</Button></Center></td>
+                    <Center>
+                        <Button sx={{ width: "99%" }} 
+                            leftIcon={element.status == "Approved" ? <IconCheck /> : element.status == "Pending" ? <IconSearch /> : <IconX />} 
+                            color={element.status == "Approved" ? "green" : element.status == "Pending" ? "blue" : "red"} 
+                            onClick={() => {
+                                setSelectedStudentName(element.studentName);
+                                setSelectedStudentID(element.studentID);
+                                viewPreApproval(element.studentID);
+                                setShowApprove(element.status == "Pending" || element.status == "Rejected");
+                                setShowReject(element.status == "Approved" || element.status == "Pending");
+                            }}
+                            >
+                            {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
+                        </Button>
+                    </Center></td>
                 <td>{element.rejectionFeedback}</td>
             </tr>
         ));
