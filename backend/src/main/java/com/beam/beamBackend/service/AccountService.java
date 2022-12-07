@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.AccountRepository;
+import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RUserList;
@@ -83,6 +84,32 @@ public class AccountService {
             
         } catch (Exception e) {
             System.out.println("refresh token exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public boolean changePassword(String auth, ChangePassword passwords) throws Exception {
+        try {
+            // username is bilkentId in this context
+            String username = jwtUtils.extractAccessUsername(JWTFilter.getTokenWithoutBearer(auth));
+            
+            String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(username));
+            boolean passwordMatch = passwordEncoder.matches(passwords.getOldPassword(), hashedPassword);
+
+            if (!passwordMatch) {
+                System.out.println("passwords does not match");
+                throw new Exception();
+            } else {
+                System.out.println("passwords are matched");
+                // hash new password
+                String hashedNewPassword = passwordEncoder.encode(passwords.getNewPassword());
+
+                return accountRepository.editPasswordByBilkentId(Long.parseLong(username), hashedNewPassword);
+            }
+            
+        } catch (Exception e) {
+            System.out.println("password change exception exception");
             e.printStackTrace();
             throw e;
         }

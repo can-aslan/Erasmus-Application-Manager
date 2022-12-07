@@ -68,6 +68,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 e.printStackTrace();
             }
         }
+
         boolean isCurrentRefresh = currentEndpoint.equals("/api/v1/auth/refresh");
 
         try {
@@ -81,16 +82,18 @@ public class JWTFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails user = JWTUserService.loadUserByUsername(username);
                 System.out.println("current refresh: " + currentEndpoint.equals("/api/v1/auth/refresh"));
-                if (isCurrentRefresh && JWTUtils.validateRefreshToken(token)) {
+                if (isCurrentRefresh && JWTUtils.validateRefreshToken(token) || JWTUtils.validateAccessToken(token, user)) {
                     System.out.println("here is here");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else if (JWTUtils.validateAccessToken(token, user)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
+                } 
+                // else if (JWTUtils.validateAccessToken(token, user)) {
+                //     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                //     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                //     SecurityContextHolder.getContext().setAuthentication(authToken);
+                // }
+                 else {
                     System.out.println("token is not valid");
                 }
             } else {

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
+import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RUserList;
@@ -60,6 +62,18 @@ public class AccountController {
             return ResponseEntity.ok(HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.ok(HttpStatus.FOUND); // might change later
+        }        
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/change_password")
+    public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassword userInfo,
+        @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+
+        try {
+            boolean isPasswordChanged = accountService.changePassword(auth, userInfo);
+            return Response.create("password is changed", HttpStatus.OK);
+        } catch (Exception e) {
+            return Response.create("password cannot be changed", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 

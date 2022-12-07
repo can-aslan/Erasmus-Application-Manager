@@ -50,4 +50,20 @@ public class AccountRepository {
                     .findFirst()
                     .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
     }
+
+    public boolean editPasswordByBilkentId(long bilkentId, String newPassword) {
+        User user = DB.stream()
+                .filter(u -> u.getBilkentId() == bilkentId)
+                .findFirst()
+                .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
+
+        user.setPassword(newPassword);
+
+        user = DB.stream()
+                .filter(u -> u.getBilkentId() == bilkentId)
+                .findFirst()
+                .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
+        System.out.println("user password: " + user.getPassword());
+        return true;
+    }
 }
