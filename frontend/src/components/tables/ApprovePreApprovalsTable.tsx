@@ -1,5 +1,6 @@
 import { Button, Center, Flex, Group, Modal, Select, Space, Table, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
+
 import React, { useEffect, useState } from "react";
 import { useApproveWishlist } from "../../hooks/useApproveWishlist";
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
@@ -9,22 +10,26 @@ import Wishlist from "../wishlist/Wishlist";
 interface ApprovePreApprovalsTableProps {
     preApprovals: Array<PreApprovalForm>
 }
+const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps) => {   
+    const [preApprovalDetailsOpened, setPreApprovalDetailsOpened] = useState(false);
+    const [rejectionFeedbackOpened, setRejectionFeedbackOpened] = useState(false);
 
-const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps) => {
-    const [opened, setOpened] = useState(false);
     const [selectedStudentName, setSelectedStudentName] = useState("");
     const [selectedStudentID, setSelectedStudentID] = useState("");
     const [showReject, setShowReject] = useState(false);
     const [showApprove, setShowApprove] = useState(false);
+    const [rejectionFeedback, setRejectionFeedback] = useState("");
     const [allPendingApprovalList, setPendingApprovalList] = useState([
-        { studentName: "Can Ersoy", studentID: "22003216", status: "Approved" },
-        { studentName: "Selim Can Güler", studentID: "22002811", status: "Pending" },
-        { studentName: "a", studentID: "22002811", status: "Rejected" },
-        { studentName: "b", studentID: "22002811", status: "Approved" },
-        { studentName: "c", studentID: "22002811", status: "Rejected" },
-        { studentName: "d", studentID: "22002811", status: "Pending" },
-        { studentName: "e", studentID: "22002811", status: "Approved" },
-        { studentName: "f", studentID: "22002811", status: "Rejected" },
+
+        { studentName: "Can Ersoy", studentID: 22003216, status: "Approved", rejectionFeedback: "Something is missing"},
+        { studentName: "Selim Can Güler", studentID: 22002811, status: "Pending",rejectionFeedback: "Something is missing" },
+        { studentName: "a", studentID: 22002811, status: "Rejected", rejectionFeedback: "Something is missing"},
+        { studentName: "b", studentID: 22002811, status: "Approved", rejectionFeedback: "" },
+        { studentName: "c", studentID: 22002811, status: "Rejected", rejectionFeedback: "I dont like you" },
+        { studentName: "d", studentID: 22002811, status: "Pending", rejectionFeedback: "" },
+        { studentName: "e", studentID: 22002811, status: "Approved", rejectionFeedback: "" },
+        { studentName: "f", studentID: 22002811, status: "Rejected", rejectionFeedback: "Just wanted to reject" },
+
     ])
     const [tempPendingApprovalList, setTempPendingApprovalList] = useState(allPendingApprovalList);
     const [selectedApprovalStatusFilter, setSelectedApprovalStatusFilter] = useState<string | null>(null);
@@ -34,17 +39,18 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const viewPreApproval = (wishlistId: string) => {
         // TODO: Send data to api, get student's wishlist
         // setPreApprovalList(buraya apiden gelen isteğe göre list koy);
-        setOpened(true);
+        setPreApprovalDetailsOpened(true);
     }
     const approvePreApproval = (wishlistId: string) => {
         //Approve the selected student's wishlist
         // Close pop-up
-        setOpened(false);
+        setPreApprovalDetailsOpened(false);
     }
     const rejectPreApproval = (wishlistId: string) => {
         // Reject the selected student's wishlist
         // Close pop-up
-        setOpened(false);
+        setRejectionFeedbackOpened(true);
+        setPreApprovalDetailsOpened(false);
     }
 
     // Below are mock data, they will be changed.
@@ -75,10 +81,10 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const searchPreApproval = (query: string, filter: string | null) => {
         if (query !== '') {
             if (filter === null) {
-                setTempPendingApprovalList(allPendingApprovalList.filter((student) => student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query)));
+                setTempPendingApprovalList(allPendingApprovalList.filter((student) => student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query) || student.rejectionFeedback.toLowerCase().includes(query.toLowerCase())));
             }
             else {
-                setTempPendingApprovalList(allPendingApprovalList.filter((student) => (student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query)) && student.status === filter));
+                setTempPendingApprovalList(allPendingApprovalList.filter((student) => (student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query) || student.rejectionFeedback.toLowerCase().includes(query.toLowerCase())) && student.status === filter));
             }
         }
         else {
@@ -92,71 +98,78 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     }
 
     return (
-            <>
-                <Modal
-                    opened={opened}
-                    size={"auto"}
-                    centered={true}
-                    onClose={() => setOpened(false)}
-                >
-                    <Flex direction="column">
-                        <Flex direction="row" gap="xs">
-                            <Text fw={700}>Student Name:</Text> 
-                            <Text> {selectedStudentName}</Text>
-                        </Flex>
-                        <Flex direction="row" gap="xs">
-                            <Text fw={700}>Student ID:</Text>
-                            <Text> {selectedStudentID}</Text>
-                        </Flex>
+
+        <>
+            <Modal opened={rejectionFeedbackOpened}
+                size={"50%"}
+                centered={false}
+                onClose={() => setRejectionFeedbackOpened(false)}
+                withCloseButton={false}
+                closeOnClickOutside={false}
+                closeOnEscape={false}
+            >
+                <Flex direction={"column"} gap={"xs"}>
+                    <TextInput value={rejectionFeedback} onChange={(event) => setRejectionFeedback(event.currentTarget.value)} label={"Rejection Feedback"} placeholder={"Please enter why you rejected this Pre Approval..."}></TextInput>
+                    <Flex justify={"right"} gap={"xs"}>
+                        <Button color={"red"} onClick={() => { setRejectionFeedbackOpened(false); setRejectionFeedback("");}}>Cancel Rejection</Button>
+                        <Button color={"green"} onClick={() => { setRejectionFeedbackOpened(false); console.log(rejectionFeedback); setRejectionFeedback("");}}>Confirm Rejection</Button>
                     </Flex>
-                    <Center>
-                        <Table striped withBorder withColumnBorders>
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Course Code (Host)</th>
-                                    <th>Course Name (Host)</th>
-                                    <th>ECTS Credits</th>
-                                    <th>Course Code and Name for a Required Course,
-                                        Elective Group Name for an Elective Requirement (Bilkent)
-                                    </th>
-                                    <th>Credits (Bilkent)</th>
-                                    <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
-                                </tr>
-                            </thead>
-                            <tbody>{preApprovalRows}</tbody>
-                        </Table>
-                    </Center>
-                    <Space h="xs"></Space>
-                    <Group position="right">
-                        {showApprove && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
-                        {showReject && <Button color={'red'} onClick={() => { rejectPreApproval(selectedStudentID) }}>Reject</Button>}
-                    </Group>
-                </Modal>
-                    <Flex direction="column" gap={"sm"}>
-                        <Flex direction="row" gap={"xl"}>
-                            <TextInput placeholder="Seach by name or ID" value={searchPreAppInput} onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}/>
-                            <Select 
-                                value={selectedApprovalStatusFilter} 
-                                onChange={(value) => { changeFilter(value, searchPreAppInput) }} 
-                                clearable 
-                                allowDeselect 
-                                data={["Approved", "Pending", "Rejected"]}
-                            />
-                        </Flex>
-                        <Table striped withBorder withColumnBorders>
-                            <thead>
-                                <tr>
-                                    <th>Student Name</th>
-                                    <th>Student ID</th>
-                                    <th>View PreApproval</th>
-                                </tr>
-                            </thead>
-                            <tbody>{pendingApprovalRows}</tbody>
-                        </Table>
-                    </Flex>
-                </>
-            );
+
+                </Flex>
+
+            </Modal>
+
+            <Modal
+                opened={preApprovalDetailsOpened}
+                size={"auto"}
+                centered={true}
+                onClose={() => setPreApprovalDetailsOpened(false)}
+            >
+                <Flex direction="column">
+                    <Flex direction="row" gap="xs"><Text fw={700}>Student Name:</Text> <Text> {selectedStudentName}</Text></Flex>
+                    <Flex direction="row" gap="xs"><Text fw={700}>Student ID:</Text> <Text> {selectedStudentID}</Text></Flex>
+                </Flex>
+
+                <Center><Table striped withBorder withColumnBorders>
+
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Course Code (Host)</th>
+                            <th>Course Name (Host)</th>
+                            <th>ECTS Credits</th>
+                            <th>Course Code and Name for a Required Course,
+                                Elective Group Name for an Elective Requirement (Bilkent)
+                            </th>
+                            <th>Credits (Bilkent)</th>
+                            <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
+                        </tr>
+                    </thead>
+                    <tbody>{preApprovalRows}</tbody>
+
+                </Table></Center>
+                <Space h="xs"></Space>
+                <Group position="right">
+                    {showApprove && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
+                    {showReject && <Button color={'red'} onClick={() => { rejectPreApproval(selectedStudentID) }}>Reject</Button>}
+                </Group>
+            </Modal>
+            <Flex direction="column" gap={"sm"}>
+                <Flex direction="row" gap={"xl"}>
+                    <TextInput placeholder="Seach by name or ID" value={searchPreAppInput} onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}></TextInput><Select value={selectedApprovalStatusFilter} onChange={(value) => { changeFilter(value, searchPreAppInput) }} clearable allowDeselect data={["Approved", "Pending", "Rejected"]}></Select>
+                </Flex>
+                <Table striped withBorder withColumnBorders>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Student ID</th>
+                            <th>View PreApproval</th>
+                            <th>Rejection Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>{pendingApprovalRows}</tbody>
+                </Table>
+            </Flex></>);
 
     function getPendingApprovalRows() {
         return tempPendingApprovalList.map((element) => (
@@ -179,6 +192,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                             {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
                         </Button>
                     </Center></td>
+                <td>{element.rejectionFeedback}</td>
             </tr>
         ));
     }
