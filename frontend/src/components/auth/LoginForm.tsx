@@ -22,6 +22,8 @@ const LoginForm = () => {
             return login(bilkentID, pwd)
         },
         onSuccess: (data) => {
+            console.log("data: ", data)
+            setUser(data.data);
             navigate('/')
         },
         onError: (error) => {
@@ -49,17 +51,17 @@ const LoginForm = () => {
             const pwd = form.values.password
             loginMutation.mutate({bilkentID, pwd})
 
-            const mockUser: User = {
-                uuid: 'heyo',
-                accessToken: 'hey',
-                refreshToken: 'ho',
-                email: 'hey@email.com',
-                name: 'heyo',
-                surname: 'cart curt',
-                userType: UserEnum.Coordinator,
-            }
-            setUser(mockUser)
-            navigate('/')
+            // const mockUser: User = {
+            //     uuid: 'heyo',
+            //     accessToken: 'hey',
+            //     refreshToken: 'ho',
+            //     email: 'hey@email.com',
+            //     name: 'heyo',
+            //     surname: 'cart curt',
+            //     userType: UserEnum.Coordinator,
+            // }
+            // setUser(mockUser)
+            // navigate('/')
         }
     }
     

@@ -6,6 +6,6 @@ export const useRejectWishlist = () => {
     const { user } = useUser()
     return useMutation({
         mutationKey: ['rejectWishlist'],
-        mutationFn: (wishlistId: string) => rejectWishlist(user!.uuid, wishlistId),
+        mutationFn: (wishlistId: string) => rejectWishlist(user!.id, wishlistId),
     })
 }

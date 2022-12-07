@@ -1,7 +1,7 @@
 package com.beam.beamBackend.enums;
 
 public enum UserType {
-    STUDENT,
+    OUTGOING_STUDENT,
     STAFF,
     ADMIN
 }

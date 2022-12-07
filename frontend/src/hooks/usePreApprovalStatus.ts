@@ -6,6 +6,6 @@ export const usePreApprovalStatus = () => {
     const { user } = useUser()
     return useQuery({
         queryKey: ['preApprovalForm'],
-        queryFn: () => getPreApprovalFileWithStatus(user!.uuid),
+        queryFn: () => getPreApprovalFileWithStatus(user!.id),
     })
 }

@@ -4,15 +4,16 @@ import axios from "../axios"
 
 
 // TODO: Mutate: Create access and refresh tokens on the server side.
-export const login = async (bilkentId: string, pwd: string) => {
-    const axiosSecure = useAxiosSecure()
-    const response = await axios.post<User>('/api/auth/login', 
-        JSON.stringify({bilkentId, pwd}),
+export const login = async (bilkentId: string, password: string) => {
+    // const axiosSecure = useAxiosSecure()
+    const response = await axios.post<Record<"data", User>>('/api/v1/auth/login', 
+        JSON.stringify({bilkentId, password}),
         {
             headers: {'Content-Type': 'application/json'},
             withCredentials: true
         })
-    return response
+        console.log("response:", response);
+    return response.data
 
 }
 
