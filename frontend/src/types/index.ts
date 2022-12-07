@@ -45,6 +45,7 @@ export type WishlistItemType = {
 
 export type StudentAssociatedWishlist = {
     wishlistItems: Array<WishlistItemType>,
+    wishlistUuid: string,
     studentName: string,
     studentId: string,
     status: 'rejected' | 'pending' | 'approved'
