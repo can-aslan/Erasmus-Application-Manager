@@ -1,16 +1,17 @@
 import useAxiosSecure from "../../hooks/useAxiosSecure"
 import { Course, StudentAssociatedCourse } from "../../types"
+import { ResponseAllStudentCourseWishlist } from "../../types/responseTypes"
 
 
 export const getAllStudentWishlists = async (coordinatorId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<Array<StudentAssociatedCourse>>(`/api/coordinator/studentWishlists/${coordinatorId}`)
+    const response = await axiosSecure.get<ResponseAllStudentCourseWishlist>(`/api/coordinator/studentWishlists/${coordinatorId}`)
     return response.data
 }
 
 export const approveWishlist = async (wishlistId: string, coordinatorId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.post<Array<StudentAssociatedCourse>>(`/api/coordinator/approveWishlist/`, {
+    const response = await axiosSecure.post<ResponseAllStudentCourseWishlist>(`/api/coordinator/approveWishlist/`, {
         coordinatorId,
         wishlistId,
     })
@@ -19,7 +20,7 @@ export const approveWishlist = async (wishlistId: string, coordinatorId: string)
 
 export const rejectWishlist = async (wishlistId: string, coordinatorId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.post<Array<StudentAssociatedCourse>>(`/api/coordinator/rejectWishlist/`, {
+    const response = await axiosSecure.post<ResponseAllStudentCourseWishlist>(`/api/coordinator/rejectWishlist/`, {
         coordinatorId,
         wishlistId,
     })

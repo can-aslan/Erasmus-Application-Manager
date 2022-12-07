@@ -33,7 +33,6 @@ export type NavbarLink = {
     icon?: React.ReactNode,
 }
 
-
 // Models
 export type WishlistItemType = {
     uuid: string,
@@ -57,6 +56,15 @@ export type Course = {
     courseName: string,
     bilkentCredits: number,
     ECTSCredits: number
+}
+
+export type SchoolAssociatedCourse = {
+    schoolId: string,
+    schoolName: string,
+    uuid: string,
+    courseCode: string,
+    courseName: string,
+    ECTSCredits: number,
 }
 
 export type PreviousCourseRequest = CourseRequest & {
