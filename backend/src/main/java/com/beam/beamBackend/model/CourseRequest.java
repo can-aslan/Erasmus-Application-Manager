@@ -1,12 +1,9 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
