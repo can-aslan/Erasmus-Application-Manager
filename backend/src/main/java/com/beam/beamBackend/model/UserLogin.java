@@ -16,13 +16,13 @@ import lombok.Data;
 public class UserLogin {
     @Id
     @NotNull
-    private long bilkentId;
+    private String bilkentId;
 
     @NotEmpty
     private String password;
 
     public UserLogin(
-                @JsonProperty("bilkentId") long bilkentId,
+                @JsonProperty("bilkentId") String bilkentId,
                 @JsonProperty("password") String password) {
 
         this.bilkentId = bilkentId;
