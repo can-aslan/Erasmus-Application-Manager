@@ -53,9 +53,7 @@ public class CourseRequestRepositoryArrayList implements ICourseRequestRepositor
 
     @Override
     public List<CourseRequest> getCourseRequestsByStudentId(Long studentId) {
-        List<CourseRequest> studentRequests = new ArrayList<CourseRequest>(); // ensures returned type is not null
-        studentRequests = DB.stream().filter(request -> request.getStudentId() == studentId).collect(Collectors.toList());
-        return studentRequests;
+        return DB.stream().filter(request -> request.getStudentId().equals(studentId)).collect(Collectors.toList());
     }
 
     @Override
