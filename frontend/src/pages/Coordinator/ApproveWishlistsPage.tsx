@@ -9,7 +9,7 @@ import LoadingPage from "../Feedback/LoadingPage";
 const ApproveWishlistsPage = () => {
     const { user } = useUser()
     const { data, isError, isLoading } = useQuery({
-        queryFn: () => getAllStudentWishlists(user?.uuid!)
+        queryFn: () => getAllStudentWishlists(user?.id!)
     })
 
     if (isLoading) {

@@ -9,6 +9,9 @@ const PersistentLogin = () => {
     const refresh = useRefreshToken()
     const { user } = useUser()
 
+    console.log(user);
+    console.log(user?.id);
+
     useEffect(() => {
         let isMounted = true
         

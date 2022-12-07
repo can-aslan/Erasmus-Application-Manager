@@ -6,6 +6,6 @@ export const useApproveWishlist = () => {
     const { user } = useUser()
     return useMutation({
         mutationKey: ['approveWishlist'],
-        mutationFn: (wishlistId: string) => approveWishlist(user!.uuid, wishlistId),
+        mutationFn: (wishlistId: string) => approveWishlist(user!.id, wishlistId),
     })
 }

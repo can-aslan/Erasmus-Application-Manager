@@ -20,7 +20,7 @@ const CourseWishlistPage = () => {
     const { user } = useUser()
     
     // Fetch student's wishlist
-    const { data: wishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.uuid)
+    const { data: wishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.id)
     const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist || []) 
 
     // Fetch available courses from the database

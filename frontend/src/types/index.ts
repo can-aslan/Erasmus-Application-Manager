@@ -9,7 +9,7 @@ export enum UserEnum {
 }
 
 export type User = {
-    uuid: string,
+    id: string,
     name: string,
     surname: string,
     email: string,
