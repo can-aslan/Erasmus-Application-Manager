@@ -1,46 +1,69 @@
 package com.beam.beamBackend.service;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.AccountRepository;
+import com.beam.beamBackend.response.RToken;
 import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.ResponseId;
+import com.beam.beamBackend.security.JWTUtils;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class AccountService {
-    private static int hashStrength = 10;
-    private BCryptPasswordEncoder passwordEncoder;
+    public static int hashStrength = 10;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
+
     private final AccountRepository accountRepository;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-        passwordEncoder = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
-    }
+    private final JWTUserService jwtUserService;
 
-    public ResponseId login(UserLogin user) throws Exception {
+    @Autowired
+    private final JWTUtils jwtUtils;
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    // @Autowired
+    // public AccountService(AuthenticationManager authManager, int hash) {
+    //     this(accountRepository, jwtUserService, jwtUtils, authManager);
+    //     passwordEncoder  = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
+    // }
+
+    public RToken login(UserLogin user) throws Exception {
         try {
-            String hashedPassword = accountRepository.getPasswordIfUserExist(user.getBilkentId());
+            // passwordEncoder  = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
+            String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(user.getBilkentId()));
             boolean passwordMatch = passwordEncoder.matches(user.getPassword(), hashedPassword);
 
             if (!passwordMatch) {
                 throw new Exception();
             } else {
                 System.out.println("paswor match");
-                return null;
+
+                // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
+
+                final UserDetails userDetails = jwtUserService.loadUserByUsername(user.getBilkentId());
+                final String token = jwtUtils.createToken(userDetails);
+                return new RToken(token);
             }
         } catch (Exception e) {
+            System.out.println("alo krdsm calisir misin");
+            e.printStackTrace();
             throw e;
         }
     }

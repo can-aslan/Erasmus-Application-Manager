@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.beam.beamBackend.model.User;
@@ -41,5 +42,12 @@ public class AccountRepository {
 
     public RUserList getUsers() {
         return new RUserList(DB.size(), DB);
+    }
+
+    public User findUserByBilkentId(long bilkentId) {
+        return DB.stream()
+                    .filter(u -> u.getBilkentId() == bilkentId)
+                    .findFirst()
+                    .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
     }
 }
