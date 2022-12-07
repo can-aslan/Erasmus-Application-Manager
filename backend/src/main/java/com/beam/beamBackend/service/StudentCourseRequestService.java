@@ -1,13 +1,8 @@
 package com.beam.beamBackend.service;
 
 import java.util.ArrayList;
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.model.Course;
-import com.beam.beamBackend.model.File;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,7 +11,7 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
 
     @Override
     public boolean requestCourse(
-        UUID studentId,
+        Long studentId,
         String hostCode,
         String name,
         String bilkentCode,

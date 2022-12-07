@@ -1,7 +1,6 @@
 package com.beam.beamBackend.controller;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,13 +1,11 @@
 package com.beam.beamBackend.service;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import com.beam.beamBackend.model.Course;
-import com.beam.beamBackend.model.File;
 
 public interface IStudentCourseRequestService {
     boolean requestCourse(
-        UUID studentId,
+        Long studentId,
         String hostCode,
         String name,
         String bilkentCode,

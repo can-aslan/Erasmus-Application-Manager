@@ -6,7 +6,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 // import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.beam.beamBackend.model.CourseRequest;
 // import com.beam.beamBackend.enums.StudentType;
@@ -15,8 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.UUID;
 
 @WebMvcTest(controllers = StudentCourseRequestController.class)
 @ContextConfiguration(classes = StudentCourseRequestController.class)
@@ -29,7 +26,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
     @Test
     public void requestValidCourse() throws Exception {
         final CourseRequest courseRequest = new CourseRequest(
-            UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
+            null,
+            (long) 22001943,
             "CS-XYZ",
             "Other_Course",
             "CS-319",
@@ -75,7 +73,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
     @Test
     public void requestInvalidCourse() throws Exception {
         final CourseRequest courseRequest = new CourseRequest(
-            UUID.fromString("ed08d61c-d861-4ed4-8dc4-19299022ad44"),
+            null,
+            (long) 22001943,
             "WRONG_COURSE_INFO",
             "Other_Course",
             "CS-319",
