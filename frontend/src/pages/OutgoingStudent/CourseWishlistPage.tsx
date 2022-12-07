@@ -1,39 +1,47 @@
 import { Autocomplete, Button, Card, Center, Flex, Modal, Stack, Title } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { getCourseWishlist } from '../../api/Student/CourseService';
+import { getCourses, getCourseWishlist, saveWishlist } from '../../api/Student/CourseService';
 import Wishlist from "../../components/wishlist/Wishlist";
+import { useCourses } from '../../hooks/useCourses';
+import { useSaveWishlist } from '../../hooks/useSaveWishlist';
+import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
 import { WishlistItemType } from "../../types";
-import ErrorPage from '../ErrorPage';
-import LoadingPage from '../LoadingPage';
+import ErrorPage from '../Feedback/ErrorPage';
+import LoadingPage from '../Feedback/LoadingPage';
 
 const CourseWishlistPage = () => {
+    const [openModal, setOpenModal] = useState(false)
+    const [selectedCourse, setSelectedCourse] = useState('')
+    const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
+    const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
     const { user } = useUser()
-    const { data: wishlist, isError, isLoading } = useQuery({
-        queryFn: () => getCourseWishlist(user?.uuid!)
-    })
+    
+    // Fetch student's wishlist
+    const { data: wishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.uuid)
+    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist || []) 
 
-    if (isLoading) {
+    // Fetch available courses from the database
+    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses()
+
+    // Mutation for saving the wishlist to database
+    const { data: savedWishlist, isError: isSaveWishlistError, isLoading: isSaveWishlistLoading, mutate} = useSaveWishlist(wishlistItems)
+
+    if (isWishlistLoading|| isCoursesLoading) {
         return (
             <LoadingPage />
         )
     }
 
-    if (isError && !wishlist) {
+    if (isWishlistError || isCoursesError) {
         return (
             <ErrorPage />
         )
     }
-
-    const [openModal, setOpenModal] = useState(false)
-    const [selectedCourse, setSelectedCourse] = useState('')
-    const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
-    const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
-    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist) 
-    // TODO: Fetch available courses from the database
     
+    // TODO: Use 'courses' (fetched from the backend) instead of available courses
     const availableCourses = [
         {
             value: 'CS 101',
@@ -53,6 +61,10 @@ const CourseWishlistPage = () => {
         }
     ]
 
+    const handleWishlistSave = () => {
+        mutate()
+    }
+
     const handleDeleteWish = (e: React.MouseEvent) => {
         const id = e.currentTarget.id
         setDeletedItems(wishlistItems.filter((w) => w.uuid === id))
@@ -66,7 +78,6 @@ const CourseWishlistPage = () => {
             setOpenModal(false)
             return
         }
-        
         setWishlistItems((prev) => {
             return (
                 [
@@ -113,7 +124,14 @@ const CourseWishlistPage = () => {
                         </div>
                     </Flex>
                 </Card> 
-                <Button disabled={newItems.length === 0 && deletedItems.length === 0}>Save</Button>
+                <Button 
+                    disabled={newItems.length === 0 && deletedItems.length === 0}
+                    loading={isSaveWishlistLoading}
+                    onClick={handleWishlistSave}
+                >
+                    Save
+                </Button>
+                {/* TODO: Report error in case of saving wishlist is unsuccessful: 'isSaveWishlistError' */}
             </Flex>
             <Modal
                 opened={openModal}

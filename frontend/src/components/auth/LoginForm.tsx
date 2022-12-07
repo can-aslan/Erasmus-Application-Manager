@@ -1,4 +1,4 @@
-import { Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { Button, Group, PasswordInput, Stack, TextInput, TypographyStylesProvider } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
 import { Mutation, useMutation } from "@tanstack/react-query";
@@ -16,11 +16,10 @@ interface MutationFunctionProps {
 
 const LoginForm = () => {
     const navigate = useNavigate()
-    const [error, setError] = useState('')
     const { setUser } = useUser()
-    const mutation = useMutation({
+    const loginMutation = useMutation({
         mutationFn: ({bilkentID, pwd}: MutationFunctionProps) => {
-            return login(bilkentID, pwd);
+            return login(bilkentID, pwd)
         },
         onSuccess: (data) => {
             navigate('/')
@@ -48,7 +47,7 @@ const LoginForm = () => {
         if (!validate.hasErrors) {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
-            mutation.mutate({bilkentID, pwd})
+            loginMutation.mutate({bilkentID, pwd})
 
             const mockUser: User = {
                 uuid: 'heyo',
@@ -56,6 +55,7 @@ const LoginForm = () => {
                 refreshToken: 'ho',
                 email: 'hey@email.com',
                 name: 'heyo',
+                surname: 'cart curt',
                 userType: UserEnum.OutgoingStudent,
             }
             setUser(mockUser)
@@ -81,8 +81,8 @@ const LoginForm = () => {
                 <Button 
                     onClick={handleSignIn}
                     loaderPosition='left'
-                    loading={mutation.isLoading}
-                    disabled={mutation.isLoading}
+                    loading={loginMutation.isLoading}
+                    disabled={loginMutation.isLoading}
                 >
                         Sign In
                 </Button>

@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllStudentWishlists } from "../../api/Coordinator/CourseWishlistService";
 import ApproveWishlistsTable from "../../components/tables/ApproveWishlistsTable";
 import { useUser } from "../../provider/UserProvider";
-import ErrorPage from "../ErrorPage";
-import LoadingPage from "../LoadingPage";
+import ErrorPage from "../Feedback/ErrorPage";
+import LoadingPage from "../Feedback/LoadingPage";
 
 const ApproveWishlistsPage = () => {
     const { user } = useUser()

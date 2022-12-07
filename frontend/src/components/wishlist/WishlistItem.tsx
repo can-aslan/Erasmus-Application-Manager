@@ -8,7 +8,7 @@ interface WishlistItemProps {
     id: string,
 }
 
-const WishlistItem = ({ item, id }: WishlistItemProps) => {
+const WishlistItem = ({ item }: WishlistItemProps) => {
     const [openModal, setOpenModal] = useState(false)
 
     const handleClick = () => {

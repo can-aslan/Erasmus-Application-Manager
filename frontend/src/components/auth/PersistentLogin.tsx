@@ -35,7 +35,7 @@ const PersistentLogin = () => {
         isLoading ? (
             <Center sx={{height: '100vh'}}>
                 <Stack align='center'>
-                    <Loader size={60}/>
+                    <Loader  size={60}/>
                     <Text size={22} color='blue'>Please wait while we get things ready for you!</Text>
                 </Stack>
             </Center>

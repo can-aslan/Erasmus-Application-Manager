@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getSubmittedPreApprovals } from "../../api/FACMember/PreapprovalService";
 import ApprovePreApprovalsTable from "../../components/tables/ApprovePreApprovalsTable";
 import { useUser } from "../../provider/UserProvider";
-import ErrorPage from "../ErrorPage";
-import LoadingPage from "../LoadingPage";
+import ErrorPage from "../Feedback/ErrorPage";
+import LoadingPage from "../Feedback/LoadingPage";
 
 const ApprovePreApprovalsPage = () => {
     const { user } = useUser()

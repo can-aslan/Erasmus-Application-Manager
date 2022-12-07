@@ -1,4 +1,4 @@
-import Unauthorized from "../../pages/UnauthorizedPage";
+import Unauthorized from "../../pages/Feedback/UnauthorizedPage";
 import { useUser } from "../../provider/UserProvider";
 import { User } from "../../types";
 import { NAVBAR_LINK_OBJECTS } from "../../utils/constants";

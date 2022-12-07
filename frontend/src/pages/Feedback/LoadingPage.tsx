@@ -9,7 +9,7 @@ const LoadingPage = ({message}: LoadingPageProps) => {
         <Center sx={{height: '100vh'}}>
             <Stack align='center'>
                 <Loader size={60}/>
-                {message || <Text size={22} color='blue'>Please wait while we get things ready for you!</Text>}
+                <Text size={22} color='blue'> {message || "Please wait while we get things ready for you!"}</Text>
             </Stack>
         </Center>
     );
