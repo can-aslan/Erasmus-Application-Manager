@@ -47,7 +47,7 @@ public class StudentCourseRequestController {
     }
 
     @GetMapping("/fetch/{studentId}")
-    public ResponseEntity<Object> getAllCourseRequests(@PathVariable("studentId") Long studentId) {
+    public ResponseEntity<Object> getAllCourseRequestsOfStudent(@PathVariable("studentId") Long studentId) {
         List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequestsOfStudent(studentId);
         return 
             responseResult != null ?
