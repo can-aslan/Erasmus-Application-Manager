@@ -1,6 +1,6 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core"
 import { useHotkeys, useLocalStorage } from "@mantine/hooks"
-import { UserProvider } from "../provider/UserProvider"
+import { ToastContainer } from 'react-toastify'
 
 interface ProviderWrapperProps {
     children: React.ReactNode
@@ -14,7 +14,7 @@ const ProviderWrapper = ({ children }: ProviderWrapperProps) => {
       })
     
     const toggleColorScheme = (value?: ColorScheme) => {
-    setColorScheme(value || colorScheme === 'light' ? 'dark' : 'light')
+        setColorScheme(value || colorScheme === 'light' ? 'dark' : 'light')
     }
 
     // Shortcut for toggling theme is: CTRL + J
@@ -23,9 +23,12 @@ const ProviderWrapper = ({ children }: ProviderWrapperProps) => {
     return (
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
             <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
-                <UserProvider>
                     {children}
-                </UserProvider> 
+                    <ToastContainer
+                        position='bottom-left'
+                        autoClose={10000}
+                        theme={colorScheme}
+                    />
             </MantineProvider>
         </ColorSchemeProvider>
     );

@@ -5,6 +5,7 @@ import {
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import 'react-toastify/dist/ReactToastify.css'
 import PersistentLogin from './components/auth/PersistentLogin'
 import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'

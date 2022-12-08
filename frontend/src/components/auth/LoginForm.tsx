@@ -1,13 +1,12 @@
 import { Button, Group, PasswordInput, Stack, TextInput, TypographyStylesProvider } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useHotkeys } from "@mantine/hooks";
-import { Mutation, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import { login } from "../../api/User/UserService";
 import { useUser } from "../../provider/UserProvider";
-import { User, UserEnum } from "../../types";
 
 interface MutationFunctionProps {
     bilkentID: string,
@@ -22,15 +21,23 @@ const LoginForm = () => {
             return login(bilkentID, pwd)
         },
         onSuccess: (data) => {
-            console.log("data: ", data)
             setUser(data.data);
-
-            // TODO Successful notification
+            toast.success("You've successfully logged in.", {
+                position: toast.POSITION.BOTTOM_LEFT
+            })
             navigate('/')
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
                 // TODO: Send error notification
+                if (!error.status) {
+                    toast.error("Something went wrong with the servers. Please wait while we identify the issue!", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                    })
+                }
+                else if (error.status === 401) {
+                    toast.error("You are not authorized.")
+                }
             }
         }
     })
@@ -55,7 +62,6 @@ const LoginForm = () => {
             loginMutation.mutate({bilkentID, pwd})
         }
     }
-    
 
     return (
         <form>

@@ -1,4 +1,5 @@
 import { Center, Loader, Stack, Text } from '@mantine/core';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useRefreshToken from '../../hooks/useRefreshToken';
@@ -9,12 +10,7 @@ const PersistentLogin = () => {
     const refresh = useRefreshToken()
     const { user } = useUser()
 
-    console.log(user);
-    console.log(user?.id);
-
     useEffect(() => {
-        let isMounted = true
-        
         const verifyRefreshToken = async () => {
             try {
                 await refresh()
@@ -29,9 +25,6 @@ const PersistentLogin = () => {
 
         !user?.accessToken ? verifyRefreshToken() : setIsLoading(false)
         
-        return () => {
-            isMounted = false
-        }
     }, [])
     
     return (
