@@ -45,7 +45,7 @@ const CourseWishlistPage = () => {
     }
     
     // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
-    const availableCourses = courses.data.map((c) => {
+    const availableCourses: Array<WishlistItemType & {value: string}> = courses.data.map((c) => {
         return {
             ...c,
             value: c.courseName

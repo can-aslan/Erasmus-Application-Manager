@@ -34,7 +34,7 @@ const ApprovePreApprovalsPage = () => {
                     spacing='xl'
                 >
                     <Title color='blue' size='36px'>Submitted PreApprovals</Title>
-                    <ApprovePreApprovalsTable preApprovals={data} />
+                    <ApprovePreApprovalsTable preApprovals={data.data} />
                 </Stack>
             </Box>
         </Center>

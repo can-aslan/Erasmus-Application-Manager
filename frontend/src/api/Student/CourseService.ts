@@ -46,7 +46,7 @@ export const getPreviouslyRequestedCourses = async (studentId: string) => {
     return response.data
 }
 
-export const makeCourseRequest = async (course: Course, studentId: string) => {
+export const makeCourseRequest = async (course: CourseRequest, studentId: string) => {
     const axiosSecure = useAxiosSecure()
     const response = await axiosSecure.post<ResponseCourseRequest>(`/api/student/courseRequest/${studentId}`,
         JSON.stringify({

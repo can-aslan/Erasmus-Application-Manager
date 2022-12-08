@@ -1,15 +1,29 @@
 import { Anchor, Box, Button, Center, Divider, FileButton, Flex, Group, Select, Stack, Table, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { makeCourseRequest } from "../../api/Student/CourseService";
+import { useCourses } from "../../hooks/useCourses";
+import { useUser } from "../../provider/UserProvider";
+import { Course, CourseRequest, PreviousCourseRequest } from "../../types";
 
 const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
     const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
     //const [syllabusLink, setSyllabusLink] = useState('');
+    const { user } = useUser()
 
+    // TODO: Use courses instead of allCoursesBilkent
+    const {data: courses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses()
     const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
+
+    const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
+        mutationKey: ['courseRequest'],
+        mutationFn: (course: CourseRequest) => makeCourseRequest(course, user!.id)   
+    })
+
     const form = useForm({
         initialValues: {
             hostCourseCode: '',
@@ -38,6 +52,10 @@ const CourseRequestPage = () => {
         }
         if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
             // send request to api
+            const course: Course = {
+
+            }
+            mutateCourseRequest()
             console.log("error yok");
         }
     }
