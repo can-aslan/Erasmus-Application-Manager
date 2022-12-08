@@ -8,7 +8,7 @@ import { useCourses } from '../../hooks/useCourses';
 import { useSaveWishlist } from '../../hooks/useSaveWishlist';
 import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
-import { WishlistItemType } from "../../types";
+import { StudentAssociatedWishlist, WishlistItemType } from "../../types";
 import ErrorPage from '../Feedback/ErrorPage';
 import LoadingPage from '../Feedback/LoadingPage';
 
@@ -20,14 +20,17 @@ const CourseWishlistPage = () => {
     const { user } = useUser()
     
     // Fetch student's wishlist
-    const { data: wishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.id)
-    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist || []) 
-
+    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.id)
+    
     // Fetch available courses from the database
     const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses()
-
+    
     // Mutation for saving the wishlist to database
-    const { data: savedWishlist, isError: isSaveWishlistError, isLoading: isSaveWishlistLoading, mutate} = useSaveWishlist(wishlistItems)
+    const {mutate: saveWishlistMutation, isLoading: isSaveWishlistLoading} = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(wishlistItems)
+    })
+    const [wishlist, setWishlist] = useState(initialWishlist?.data)
 
     if (isWishlistLoading|| isCoursesLoading) {
         return (
@@ -62,13 +65,20 @@ const CourseWishlistPage = () => {
     ]
 
     const handleWishlistSave = () => {
-        mutate()
+        saveWishlistMutation(wishlist)
     }
 
     const handleDeleteWish = (e: React.MouseEvent) => {
         const id = e.currentTarget.id
-        setDeletedItems(wishlistItems.filter((w) => w.uuid === id))
-        setWishlistItems(wishlistItems.filter((w) => w.uuid !== id))
+        setDeletedItems(wishlist ? wishlist.wishlistItems.filter((w) => w.uuid === id) : [])
+        setWishlist((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    wishlistItems: prev.wishlistItems.filter((w) => w.uuid !== id)
+                }
+            }
+        })
         setNewItems(newItems.filter((n => n.uuid !== id)))
     }
 
@@ -78,14 +88,14 @@ const CourseWishlistPage = () => {
             setOpenModal(false)
             return
         }
-        setWishlistItems((prev) => {
-            return (
-                [
-                    ...prev,
-                    selected
-                ]
-            )
-        })
+        setWishlist((prev) => {
+                if (prev) {
+                    return {
+                        ...prev,
+                        selected
+                    }
+                }
+            })
         setNewItems((prev) => {
             return (
                 [
@@ -113,7 +123,7 @@ const CourseWishlistPage = () => {
                         <Title order={2}>
                             Your Wishlist
                         </Title>
-                        <Wishlist wishlistItems={wishlistItems} handleDeleteWish={handleDeleteWish}/>
+                        <Wishlist wishlistItems={wishlist ? wishlist.wishlistItems : []} handleDeleteWish={handleDeleteWish}/>
                         <div>
                             <Button
                                 onClick={() => setOpenModal(true)}

@@ -2,8 +2,6 @@ import { Button, Center, Flex, Group, Modal, Select, Space, Table, Text, TextInp
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 
 import React, { useEffect, useState } from "react";
-import { useApproveWishlist } from "../../hooks/useApproveWishlist";
-import { useRejectWishlist } from "../../hooks/useRejectWishlist";
 import { PreApprovalForm } from "../../types";
 import Wishlist from "../wishlist/Wishlist";
 
