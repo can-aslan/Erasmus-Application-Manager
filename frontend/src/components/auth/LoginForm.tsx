@@ -31,12 +31,18 @@ const LoginForm = () => {
             if (axios.isAxiosError(error)) {
                 // TODO: Send error notification
                 if (!error.status) {
-                    toast.error("Something went wrong with the servers. Please wait while we identify the issue!", {
+                    toast.error("We can't reach BEAM servers at the moment. Please wait while we identify the issue!", {
                         position: toast.POSITION.BOTTOM_LEFT,
                     })
                 }
                 else if (error.status === 401) {
                     toast.error("You are not authorized.")
+                }
+                else if (error.status === 403) {
+                    toast.error("Either bilkent ID or password is wrong")
+                }
+                else {
+                    toast.error("Something went wrong!")
                 }
             }
         }
