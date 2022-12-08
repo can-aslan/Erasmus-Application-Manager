@@ -44,25 +44,31 @@ const CourseWishlistPage = () => {
         )
     }
     
-    // TODO: Use 'courses' (fetched from the backend) instead of available courses
-    const availableCourses = [
-        {
-            value: 'CS 101',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming I',
-            courseCode: 'CS 101',
-        },
-        {
-            value: 'CS 102',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming II',
-            courseCode: 'CS 102',
+    // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
+    const availableCourses = courses.data.map((c) => {
+        return {
+            ...c,
+            value: c.courseName
         }
-    ]
+    })
+    // [
+    //     {
+    //         value: 'CS 101',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming I',
+    //         courseCode: 'CS 101',
+    //     },
+    //     {
+    //         value: 'CS 102',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming II',
+    //         courseCode: 'CS 102',
+    //     }
+    // ]
 
     const handleWishlistSave = () => {
         saveWishlistMutation(wishlist)
