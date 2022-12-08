@@ -1,9 +1,10 @@
 import useAxiosSecure from "../../hooks/useAxiosSecure"
 import { PreApprovalForm } from "../../types"
+import { ResponsePreApprovalForm } from "../../types/responseTypes"
 
 export const getPreApprovalFileWithStatus = async (studentId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<PreApprovalForm>(`/api/student/preApproval/${studentId}`)
+    const response = await axiosSecure.get<ResponsePreApprovalForm>(`/api/student/preApproval/${studentId}`)
     return response.data
 }
 

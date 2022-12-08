@@ -24,10 +24,13 @@ const LoginForm = () => {
         onSuccess: (data) => {
             console.log("data: ", data)
             setUser(data.data);
+
+            // TODO Successful notification
             navigate('/')
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
+                // TODO: Send error notification
             }
         }
     })
@@ -50,18 +53,6 @@ const LoginForm = () => {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
             loginMutation.mutate({bilkentID, pwd})
-
-            // const mockUser: User = {
-            //     uuid: 'heyo',
-            //     accessToken: 'hey',
-            //     refreshToken: 'ho',
-            //     email: 'hey@email.com',
-            //     name: 'heyo',
-            //     surname: 'cart curt',
-            //     userType: UserEnum.Coordinator,
-            // }
-            // setUser(mockUser)
-            // navigate('/')
         }
     }
     
