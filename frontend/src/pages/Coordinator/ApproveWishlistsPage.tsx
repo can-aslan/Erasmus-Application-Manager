@@ -34,7 +34,7 @@ const ApproveWishlistsPage = () => {
                     spacing='xl'
                 >
                     <Title color='blue' size='36px'>Submitted Wishlists</Title>
-                    <ApproveWishlistsTable wishlists={data}/>
+                    <ApproveWishlistsTable wishlists={data.data}/>
                 </Stack>
             </Box>
         </Center>

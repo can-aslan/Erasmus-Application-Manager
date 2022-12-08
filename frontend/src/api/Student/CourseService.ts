@@ -1,5 +1,5 @@
 import useAxiosSecure from "../../hooks/useAxiosSecure"
-import { Course, CourseRequest, PreviousCourseRequest } from "../../types"
+import { Course, CourseRequest, PreviousCourseRequest, StudentAssociatedWishlist } from "../../types"
 import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseSchoolSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
 
@@ -28,11 +28,13 @@ export const getCourseWishlist = async (studentId: string) => {
     return response.data
 }
 
-export const saveWishlist = async (studentId: string, courses: Array<Course>) => {
+export const saveWishlist = async (wishlist: StudentAssociatedWishlist | undefined) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.post<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${studentId}`,
+    const response = await axiosSecure.post<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${wishlist?.studentId}`,
         JSON.stringify({
-            courses,
+            data: {
+                ...wishlist
+            }
         })    
     )
     return response.data
@@ -44,7 +46,7 @@ export const getPreviouslyRequestedCourses = async (studentId: string) => {
     return response.data
 }
 
-export const makeCourseRequest = async (course: Course, studentId: string) => {
+export const makeCourseRequest = async (course: CourseRequest, studentId: string) => {
     const axiosSecure = useAxiosSecure()
     const response = await axiosSecure.post<ResponseCourseRequest>(`/api/student/courseRequest/${studentId}`,
         JSON.stringify({

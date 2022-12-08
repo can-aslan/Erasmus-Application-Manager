@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useUser } from "../../provider/UserProvider";
-import { User, UserEnum } from "../../types";
+import { UserEnum } from "../../types";
 
 interface RequireAuthProps {
     allowedUsers: Array<UserEnum>

@@ -1,8 +1,10 @@
 import { Button, Center, Group, Modal, Space, Table } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useApproveWishlist } from "../../hooks/useApproveWishlist";
+import { approveWishlist, rejectWishlist } from '../../api/Coordinator/CourseWishlistService';
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
+import { useUser } from "../../provider/UserProvider";
 import { StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemType } from "../../types";
 
 interface ApproveWishlistTableProps {
@@ -15,9 +17,18 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
     const [selectedStudentID, setSelectedStudentID] = useState("");
     const [selectedWishlistId, setSelectedWishlistId] = useState("")
     const [selectedIsApproved, setSelectedIsApproved] = useState(false);
+    const { user } = useUser()
 
-    const { mutate: mutateApproval, isLoading: isApprovalLoading, isError: isApprovalError } = useApproveWishlist()
-    const { mutate: mutateRejection, isLoading: isRejectionLoading, isError: isRejectionError } = useRejectWishlist()
+    const {mutate: mutateApproval} = useMutation({
+        mutationKey: ['approveWishlist'],
+        mutationFn: (wishlistId: string) => approveWishlist(user!.id, wishlistId),
+    })
+
+    const { mutate: mutateRejection } = useMutation({
+        mutationKey: ['rejectWishlist'],
+        mutationFn: (wishlistId: string) => rejectWishlist(user!.id, wishlistId)
+    })
+
 
 
     const viewWishlist = (wishlistId: string) => {
@@ -25,16 +36,15 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
         setOpened(true);
 
     }
-    const approveWishlist = (wishlistId: string) => {
+    const approve = (wishlistId: string) => {
         // Approve the selected student's wishlist
-        // Close pop-up
         mutateApproval(wishlistId)
+        // Close pop-up
         setOpened(false);
     }
-    const rejectWishlist = (wishlistId: string) => {
+    const reject = (wishlistId: string) => {
         // Reject the selected student's wishlist
         mutateRejection(wishlistId)
-
         // Close pop-up
         setOpened(false);
     }
@@ -84,6 +94,7 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
                         onClick={() => {
                             setSelectedStudentName(element.studentName);
                             setSelectedStudentID(element.studentId);
+                            setSelectedWishlistId(element.wishlistUuid)
                             viewWishlist(element.wishlistUuid);
                             setSelectedIsApproved(element.status == "pending" || element.status == "rejected");
                         }}
@@ -117,8 +128,8 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
             </Table>}
             <Space h="xs"/>
             <Group position={"right"}>
-                {selectedIsApproved && <Button color={'green'} onClick={() => { approveWishlist(selectedWishlistId) }}>Approve</Button>}
-                <Button color={'red'} onClick={() => { rejectWishlist(selectedWishlistId) }}>Reject</Button>
+                {selectedIsApproved && <Button color={'green'} onClick={() => { approve(selectedWishlistId) }}>Approve</Button>}
+                <Button color={'red'} onClick={() => { reject(selectedWishlistId) }}>Reject</Button>
             </Group>
         </Modal>
             <Table striped withBorder withColumnBorders>
