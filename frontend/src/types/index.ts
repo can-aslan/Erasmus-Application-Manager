@@ -97,3 +97,21 @@ export type PreApprovalForm = {
 export type CoordinatorAssociatedStudents = PreApprovalForm & {
     studentName: string,
 }
+
+export type UniversityProxy = {
+    id: string,
+    universityName: string,
+    city: string,
+    country: string,
+    dormitory?: boolean,
+    studentGrant?: number,
+    specialCase?: Array<string> | [],
+}
+
+export type UniversityDetailed = {
+    universityWebsite: string,
+    generalInfo: string,
+    acceptedDepartmentsInBilkent: Array<string>
+    bgImage?: string, // URL to image
+    logoImage?: string, //URL to image
+}
