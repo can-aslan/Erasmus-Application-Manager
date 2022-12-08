@@ -90,6 +90,10 @@ export type StudentAssociatedCourse = Course & {
 export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
-    file: File,
+    file: string,
     status?: 'rejected' | 'pending' | 'approved',
+}
+
+export type CoordinatorAssociatedStudents = PreApprovalForm & {
+    studentName: string,
 }

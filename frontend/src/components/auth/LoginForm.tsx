@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { login } from "../../api/User/UserService";
 import { useUser } from "../../provider/UserProvider";
+import { UserEnum } from "../../types";
 
 interface MutationFunctionProps {
     bilkentID: string,
@@ -29,7 +30,6 @@ const LoginForm = () => {
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
-                // TODO: Send error notification
                 if (!error.status) {
                     toast.error("We can't reach BEAM servers at the moment. Please wait while we identify the issue!", {
                         position: toast.POSITION.BOTTOM_LEFT,
@@ -65,7 +65,19 @@ const LoginForm = () => {
         if (!validate.hasErrors) {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
-            loginMutation.mutate({bilkentID, pwd})
+            // FIXME: Commented until database is connected
+            // loginMutation.mutate({bilkentID, pwd})
+
+            setUser({
+                refreshToken: "refreshT",
+                accessToken: "accessT",
+                email: "selim.guler@ug.bilkent.edu.tr",
+                id: "22002811",
+                name: "Selim Can",
+                surname: "Güler",
+                userType: UserEnum.Coordinator,
+            })
+            navigate("/")
         }
     }
 

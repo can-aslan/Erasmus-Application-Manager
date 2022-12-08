@@ -12,6 +12,7 @@ import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
+import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
                   {
                     path: '/coordinator/student-wishlists',
                     element: <ApproveWishlistsPage />
+                  },
+                  {
+                    path: '/coordinator/course-transfer-form',
+                    element: <CourseTransferPage />
                   }
                 ]
               },
