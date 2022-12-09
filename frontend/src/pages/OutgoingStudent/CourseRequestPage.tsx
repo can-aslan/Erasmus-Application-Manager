@@ -12,6 +12,7 @@ const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
     const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+
     //const [syllabusLink, setSyllabusLink] = useState('');
     const { user } = useUser()
 
@@ -35,7 +36,7 @@ const CourseRequestPage = () => {
             hostCourseCode: (value) => value.length > 0 ? null : "Course code cannot be empty.",
             courseName: (value) => value.length > 0 ? null : "Course name cannot be empty.",
             webpage: (value) => value.length > 0 ? null : "Webpage cannot be empty.",
-            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link cannot be empty." : null
+            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link/file cannot be empty." : null
         }
     })
     const handleRequestCourse = () => {
@@ -72,7 +73,7 @@ const CourseRequestPage = () => {
             <td>{course.courseName}</td>
             <td>{course.bilkentCredits}</td>
             <td>{course.ectsCredits}</td>
-            <td>{""}
+            <td style={{maxWidth:"200"}}>{""}
                 <Group>
                     {course.requestStatus == 0 ? <IconCheck color={"green"} /> : course.requestStatus == 1 ? <IconSearch color={"blue"} /> : <IconX color={"red"} />}
                     <Text color={course.requestStatus == 0 ? "green" : course.requestStatus == 1 ? "blue" : "red"}> {course.requestStatus == 0 ? "Approved" : course.requestStatus == 1 ? "Pending Approval" : "Rejected"}</Text>

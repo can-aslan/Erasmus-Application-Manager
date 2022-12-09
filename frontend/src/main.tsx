@@ -15,6 +15,7 @@ import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ApproveCourseRequestPage from './pages/Instructor/ApproveCourseRequestPage'
 import LoginPage from './pages/LoginPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
 import CourseWishlistPage from './pages/OutgoingStudent/CourseWishlistPage'
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
     errorElement: <MissingPage />,
     children: [
       {
-        element: <RequireAuth allowedUsers={[UserEnum.Admin, UserEnum.Coordinator, UserEnum.FACMember, UserEnum.IncomingStudent, UserEnum.IncomingStudent, UserEnum.OutgoingStudent]}/>,
+        element: <RequireAuth allowedUsers={[UserEnum.Admin, UserEnum.Coordinator, UserEnum.FACMember, UserEnum.IncomingStudent, UserEnum.IncomingStudent, UserEnum.OutgoingStudent, UserEnum.Instructor]} />,
         children: [
           {
             path: '/',
@@ -91,7 +92,17 @@ const router = createBrowserRouter([
                     // Admin pages
                   }
                 ]
-              }
+              },
+              {
+                element: <RequireAuth allowedUsers={[UserEnum.Instructor]} />,
+                children: [
+                  {
+                    // Instructor pages
+                    path: '/instructor/approve-course-request',
+                    element: <ApproveCourseRequestPage />
+                  }
+                ]
+              },
             ]
           }
         ]
@@ -104,10 +115,10 @@ const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-          <ProviderWrapper>
-            <RouterProvider router={router} />
-          </ProviderWrapper>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ProviderWrapper>
+        <RouterProvider router={router} />
+      </ProviderWrapper>
+    </QueryClientProvider>
+  </React.StrictMode>
 )

@@ -5,7 +5,8 @@ export enum UserEnum {
     IncomingStudent='INCOMING_STUDENT',
     Coordinator='COORDINATOR',
     FACMember='FAC_MEMBER',
-    Admin='ADMIN'
+    Admin='ADMIN',
+    Instructor='INSTRUCTOR'
 }
 
 export type User = {

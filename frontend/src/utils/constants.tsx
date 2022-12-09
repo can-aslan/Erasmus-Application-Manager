@@ -81,6 +81,13 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             to: '/coordinator/course-transfer-form',
             icon: <IconArrowsTransferDown />
         }
+    ],
+    [UserEnum.Instructor]:[
+        {
+            label:'Approve Course Request',
+            to:'/instructor/approve-course-request'
+            
+        }
     ]
 
 }
