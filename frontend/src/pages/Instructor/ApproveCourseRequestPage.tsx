@@ -5,7 +5,7 @@ import { Course, CourseRequest } from "../../types";
 
 
 const ApproveCourseRequestPage = () => {
-
+    const [hostName, setHostName] = useState("Host name from Api");
     const [waitingCourses, setWaitingCourses] = useState<Array<CourseRequest>>([
     { courseCode: "CS-XXX", courseName: "xxx course", correspondingCourseInBilkent: "CS-201", courseWebPage: "somewebpage.com/cs-201", syllabusLink: "somewebpage.com/syllabus/cs-201" },
     { courseCode: "CS-YYY", courseName: "yyy course", correspondingCourseInBilkent: "CS-202", courseWebPage: "somewebpage.com/cs-202", syllabusLink: "somewebpage.com/syllabus/cs-202" },
@@ -20,7 +20,7 @@ const ApproveCourseRequestPage = () => {
             <Stack
                 spacing='xl'
             >
-                <ApproveRequestedCoursesGrid waitingCourses={waitingCourses} />
+                <ApproveRequestedCoursesGrid hostName = {hostName} waitingCourses={waitingCourses} />
             </Stack>
         </Box>
     </Center>);
