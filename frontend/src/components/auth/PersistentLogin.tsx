@@ -1,4 +1,5 @@
 import { Center, Loader, Stack, Text } from '@mantine/core';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useRefreshToken from '../../hooks/useRefreshToken';
@@ -7,11 +8,9 @@ import { useUser } from '../../provider/UserProvider';
 const PersistentLogin = () => {
     const [isLoading, setIsLoading] = useState(true)
     const refresh = useRefreshToken()
-    const { user, isUser } = useUser()
+    const { user } = useUser()
 
     useEffect(() => {
-        let isMounted = true
-        
         const verifyRefreshToken = async () => {
             try {
                 await refresh()
@@ -24,20 +23,15 @@ const PersistentLogin = () => {
             }
         }
 
-        if (isUser(user)) {
-            !user?.accessToken ? verifyRefreshToken() : setIsLoading(false)
-        }
-
-        return () => {
-            isMounted = false
-        }
+        !user?.accessToken ? verifyRefreshToken() : setIsLoading(false)
+        
     }, [])
     
     return (
         isLoading ? (
             <Center sx={{height: '100vh'}}>
                 <Stack align='center'>
-                    <Loader size={60}/>
+                    <Loader  size={60}/>
                     <Text size={22} color='blue'>Please wait while we get things ready for you!</Text>
                 </Stack>
             </Center>

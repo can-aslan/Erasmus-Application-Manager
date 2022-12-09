@@ -1,12 +1,23 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck } from '@tabler/icons';
 import { useState } from "react";
+import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
+import ErrorPage from "../Feedback/ErrorPage";
+import LoadingPage from "../Feedback/LoadingPage";
 
 const PreApprovalFormPage = () => {
     const [file, setFile] = useState<File | null>(null)
+    // Fetch pre approval status from backend.
+    const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus()
+    if (isPreApprovalLoading) {
+        return <LoadingPage />
+    }
 
-    // TODO: Fetch pre approval status from backend.
+    if (isPreApprovalError || !preApprovalFile) {
+        return <ErrorPage />
+    }
 
+    // https://stackoverflow.com/questions/53914361/upload-a-file-in-react-and-send-it-to-an-express-server
     const handleFileUpload = (payload: File | null) => {
         setFile(payload)
     }

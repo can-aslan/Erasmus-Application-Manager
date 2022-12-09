@@ -1,6 +1,4 @@
-import { Autocomplete, Button, CloseButton, Flex, Modal, Stack, Text } from "@mantine/core";
-import { IconPlus } from '@tabler/icons';
-import { useState } from 'react';
+import { CloseButton, Flex, Stack, Text } from "@mantine/core";
 import { WishlistItemType } from "../../types";
 import WishlistItem from './WishlistItem';
 

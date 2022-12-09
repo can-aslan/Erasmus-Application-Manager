@@ -1,29 +1,20 @@
-import { createContext, useContext, useState } from "react";
 import { User } from "../types";
 
-interface UserContextProps {
-    user: User | {},
-    isUser: (x: any) => x is User,
-    setUser: React.Dispatch<React.SetStateAction<User | {}>>
+export const useUser = (): {user: User, setUser: (user: User) => void } => {
+    const user = getUser()
+
+    return { user, setUser }
 }
 
-interface UserProviderProps {
-    children: React.ReactNode
+function getUser() {
+    const user = localStorage.getItem("user")
+    if (user) {
+        return JSON.parse(user)
+    }
+
+    return null
 }
 
-const UserContext = createContext<UserContextProps>(null!)
-
-export const UserProvider = ({ children }: UserProviderProps) => {
-    const [user, setUser] = useState<User | {}>({})
-    const isUser = (x: any): x is User => Object.keys(x).length !== 0
-
-    return (
-        <UserContext.Provider value={{user, setUser, isUser}}>
-            {children}
-        </UserContext.Provider>
-    )
-}
-
-export const useUser = () => {
-    return useContext(UserContext)
+function setUser(user: User) {
+    localStorage.setItem("user", JSON.stringify({...user}))
 }

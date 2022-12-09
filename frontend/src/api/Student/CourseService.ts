@@ -1,48 +1,57 @@
 import useAxiosSecure from "../../hooks/useAxiosSecure"
-import { Course, CourseRequest, PreviousCourseRequest } from "../../types"
+import { Course, CourseRequest, PreviousCourseRequest, StudentAssociatedWishlist } from "../../types"
+import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseSchoolSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
-const axiosSecure = useAxiosSecure()
 
 
 export const getCourses = async () => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/courses`)
-    return response
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.get<ResponseCourseList>(`/api/student/courses`)
+    return response.data
 }
 
 export const getCourse = async (courseId: string) => {
-    const response = axiosSecure.get<Course>(`/api/student/courses/${courseId}`)
-    return response
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.get<ResponseCourse>(`/api/student/courses/${courseId}`)
+    return response.data
 }
 
 export const getSchoolCourses = async (schoolId: string) => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/school/${schoolId}/courses`)
-    return response
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.get<ResponseSchoolSpecificCourses>(`/api/student/school/${schoolId}/courses`)
+    return response.data
 }
 
 export const getCourseWishlist = async (studentId: string) => {
-    const response = axiosSecure.get<Array<Course>>(`/api/student/courseWishlist/${studentId}`)
-    return response
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.get<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${studentId}`)
+    return response.data
 }
 
-export const saveWishlist = async (studentId: string, courses: Array<Course>) => {
-    const response = axiosSecure.post<Array<Course>>(`/api/student/courseWishlist/${studentId}`,
+export const saveWishlist = async (wishlist: StudentAssociatedWishlist | undefined) => {
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.post<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${wishlist?.studentId}`,
         JSON.stringify({
-            courses,
+            data: {
+                ...wishlist
+            }
         })    
     )
-    return response
+    return response.data
 }
     
 export const getPreviouslyRequestedCourses = async (studentId: string) => {
-    const response = axiosSecure.get<Array<PreviousCourseRequest>>(`/api/student/previousCourseRequests/${studentId}`)
-    return response
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.get<ResponsePreviousCourseRequests>(`/api/student/previousCourseRequests/${studentId}`)
+    return response.data
 }
 
-export const makeCourseRequest = async (course: Course, studentId: string) => {
-    const response = axiosSecure.post<CourseRequest>(`/api/student/courseRequest/${studentId}`,
+export const makeCourseRequest = async (course: CourseRequest, studentId: string) => {
+    const axiosSecure = useAxiosSecure()
+    const response = await axiosSecure.post<ResponseCourseRequest>(`/api/student/courseRequest/${studentId}`,
         JSON.stringify({
             ...course,
         }
     ))
-    return response
+    return response.data
 }

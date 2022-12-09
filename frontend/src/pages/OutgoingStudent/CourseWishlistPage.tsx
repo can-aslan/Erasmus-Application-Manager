@@ -1,55 +1,90 @@
 import { Autocomplete, Button, Card, Center, Flex, Modal, Stack, Title } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { getCourses, getCourseWishlist, saveWishlist } from '../../api/Student/CourseService';
 import Wishlist from "../../components/wishlist/Wishlist";
-import { WishlistItemType } from "../../types";
+import { useCourses } from '../../hooks/useCourses';
+import { useSaveWishlist } from '../../hooks/useSaveWishlist';
+import { useStudentWishlist } from '../../hooks/useStudentWishlist';
+import { useUser } from '../../provider/UserProvider';
+import { StudentAssociatedWishlist, WishlistItemType } from "../../types";
+import ErrorPage from '../Feedback/ErrorPage';
+import LoadingPage from '../Feedback/LoadingPage';
 
 const CourseWishlistPage = () => {
-    // TODO: Fetch already existing wishlist items from the database.
     const [openModal, setOpenModal] = useState(false)
     const [selectedCourse, setSelectedCourse] = useState('')
     const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
     const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
-    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>([
-        {
-            uuid: 'xxxyyy',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming I',
-            courseCode: 'CS 101',
-        },
-        {
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming II',
-            courseCode: 'CS 102',
+    const { user } = useUser()
+    
+    // Fetch student's wishlist
+    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.id)
+    
+    // Fetch available courses from the database
+    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses()
+    
+    // Mutation for saving the wishlist to database
+    const {mutate: saveWishlistMutation, isLoading: isSaveWishlistLoading} = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(wishlistItems)
+    })
+    const [wishlist, setWishlist] = useState(initialWishlist?.data)
+
+    if (isWishlistLoading|| isCoursesLoading) {
+        return (
+            <LoadingPage />
+        )
+    }
+
+    if (isWishlistError || isCoursesError) {
+        return (
+            <ErrorPage />
+        )
+    }
+    
+    // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
+    const availableCourses: Array<WishlistItemType & {value: string}> = courses.data.map((c) => {
+        return {
+            ...c,
+            value: c.courseName
         }
-    ]) 
-    // TODO: Fetch available courses from the database
-    const availableCourses = [
-        {
-            value: 'CS 101',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming I',
-            courseCode: 'CS 101',
-        },
-        {
-            value: 'CS 102',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming II',
-            courseCode: 'CS 102',
-        }
-    ]
+    })
+    // [
+    //     {
+    //         value: 'CS 101',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming I',
+    //         courseCode: 'CS 101',
+    //     },
+    //     {
+    //         value: 'CS 102',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming II',
+    //         courseCode: 'CS 102',
+    //     }
+    // ]
+
+    const handleWishlistSave = () => {
+        saveWishlistMutation(wishlist)
+    }
 
     const handleDeleteWish = (e: React.MouseEvent) => {
         const id = e.currentTarget.id
-        setDeletedItems(wishlistItems.filter((w) => w.uuid === id))
-        setWishlistItems(wishlistItems.filter((w) => w.uuid !== id))
+        setDeletedItems(wishlist ? wishlist.wishlistItems.filter((w) => w.uuid === id) : [])
+        setWishlist((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    wishlistItems: prev.wishlistItems.filter((w) => w.uuid !== id)
+                }
+            }
+        })
         setNewItems(newItems.filter((n => n.uuid !== id)))
     }
 
@@ -59,15 +94,14 @@ const CourseWishlistPage = () => {
             setOpenModal(false)
             return
         }
-        
-        setWishlistItems((prev) => {
-            return (
-                [
-                    ...prev,
-                    selected
-                ]
-            )
-        })
+        setWishlist((prev) => {
+                if (prev) {
+                    return {
+                        ...prev,
+                        selected
+                    }
+                }
+            })
         setNewItems((prev) => {
             return (
                 [
@@ -95,7 +129,7 @@ const CourseWishlistPage = () => {
                         <Title order={2}>
                             Your Wishlist
                         </Title>
-                        <Wishlist wishlistItems={wishlistItems} handleDeleteWish={handleDeleteWish}/>
+                        <Wishlist wishlistItems={wishlist ? wishlist.wishlistItems : []} handleDeleteWish={handleDeleteWish}/>
                         <div>
                             <Button
                                 onClick={() => setOpenModal(true)}
@@ -106,7 +140,14 @@ const CourseWishlistPage = () => {
                         </div>
                     </Flex>
                 </Card> 
-                <Button disabled={newItems.length === 0 && deletedItems.length === 0}>Save</Button>
+                <Button 
+                    disabled={newItems.length === 0 && deletedItems.length === 0}
+                    loading={isSaveWishlistLoading}
+                    onClick={handleWishlistSave}
+                >
+                    Save
+                </Button>
+                {/* TODO: Report error in case of saving wishlist is unsuccessful: 'isSaveWishlistError' */}
             </Flex>
             <Modal
                 opened={openModal}

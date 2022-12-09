@@ -9,7 +9,7 @@ public class ControllerTestsSetup {
     protected MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
+    public void setup(WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 }
