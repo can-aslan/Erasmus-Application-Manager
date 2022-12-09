@@ -69,7 +69,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             icon: <IconList />
         },
         {
-            label: 'Course Transfer Forms',
+            label: 'Course Transfer',
             to: '/coordinator/course-transfer-form',
             icon: <IconArrowsTransferDown />
         },

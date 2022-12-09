@@ -91,6 +91,29 @@ export type StudentAssociatedCourse = Course & {
 export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
-    file: File,
+    file: string,
     status?: 'rejected' | 'pending' | 'approved',
+}
+
+export type CoordinatorAssociatedStudents = PreApprovalForm & {
+    studentName: string,
+}
+
+export type UniversityProxy = {
+    id: string,
+    universityName: string,
+    city: string,
+    country: string,
+    dormitory?: boolean,
+    studentGrant?: number,
+    specialCase?: Array<string> | [],
+    // TODO: Add accepted departments
+}
+
+export type UniversityDetailed = {
+    universityWebsite: string,
+    generalInfo: string,
+    acceptedDepartmentsInBilkent: Array<string>
+    bgImage?: string, // URL to image
+    logoImage?: string, //URL to image
 }
