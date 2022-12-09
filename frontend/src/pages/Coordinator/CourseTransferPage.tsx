@@ -1,5 +1,5 @@
-import { Autocomplete, Card, Center, Flex, SimpleGrid, Text, TextInput } from "@mantine/core";
-import { IconArrowLeftRight } from '@tabler/icons';
+import { Autocomplete, Box, Button, Card, Center, Flex, Group, SimpleGrid, Text, TextInput } from "@mantine/core";
+import { IconArrowLeftRight, IconDeviceFloppy, IconPlus } from '@tabler/icons';
 import { useState } from "react";
 import { CoordinatorAssociatedStudents, Course } from "../../types";
 
@@ -37,6 +37,7 @@ const CourseTransferPage = () => {
         },
     ]
 
+    // TODO: Fetch Bilkent courses
     const bilkentCourses: Array<Course> = [
         {
             bilkentCredits: 12,
@@ -62,7 +63,6 @@ const CourseTransferPage = () => {
     ]
 
 
-    // TODO: Fetch Bilkent courses
     const courses = bilkentCourses.map(c => {
         return {
             ...c,
@@ -77,8 +77,16 @@ const CourseTransferPage = () => {
         }
     })
 
+    const handleNewClick = () => {
+
+    }
+
+    const handleFormTransfer = () => {
+
+    }
+
     return (
-        <Center sx={{height: "40vh"}}>
+        <Center sx={{height: "50vh"}}>
             <Flex direction="column" gap={36}>
                 <Autocomplete 
                     data={data}
@@ -86,24 +94,40 @@ const CourseTransferPage = () => {
                     onChange={(value) => setSelectedStudent(value)}
                 />
                 <Card
-                    p={48}
+                    p={32}
                     shadow="lg"
                     radius="lg"
                 >
-                    <SimpleGrid
-                        cols={2}
-                        spacing={36}
-                    >
-                        <CourseTransferFormHeader />
-                        <TextInput
-                            placeholder="Course taken in the host university"
-                        />
-                        <Autocomplete 
-                            placeholder="Correspondant course in Bilkent"
-                            data={courses}    
-                        />
-                    </SimpleGrid>
+                    <Flex gap={36} direction='column'>
+                        <SimpleGrid
+                            cols={2}
+                            spacing={36}
+                        >
+                            <CourseTransferFormHeader />
+                            <TextInput
+                                placeholder="Course taken in the host university"
+                            />
+                            <Autocomplete 
+                                placeholder="Correspondant course in Bilkent"
+                                data={courses}    
+                            />
+                        </SimpleGrid>
+                        <Flex justify='center' align='center'>
+                            <Button 
+                                leftIcon={<IconPlus />}
+                                onClick={handleNewClick}
+                            >
+                                NEW
+                            </Button>
+                        </Flex>
+                    </Flex>
                 </Card>
+                <Button 
+                    leftIcon={<IconDeviceFloppy />}
+                    onClick={handleFormTransfer}
+                >
+                    SAVE
+                </Button>
             </Flex>
         </Center>
     );

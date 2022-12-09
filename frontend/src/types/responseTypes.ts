@@ -26,6 +26,6 @@ export type ResponsePreApprovalForm = Record<'data', PreApprovalForm>
 
 export type ResponsePreApprovalFormList = Record<'data', Array<PreApprovalForm>>
 
-export type ResponseUniversites = Record<'data', Array<UniversityProxy>>
+export type ResponseUniversities = Record<'data', Array<UniversityProxy>>
 
 export type ResponseUniversity = Record<'data', UniversityDetailed>

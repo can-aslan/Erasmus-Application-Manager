@@ -20,6 +20,8 @@ import LoginPage from './pages/LoginPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
 import CourseWishlistPage from './pages/OutgoingStudent/CourseWishlistPage'
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
+import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
+import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
 import { UserEnum } from './types'
 
 const router = createBrowserRouter([
@@ -56,6 +58,14 @@ const router = createBrowserRouter([
                   {
                     path: '/student/course-wishlist',
                     element: <CourseWishlistPage />
+                  },
+                  {
+                    path: '/student/universities',
+                    element: <UniversitiesPage />
+                  },
+                  {
+                    path: '/student/universities/:universityId',
+                    element: <UniversityDetails />
                   }
                 ]
               },

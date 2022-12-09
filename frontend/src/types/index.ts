@@ -106,6 +106,7 @@ export type UniversityProxy = {
     dormitory?: boolean,
     studentGrant?: number,
     specialCase?: Array<string> | [],
+    // TODO: Add accepted departments
 }
 
 export type UniversityDetailed = {
