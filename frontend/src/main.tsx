@@ -13,6 +13,7 @@ import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
+import EvaluateCoursesPage from './pages/ExperiencedStudent/EvaluateCoursesPage'
 import EvaluateUniversityPage from './pages/ExperiencedStudent/EvaluateUniversityPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
@@ -125,6 +126,10 @@ const router = createBrowserRouter([
                   {
                     path: '/experienced-student/evaluate-university',
                     element: <EvaluateUniversityPage />
+                  },
+                  {
+                    path: '/experienced-student/evaluate-courses',
+                    element: <EvaluateCoursesPage />
                   }
                 ]
               },
