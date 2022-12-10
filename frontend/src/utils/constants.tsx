@@ -88,6 +88,13 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             to:'/instructor/approve-course-request'
             
         }
+    ],
+    [UserEnum.ExperiencedStudent]:[
+        {
+            label:'Evaluate University',
+            to:'/experienced-student/evaluate-university'
+            
+        }
     ]
 
 }

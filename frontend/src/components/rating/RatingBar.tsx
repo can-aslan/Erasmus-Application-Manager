@@ -1,14 +1,14 @@
-import { Rating } from "@mantine/core";
-import { IconSchool, TablerIcon } from "@tabler/icons";
+import { MantineColor, Rating } from "@mantine/core";
 
 interface RatingBarProps{
     emptySymbol: React.ReactNode;
-    fullSymbol: React.ReactNode
-
+    fullSymbol: React.ReactNode;
+    value: number
+    setValue: (value: number) => void
 }
-const RatingBar = ({emptySymbol, fullSymbol}:RatingBarProps) => {
+const RatingBar = ({emptySymbol, fullSymbol, value, setValue}:RatingBarProps) => {
     return ( 
-        <Rating fractions={2} emptySymbol={emptySymbol} fullSymbol={fullSymbol}/>
+        <Rating onChange={setValue} value={value} fractions={2} emptySymbol={emptySymbol} fullSymbol={fullSymbol}/>
      );
 }
  

@@ -13,6 +13,7 @@ import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
+import EvaluateUniversityPage from './pages/ExperiencedStudent/EvaluateUniversityPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
     errorElement: <MissingPage />,
     children: [
       {
-        element: <RequireAuth allowedUsers={[UserEnum.Admin, UserEnum.Coordinator, UserEnum.FACMember, UserEnum.IncomingStudent, UserEnum.IncomingStudent, UserEnum.OutgoingStudent, UserEnum.Instructor]} />,
+        element: <RequireAuth allowedUsers={[UserEnum.Admin, UserEnum.Coordinator, UserEnum.FACMember, UserEnum.IncomingStudent, UserEnum.IncomingStudent, UserEnum.OutgoingStudent, UserEnum.Instructor, UserEnum.ExperiencedStudent]} />,
         children: [
           {
             path: '/',
@@ -115,6 +116,15 @@ const router = createBrowserRouter([
                     // Instructor pages
                     path: '/instructor/approve-course-request',
                     element: <ApproveCourseRequestPage />
+                  }
+                ]
+              },
+              {
+                element: <RequireAuth allowedUsers={[UserEnum.ExperiencedStudent]} />,
+                children: [
+                  {
+                    path: '/experienced-student/evaluate-university',
+                    element: <EvaluateUniversityPage />
                   }
                 ]
               },
