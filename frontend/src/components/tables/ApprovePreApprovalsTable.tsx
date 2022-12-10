@@ -3,6 +3,7 @@ import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 
 import React, { useEffect, useState } from "react";
 import { PreApprovalForm } from "../../types";
+import RejectionFeedbackModal from "../modals/RejectionFeedbackModal";
 import Wishlist from "../wishlist/Wishlist";
 
 interface ApprovePreApprovalsTableProps {
@@ -19,14 +20,14 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [rejectionFeedback, setRejectionFeedback] = useState("");
     const [allPendingApprovalList, setPendingApprovalList] = useState([
 
-        { studentName: "Can Ersoy", studentID: 22003216, status: "Approved", rejectionFeedback: "Something is missing"},
-        { studentName: "Selim Can Güler", studentID: 22002811, status: "Pending",rejectionFeedback: "Something is missing" },
-        { studentName: "a", studentID: 22002811, status: "Rejected", rejectionFeedback: "Something is missing"},
-        { studentName: "b", studentID: 22002811, status: "Approved", rejectionFeedback: "" },
-        { studentName: "c", studentID: 22002811, status: "Rejected", rejectionFeedback: "I dont like you" },
-        { studentName: "d", studentID: 22002811, status: "Pending", rejectionFeedback: "" },
-        { studentName: "e", studentID: 22002811, status: "Approved", rejectionFeedback: "" },
-        { studentName: "f", studentID: 22002811, status: "Rejected", rejectionFeedback: "Just wanted to reject" },
+        { studentName: "Can Ersoy", studentID: "22003216", status: "Approved", rejectionFeedback: "Something is missing"},
+        { studentName: "Selim Can Güler", studentID: "22002811", status: "Pending",rejectionFeedback: "Something is missing" },
+        { studentName: "a", studentID: "22002811", status: "Rejected", rejectionFeedback: "Something is missing"},
+        { studentName: "b", studentID: "22002811", status: "Approved", rejectionFeedback: "" },
+        { studentName: "c", studentID: "22002811", status: "Rejected", rejectionFeedback: "I dont like you" },
+        { studentName: "d", studentID: "22002811", status: "Pending", rejectionFeedback: "" },
+        { studentName: "e", studentID: "22002811", status: "Approved", rejectionFeedback: "" },
+        { studentName: "f", studentID: "22002811", status: "Rejected", rejectionFeedback: "Just wanted to reject" },
 
     ])
     const [tempPendingApprovalList, setTempPendingApprovalList] = useState(allPendingApprovalList);
@@ -98,24 +99,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     return (
 
         <>
-            <Modal opened={rejectionFeedbackOpened}
-                size={"50%"}
-                centered={false}
-                onClose={() => setRejectionFeedbackOpened(false)}
-                withCloseButton={false}
-                closeOnClickOutside={false}
-                closeOnEscape={false}
-            >
-                <Flex direction={"column"} gap={"xs"}>
-                    <TextInput value={rejectionFeedback} onChange={(event) => setRejectionFeedback(event.currentTarget.value)} label={"Rejection Feedback"} placeholder={"Please enter why you rejected this Pre Approval..."}></TextInput>
-                    <Flex justify={"right"} gap={"xs"}>
-                        <Button color={"red"} onClick={() => { setRejectionFeedbackOpened(false); setRejectionFeedback("");}}>Cancel Rejection</Button>
-                        <Button color={"green"} onClick={() => { setRejectionFeedbackOpened(false); console.log(rejectionFeedback); setRejectionFeedback("");}}>Confirm Rejection</Button>
-                    </Flex>
-
-                </Flex>
-
-            </Modal>
+            <RejectionFeedbackModal rejectionFeedbackOpened={rejectionFeedbackOpened} rejectionFeedback={rejectionFeedback} setRejectionFeedbackOpened={setRejectionFeedbackOpened} setRejectionFeedback={setRejectionFeedback}></RejectionFeedbackModal>
 
             <Modal
                 opened={preApprovalDetailsOpened}

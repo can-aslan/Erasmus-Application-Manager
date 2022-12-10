@@ -4,7 +4,7 @@ import { IconListDetails, IconSearch } from "@tabler/icons";
 import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UniversityProxy } from "../../types";
 
 interface UniversitiesTableProps {
@@ -120,8 +120,8 @@ const UniversitiesTable = ({ universities, isUniversitiesLoading }: Universities
                         title: 'Special Requirements',
                         sortable: true,
                         cellsStyle: ({ specialCase }) =>
-                            specialCase?.length === 0 ? {color: 'green'} : {color: 'red'},
-                        render: ({ specialCase }) => specialCase?.length === 0 ? "No" : "Yes"
+                            specialCase?.languageRequirements?.length && specialCase?.semesterLimit?.length ? {color: 'green'} : {color: 'red'},
+                        render: ({ specialCase }) => specialCase?.languageRequirements.length === 0 && specialCase?.semesterLimit?.length === 0?  "No" : "Yes"
                     },
                     {
                         accessor: 'details',
@@ -153,6 +153,7 @@ const UniversitiesTable = ({ universities, isUniversitiesLoading }: Universities
                 sortStatus={sortStatus}
                 onSortStatusChange={setSortStatus}
                 onRowClick={(record) => {
+                    localStorage.setItem('universityProxy', JSON.stringify({...record}))
                     navigate(`/student/universities/${record.id}`)
                 }}
             />

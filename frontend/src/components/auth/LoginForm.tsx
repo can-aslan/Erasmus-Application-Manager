@@ -18,7 +18,7 @@ const LoginForm = () => {
     const navigate = useNavigate()
     const { setUser } = useUser()
     const loginMutation = useMutation({
-        mutationFn: ({bilkentID, pwd}: MutationFunctionProps) => {
+        mutationFn: ({ bilkentID, pwd }: MutationFunctionProps) => {
             return login(bilkentID, pwd)
         },
         onSuccess: (data) => {
@@ -47,16 +47,16 @@ const LoginForm = () => {
             }
         }
     })
-    
+
     useHotkeys([['Enter', () => handleSignIn()]]) // Enter is mapped as shortcut sign in
-    
+
     const form = useForm({
         initialValues: {
             bilkentID: '',
             password: ''
         },
         validate: {
-            bilkentID: (value) => value.length > 0 ? null: "ID cannot be empty.",
+            bilkentID: (value) => value.length > 0 ? null : "ID cannot be empty.",
             password: (value) => value.length > 0 ? null : "Password cannot be empty."
         }
     })
@@ -84,7 +84,7 @@ const LoginForm = () => {
     return (
         <form>
             <Stack spacing={16}>
-                <TextInput 
+                <TextInput
                     label="Bilkent ID"
                     placeholder="Your ID"
                     {...form.getInputProps('bilkentID')}
@@ -95,16 +95,16 @@ const LoginForm = () => {
                     {...form.getInputProps('password')}
                 >
                 </PasswordInput>
-                <Button 
+                <Button
                     onClick={handleSignIn}
                     loaderPosition='left'
                     loading={loginMutation.isLoading}
                     disabled={loginMutation.isLoading}
                 >
-                        Sign In
+                    Sign In
                 </Button>
                 <Group position="center">
-                    <Link 
+                    <Link
                         to='/forgot-password'
                     >
                         Forgot your password?
@@ -114,5 +114,5 @@ const LoginForm = () => {
         </form>
     );
 }
- 
+
 export default LoginForm;

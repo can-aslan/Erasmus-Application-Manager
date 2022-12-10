@@ -19,7 +19,10 @@ const UniversitiesPage = () => {
                     id: "1",
                     universityName: "Vrije",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: ['German B2'],
+                        semesterLimit: ["Fall"]
+                    },
                     studentGrant: 500,
                 },
                 {
@@ -28,7 +31,10 @@ const UniversitiesPage = () => {
                     id: "2",
                     universityName: "King's College",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: [],
+                        semesterLimit: []
+                    },
                     studentGrant: 600,
                 },
                 {
@@ -37,7 +43,10 @@ const UniversitiesPage = () => {
                     id: "3",
                     universityName: "Vrije",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: [],
+                        semesterLimit: []
+                    },
                     studentGrant: 500,
                 },
                 {
@@ -46,7 +55,10 @@ const UniversitiesPage = () => {
                     id: "4",
                     universityName: "King's College",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: [],
+                        semesterLimit: []
+                    },
                     studentGrant: 600,
                 },
                 {
@@ -55,7 +67,10 @@ const UniversitiesPage = () => {
                     id: "5",
                     universityName: "Vrije",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: [],
+                        semesterLimit: []
+                    },
                     studentGrant: 500,
                 },
                 {
@@ -64,7 +79,10 @@ const UniversitiesPage = () => {
                     id: "6",
                     universityName: "King's College",
                     dormitory: true,
-                    specialCase: [],
+                    specialCase: {
+                        languageRequirements: [],
+                        semesterLimit: []
+                    },
                     studentGrant: 600,
                 },
                 
