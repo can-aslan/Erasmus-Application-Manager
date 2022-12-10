@@ -106,7 +106,7 @@ export type UniversityProxy = {
     country: string,
     dormitory?: boolean,
     studentGrant?: number,
-    specialCase?: Array<string> | [],
+    specialCase?: SpecialCases,
     // TODO: Add accepted departments
 }
 
@@ -116,4 +116,9 @@ export type UniversityDetailed = {
     acceptedDepartmentsInBilkent: Array<string>
     bgImage?: string, // URL to image
     logoImage?: string, //URL to image
+}
+
+export type SpecialCases = {
+    semesterLimit: string[],
+    languageRequirements: string[]
 }
