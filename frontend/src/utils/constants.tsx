@@ -1,5 +1,6 @@
 import {
     IconArrowsTransferDown,
+    IconBook,
     IconClick,
     IconFileReport,
     IconFileSearch,
@@ -92,8 +93,13 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.ExperiencedStudent]:[
         {
             label:'Evaluate University',
-            to:'/experienced-student/evaluate-university'
-            
+            to:'/experienced-student/evaluate-university',
+            icon: <IconSchool/>,
+        },
+        {
+            label:'Evaluate Courses',
+            to:'/experienced-student/evaluate-courses',
+            icon: <IconBook/>
         }
     ]
 
