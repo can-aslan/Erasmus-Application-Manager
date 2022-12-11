@@ -7,7 +7,8 @@ export enum UserEnum {
     FACMember='FAC_MEMBER',
     Admin='ADMIN',
     Instructor='INSTRUCTOR',
-    ExperiencedStudent='EXPERIENCED_STUDENT'
+    ExperiencedStudent='EXPERIENCED_STUDENT',
+    OISEPStaff='OISEP_STAFF'
 }
 
 export type User = {
