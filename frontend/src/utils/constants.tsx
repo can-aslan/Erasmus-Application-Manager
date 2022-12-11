@@ -7,7 +7,8 @@ import {
     IconGift,
     IconLicense,
     IconList,
-    IconSchool
+    IconSchool,
+    IconUpload
 } from "@tabler/icons";
 import { NavbarLink, UserEnum } from "../types";
 
@@ -100,6 +101,13 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             label:'Evaluate Courses',
             to:'/experienced-student/evaluate-courses',
             icon: <IconBook/>
+        }
+    ],
+    [UserEnum.OISEPStaff]: [
+        {
+            label: 'Upload Transcript',
+            to: '/oisep-staff/transcript-upload',
+            icon: <IconUpload />
         }
     ]
 
