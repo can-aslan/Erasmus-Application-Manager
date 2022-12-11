@@ -6,31 +6,31 @@ import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePrev
 
 export const getCourses = async () => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<ResponseCourseList>(`/api/student/courses`)
+    const response = await axiosSecure.get<ResponseCourseList>(`/student/courses`)
     return response.data
 }
 
 export const getCourse = async (courseId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<ResponseCourse>(`/api/student/courses/${courseId}`)
+    const response = await axiosSecure.get<ResponseCourse>(`/student/courses/${courseId}`)
     return response.data
 }
 
 export const getSchoolCourses = async (schoolId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<ResponseSchoolSpecificCourses>(`/api/student/school/${schoolId}/courses`)
+    const response = await axiosSecure.get<ResponseSchoolSpecificCourses>(`/student/school/${schoolId}/courses`)
     return response.data
 }
 
 export const getCourseWishlist = async (studentId: string) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.get<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${studentId}`)
+    const response = await axiosSecure.get<ResponseStudentSpecificCourseWishlist>(`/student/courseWishlist/${studentId}`)
     return response.data
 }
 
 export const saveWishlist = async (wishlist: StudentAssociatedWishlist | undefined) => {
     const axiosSecure = useAxiosSecure()
-    const response = await axiosSecure.post<ResponseStudentSpecificCourseWishlist>(`/api/student/courseWishlist/${wishlist?.studentId}`,
+    const response = await axiosSecure.post<ResponseStudentSpecificCourseWishlist>(`/student/courseWishlist/${wishlist?.studentId}`,
         JSON.stringify({
             data: {
                 ...wishlist

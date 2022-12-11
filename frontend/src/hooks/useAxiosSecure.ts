@@ -4,7 +4,7 @@ import { useUser } from "../provider/UserProvider";
 import { User } from "../types";
 import useRefreshToken from "./useRefreshToken";
 
-const useAxiosSecure = () => {
+const useAxiosSecure = (contentType?: string) => {
     const refresh = useRefreshToken()
     const { user } = useUser()
 
@@ -12,6 +12,9 @@ const useAxiosSecure = () => {
         const requestIntercept = axiosSecure.interceptors.request.use(config => {
                 if (!config?.headers!['Authorization']) {
                     config.headers!['Authorization'] = `Bearer ${(user as User).accessToken}`
+                }
+                if (contentType) {
+                    config.headers!["Content-Type"] = contentType
                 }
 
                 return config
