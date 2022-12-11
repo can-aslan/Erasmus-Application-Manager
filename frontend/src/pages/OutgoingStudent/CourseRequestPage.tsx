@@ -53,10 +53,10 @@ const CourseRequestPage = () => {
         }
         if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
             // send request to api
-            const course: Course = {
+            // const course: Course = {
 
-            }
-            mutateCourseRequest()
+            // }
+            // mutateCourseRequest()
             console.log("error yok");
         }
     }
