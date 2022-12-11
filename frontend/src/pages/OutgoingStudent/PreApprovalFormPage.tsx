@@ -2,13 +2,15 @@ import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Ti
 import { IconCircleCheck } from '@tabler/icons';
 import { useState } from "react";
 import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
+import { useUser } from "../../provider/UserProvider";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
 const PreApprovalFormPage = () => {
     const [file, setFile] = useState<File | null>(null)
+    const { user } = useUser()
     // Fetch pre approval status from backend.
-    const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus()
+    const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus(user.id)
     if (isPreApprovalLoading) {
         return <LoadingPage />
     }

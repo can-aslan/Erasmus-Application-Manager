@@ -57,7 +57,16 @@ export type Course = {
     courseCode: string,
     courseName: string,
     bilkentCredits: number,
-    ECTSCredits: number
+    ECTSCredits: number,
+    elective?: boolean
+}
+
+export type HostCourse = {
+    id: string,
+    courseCode: string,
+    courseName: string,
+    ECTSCredits: number,
+    grade?: string,
 }
 
 export type SchoolAssociatedCourse = {
@@ -98,6 +107,9 @@ export type PreApprovalForm = {
 
 export type CoordinatorAssociatedStudents = PreApprovalForm & {
     studentName: string,
+    studentSurname: string,
+    studentId: string,
+    studentDepartment: Array<string>,
 }
 
 export type UniversityProxy = {
@@ -123,3 +135,4 @@ export type SpecialCases = {
     semesterLimit: string[],
     languageRequirements: string[]
 }
+
