@@ -13,12 +13,14 @@ import LoadingPage from "../Feedback/LoadingPage";
 const PreApprovalFormPage = () => {
     const { user } = useUser()
     const [file, setFile] = useState<File | null>(null)
+
     const axiosSecure = useAxiosSecure('multipart/form-data')
     // Fetch pre approval status from backend.
     // const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus()
     // if (isPreApprovalLoading) {
     //     return <LoadingPage />
     // }
+
 
     // if (isPreApprovalError || !preApprovalFile) {
     //     return <ErrorPage />

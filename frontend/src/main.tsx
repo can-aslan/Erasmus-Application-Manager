@@ -17,9 +17,11 @@ import EvaluateCoursesPage from './pages/ExperiencedStudent/EvaluateCoursesPage'
 import EvaluateUniversityPage from './pages/ExperiencedStudent/EvaluateUniversityPage'
 import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
+import Unauthorized from './pages/Feedback/UnauthorizedPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ApproveCourseRequestPage from './pages/Instructor/ApproveCourseRequestPage'
 import LoginPage from './pages/LoginPage'
+import TranscriptUploadPage from './pages/OISEPStaff/TranscriptUploadPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
 import CourseWishlistPage from './pages/OutgoingStudent/CourseWishlistPage'
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
@@ -33,6 +35,10 @@ const router = createBrowserRouter([
     element: <LoginPage />
   },
   {
+    path: '/unauthorized',
+    element: <Unauthorized />
+  },
+  {
     path: '/forgot-password',
     element: <ForgotPasswordPage />
   },
@@ -41,7 +47,17 @@ const router = createBrowserRouter([
     errorElement: <MissingPage />,
     children: [
       {
-        element: <RequireAuth allowedUsers={[UserEnum.Admin, UserEnum.Coordinator, UserEnum.FACMember, UserEnum.IncomingStudent, UserEnum.IncomingStudent, UserEnum.OutgoingStudent, UserEnum.Instructor, UserEnum.ExperiencedStudent]} />,
+        element: <RequireAuth allowedUsers={[
+          UserEnum.Admin, 
+          UserEnum.Coordinator, 
+          UserEnum.FACMember, 
+          UserEnum.IncomingStudent, 
+          UserEnum.IncomingStudent, 
+          UserEnum.OutgoingStudent, 
+          UserEnum.Instructor, 
+          UserEnum.ExperiencedStudent,
+          UserEnum.OISEPStaff,
+        ]} />,
         children: [
           {
             path: '/',
@@ -131,6 +147,15 @@ const router = createBrowserRouter([
                     path: '/experienced-student/evaluate-courses',
                     element: <EvaluateCoursesPage />
                   }
+                ]
+              },
+              {
+                element: <RequireAuth allowedUsers={[UserEnum.OISEPStaff]} />,
+                children: [
+                  {
+                    path: '/oisep-staff/transcript-upload',
+                    element: <TranscriptUploadPage />
+                  },
                 ]
               },
             ]
