@@ -3,6 +3,7 @@ import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { approveWishlist, rejectWishlist } from '../../api/Coordinator/CourseWishlistService';
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
 import { useUser } from "../../provider/UserProvider";
 import { StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemType } from "../../types";
@@ -12,6 +13,7 @@ interface ApproveWishlistTableProps {
 }
 
 const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
+    const axiosSecure = useAxiosSecure()
     const [opened, setOpened] = useState(false);
     const [selectedStudentName, setSelectedStudentName] = useState("");
     const [selectedStudentID, setSelectedStudentID] = useState("");
@@ -21,12 +23,12 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
 
     const {mutate: mutateApproval} = useMutation({
         mutationKey: ['approveWishlist'],
-        mutationFn: (wishlistId: string) => approveWishlist(user!.id, wishlistId),
+        mutationFn: (wishlistId: string) => approveWishlist(axiosSecure, user!.id, wishlistId),
     })
 
     const { mutate: mutateRejection } = useMutation({
         mutationKey: ['rejectWishlist'],
-        mutationFn: (wishlistId: string) => rejectWishlist(user!.id, wishlistId)
+        mutationFn: (wishlistId: string) => rejectWishlist(axiosSecure, user!.id, wishlistId)
     })
 
 

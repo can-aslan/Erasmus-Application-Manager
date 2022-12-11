@@ -1,14 +1,16 @@
 import { Accordion, Anchor, Badge, Card, Center, Flex, Header, Image, List, Text, TextInput, Title } from "@mantine/core";
 import { AccordionControl } from "@mantine/core/lib/Accordion/AccordionControl/AccordionControl";
 import { useParams } from "react-router-dom";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { UniversityDetailed, UniversityProxy } from "../../types";
 
 const UniversityDetails = () => {
     const { universityId } = useParams()
     const universityProxy = JSON.parse(localStorage.getItem('universityProxy') || '') as unknown as UniversityProxy
+    const axiosSecure = useAxiosSecure()
 
     // Fetch University details
-    // const {data: university, isError: isUniError, isLoading: isUniLoading} = useUniversity(universityId!)
+    // const {data: university, isError: isUniError, isLoading: isUniLoading} = useUniversity(axiosSecure, universityId!)
     // if (isUniLoading) {
     //     return <LoadingPage />
     // }

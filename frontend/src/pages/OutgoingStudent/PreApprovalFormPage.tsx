@@ -16,7 +16,7 @@ const PreApprovalFormPage = () => {
 
     const axiosSecure = useAxiosSecure('multipart/form-data')
     // Fetch pre approval status from backend.
-    // const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus()
+    // const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus(axiosSecure)
     // if (isPreApprovalLoading) {
     //     return <LoadingPage />
     // }

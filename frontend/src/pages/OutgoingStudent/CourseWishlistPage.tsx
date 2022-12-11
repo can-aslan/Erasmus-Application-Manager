@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getCourses, getCourseWishlist, saveWishlist } from '../../api/Student/CourseService';
 import Wishlist from "../../components/wishlist/Wishlist";
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useCourses } from '../../hooks/useCourses';
 import { useSaveWishlist } from '../../hooks/useSaveWishlist';
 import { useStudentWishlist } from '../../hooks/useStudentWishlist';
@@ -18,17 +19,18 @@ const CourseWishlistPage = () => {
     const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
     const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
     const { user } = useUser()
+    const axiosSecure = useAxiosSecure()
     
     // Fetch student's wishlist
-    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.id)
+    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(axiosSecure, user!.id)
     
     // Fetch available courses from the database
-    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses()
+    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses(axiosSecure)
     
     // Mutation for saving the wishlist to database
     const {mutate: saveWishlistMutation, isLoading: isSaveWishlistLoading} = useMutation({
         mutationKey: ['saveWishlist'],
-        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(wishlistItems)
+        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(axiosSecure, wishlistItems)
     })
     const [wishlist, setWishlist] = useState(initialWishlist?.data)
 

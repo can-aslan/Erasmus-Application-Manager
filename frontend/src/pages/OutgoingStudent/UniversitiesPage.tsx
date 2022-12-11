@@ -1,15 +1,17 @@
 import { Box } from "@mantine/core";
 import UniversitiesTable from "../../components/tables/UniversitiesTable";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { ResponseUniversities } from "../../types/responseTypes";
 
 
 const UniversitiesPage = () => {
+    const axiosSecure = useAxiosSecure()
     // Fetch universities.
     // const {
     //     data: universities,
     //     isError: isUniversitiesError,
     //     isLoading: isUniversitiesLoading 
-    // } = useUniversities()
+    // } = useUniversities(axiosSecure)
 
     const universities: ResponseUniversities = {
             data: [
