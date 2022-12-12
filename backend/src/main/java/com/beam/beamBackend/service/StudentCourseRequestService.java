@@ -14,17 +14,18 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
 
     @Override
     public boolean requestCourse(CourseRequest courseRequest) {
-        return courseRequestRepository.saveRequest(courseRequest);
+        courseRequestRepository.save(courseRequest);
+        return true;
     }
 
     @Override
     public List<CourseRequest> getAllCourseRequests() {
-        return courseRequestRepository.getAllCourseRequests();
+        return courseRequestRepository.findAll();
     }
 
     @Override
     public List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId) {
-        return courseRequestRepository.getCourseRequestsByStudentId(studentId);
+        return courseRequestRepository.findAllByStudentID(studentId);
     }
     
 }

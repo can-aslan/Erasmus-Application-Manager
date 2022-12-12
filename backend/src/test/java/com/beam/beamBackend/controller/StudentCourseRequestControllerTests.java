@@ -31,7 +31,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "CS-XYZ",
             "Other_Course",
             "CS-319",
-            "www.othercourselink.com"
+            "www.othercourselink.com",
+            "www.syllabus.com"
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(true);
@@ -47,7 +48,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
                     +     "\"bilkentCode\": \"" + courseRequest.getBilkentCode() + "\","
-                    +     "\"webpage\": \"" + courseRequest.getWebpage() + "\""
+                    +     "\"webpage\": \"" + courseRequest.getWebpage() + "\","
+                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\""
                     + "}"
                 )
             )
@@ -67,7 +69,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "WRONG_COURSE_INFO",
             "Other_Course",
             "CS-319",
-            "www.othercourselink.com"
+            "www.othercourselink.com",
+            "www.syllabus.com"
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(false);
@@ -83,7 +86,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
                     +     "\"bilkentCode\": \"" + courseRequest.getBilkentCode() + "\","
-                    +     "\"webpage\": \"" + courseRequest.getWebpage() + "\""
+                    +     "\"webpage\": \"" + courseRequest.getWebpage() + "\","
+                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\""
                     + "}"
                 )
             )
