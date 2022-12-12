@@ -8,8 +8,11 @@ export const getPreApprovalFile = async (axios: AxiosInstance, studentId: string
 }
 
 export const submitPreApprovalFile = async (axios: AxiosInstance, formData: FormData, studentId: string) => {
-    const response = await axios.post(`/student/uploadPreApproval/${studentId}`, {
-        formData
+    console.log(formData)
+    const response = await axios.post(`/student/preApproval/${studentId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
     })
     return response.data
 }

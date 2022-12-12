@@ -13,9 +13,6 @@ const useAxiosSecure = (contentType?: string) => {
                 if (!config?.headers!['Authorization']) {
                     config.headers!['Authorization'] = `Bearer ${(user as User).accessToken}`
                 }
-                if (contentType) {
-                    config.headers!["Content-Type"] = contentType
-                }
 
                 return config
             }, (error) => Promise.reject(error)

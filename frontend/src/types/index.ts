@@ -151,3 +151,7 @@ export type SpecialCases = {
     languageRequirements: string[]
 }
 
+export type ProgressBarStep = {
+    label: string,
+    description: string
+}
