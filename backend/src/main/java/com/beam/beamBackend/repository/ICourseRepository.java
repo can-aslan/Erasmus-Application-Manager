@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.beam.beamBackend.model.Course;
 
 public interface ICourseRepository {
+    /**/
     boolean saveCourse(Course course);
 
     boolean editCourseByCourseUUID(UUID courseUUID, Course newCourse);
@@ -18,4 +19,5 @@ public interface ICourseRepository {
 
     List<Course> getAllCourses();
     List<Course> getAllCoursesByUniversityID(Long universityID);
+    
 }

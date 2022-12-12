@@ -7,7 +7,7 @@ import com.beam.beamBackend.model.Student;
 
 @Qualifier("student")
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long>
+public interface StudentRepository// extends JpaRepository<Student, Long>
 {
     //boolean preApprovalStatus = findStudentById(long id)
 }
