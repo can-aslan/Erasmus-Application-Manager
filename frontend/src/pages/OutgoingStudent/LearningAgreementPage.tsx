@@ -35,7 +35,7 @@ const LearningAgreementPage = () => {
         setFile(payload)
     }
     return (
-        <Center>
+        <Center sx={{height: '87vh'}}>
             <Flex direction={"row"} gap={"lg"}>
                 <Box
                     sx={{ minWidth: 300, minHeight: 500 }}
