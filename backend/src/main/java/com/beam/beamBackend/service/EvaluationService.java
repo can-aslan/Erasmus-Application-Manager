@@ -68,7 +68,8 @@ public class EvaluationService {
                 throw new Exception("user not found");
             }
 
-            EvalStatus evalStatus = courseEvalRepo.findEvalStatusByAuthorId(courseEval.getAuthorId());
+            EvalStatus evalStatus = null;
+            // courseEvalRepo.findEvalStatusByAuthorId(courseEval.getAuthorId());
 
             if (evalStatus == null) {
                 courseEval.setId(UUID.randomUUID());
@@ -123,7 +124,7 @@ public class EvaluationService {
         }
     }
 
-    public EvaluationForm getSavedUniEval(long authorId) {
+    public EvaluationForm getSavedUniEval(long authorId) throws Exception {
         try {
             // throw exception if user is not found in the db
             if (!userRepo.existsByBilkentId(authorId)) {
@@ -141,7 +142,7 @@ public class EvaluationService {
             }
 
             // this will be inaccurate for update !!!!!
-            return ;
+            return null;//here
             
         } catch (Exception e) {
             System.out.println("course eval exception");
@@ -150,9 +151,9 @@ public class EvaluationService {
         }
     }
 
-    public EvaluationForm getSavedCourseEval(long authorId, UUID courseId) {
+    // public EvaluationForm getSavedCourseEval(long authorId, UUID courseId) {
 
-    }
+    // }
 
     
 }

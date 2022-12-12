@@ -96,25 +96,25 @@ public class EvaluationController {
         }        
     }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/saved/{studentId}/uniEval/")
-    public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId) {
-        try {
-            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
-            return Response.create("ok", HttpStatus.OK, courseEvals);
-        } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
-        }        
-    }
+    // // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @GetMapping("/saved/{studentId}/uniEval/")
+    // public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId) {
+    //     try {
+    //         List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
+    //         return Response.create("ok", HttpStatus.OK, courseEvals);
+    //     } catch (Exception e) {
+    //         return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+    //     }        
+    // }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/saved/{studentId}/courseEval/{courseId}") ///!!!!!!!!!!!!!!!!!!!!!!!!
-    public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId) {
-        try {
-            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
-            return Response.create("ok", HttpStatus.OK, courseEvals);
-        } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
-        }        
-    }
+    // // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @GetMapping("/saved/{studentId}/courseEval/{courseId}") ///!!!!!!!!!!!!!!!!!!!!!!!!
+    // public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId) {
+    //     try {
+    //         List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
+    //         return Response.create("ok", HttpStatus.OK, courseEvals);
+    //     } catch (Exception e) {
+    //         return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+    //     }        
+    // }
 }
