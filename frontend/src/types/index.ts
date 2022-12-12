@@ -5,11 +5,14 @@ export enum UserEnum {
     IncomingStudent='INCOMING_STUDENT',
     Coordinator='COORDINATOR',
     FACMember='FAC_MEMBER',
-    Admin='ADMIN'
+    Admin='ADMIN',
+    Instructor='INSTRUCTOR',
+    ExperiencedStudent='EXPERIENCED_STUDENT',
+    OISEPStaff='OISEP_STAFF'
 }
 
 export type User = {
-    uuid: string,
+    id: string,
     name: string,
     surname: string,
     email: string,
@@ -33,7 +36,6 @@ export type NavbarLink = {
     icon?: React.ReactNode,
 }
 
-
 // Models
 export type WishlistItemType = {
     uuid: string,
@@ -56,7 +58,25 @@ export type Course = {
     courseCode: string,
     courseName: string,
     bilkentCredits: number,
-    ECTSCredits: number
+    ECTSCredits: number,
+    elective?: boolean
+}
+
+export type HostCourse = {
+    id: string,
+    courseCode: string,
+    courseName: string,
+    ECTSCredits: number,
+    grade?: string,
+}
+
+export type SchoolAssociatedCourse = {
+    schoolId: string,
+    schoolName: string,
+    uuid: string,
+    courseCode: string,
+    courseName: string,
+    ECTSCredits: number,
 }
 
 export type PreviousCourseRequest = CourseRequest & {
@@ -82,6 +102,42 @@ export type StudentAssociatedCourse = Course & {
 export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
-    file: File,
+    file: string,
     status?: 'rejected' | 'pending' | 'approved',
+}
+
+export type CoordinatorAssociatedStudents = PreApprovalForm & {
+    studentName: string,
+    studentSurname: string,
+    studentId: string,
+    studentDepartment: Array<string>,
+}
+
+export type UniversityProxy = {
+    id: string,
+    universityName: string,
+    city: string,
+    country: string,
+    dormitory?: boolean,
+    studentGrant?: number,
+    specialCase?: SpecialCases,
+    // TODO: Add accepted departments
+}
+
+export type UniversityDetailed = {
+    universityWebsite: string,
+    generalInfo: string,
+    acceptedDepartmentsInBilkent: Array<string>
+    bgImage?: string, // URL to image
+    logoImage?: string, //URL to image
+}
+
+export type SpecialCases = {
+    semesterLimit: string[],
+    languageRequirements: string[]
+}
+
+export type ProgressBarStep = {
+    label: string,
+    description: string
 }

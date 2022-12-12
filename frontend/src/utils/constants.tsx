@@ -1,20 +1,54 @@
 import {
     IconArrowsTransferDown,
+    IconBook,
     IconClick,
     IconFileReport,
     IconFileSearch,
     IconGift,
     IconLicense,
     IconList,
-    IconSchool
+    IconSchool,
+    IconUpload
 } from "@tabler/icons";
-import { NavbarLink, UserEnum } from "../types";
+import { NavbarLink, ProgressBarStep, UserEnum } from "../types";
+
+export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> = {
+    [UserEnum.OutgoingStudent]: [
+        {
+            label: "Apply To Host",
+            description: "Apply to host university"
+        },
+        {
+            label: "Submit Wishlist",
+            description: "Submit Wishlist to Coordinator"
+        },
+        {
+            label: "Submit Pre Approval",
+            description: "Submit Pre Approval to Coordinator"
+        },
+        {
+            label: "Submit Learning Agreement Coordinator",
+            description: "Submit Learning Agreement to Coordinator"
+        },
+        {
+            label: "SubmitLearningAgreementOISEP",
+            description: "Submit Learning Agreement to OISEP"
+        }
+    ],
+    [UserEnum.IncomingStudent]: [],
+    [UserEnum.Coordinator]: [],
+    [UserEnum.FACMember]: [],
+    [UserEnum.Admin]: [],
+    [UserEnum.Instructor]: [],
+    [UserEnum.ExperiencedStudent]: [],
+    [UserEnum.OISEPStaff]: []
+}
 
 export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.OutgoingStudent]: [
         {
-            label: 'Universities', 
-            to:'/student/universities', 
+            label: 'Universities',
+            to: '/student/universities',
             icon: <IconSchool />
         },
         {
@@ -69,7 +103,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             icon: <IconList />
         },
         {
-            label: 'Course Transfer Forms',
+            label: 'Course Transfer',
             to: '/coordinator/course-transfer-form',
             icon: <IconArrowsTransferDown />
         },
@@ -80,6 +114,32 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             label: 'Course Transfer Forms',
             to: '/coordinator/course-transfer-form',
             icon: <IconArrowsTransferDown />
+        }
+    ],
+    [UserEnum.Instructor]: [
+        {
+            label: 'Approve Course Request',
+            to: '/instructor/approve-course-request'
+
+        }
+    ],
+    [UserEnum.ExperiencedStudent]: [
+        {
+            label: 'Evaluate University',
+            to: '/experienced-student/evaluate-university',
+            icon: <IconSchool />,
+        },
+        {
+            label: 'Evaluate Courses',
+            to: '/experienced-student/evaluate-courses',
+            icon: <IconBook />
+        }
+    ],
+    [UserEnum.OISEPStaff]: [
+        {
+            label: 'Upload Transcript',
+            to: '/oisep-staff/transcript-upload',
+            icon: <IconUpload />
         }
     ]
 

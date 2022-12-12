@@ -4,11 +4,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getCourses, getCourseWishlist, saveWishlist } from '../../api/Student/CourseService';
 import Wishlist from "../../components/wishlist/Wishlist";
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useCourses } from '../../hooks/useCourses';
 import { useSaveWishlist } from '../../hooks/useSaveWishlist';
 import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
-import { WishlistItemType } from "../../types";
+import { StudentAssociatedWishlist, WishlistItemType } from "../../types";
 import ErrorPage from '../Feedback/ErrorPage';
 import LoadingPage from '../Feedback/LoadingPage';
 
@@ -18,16 +19,20 @@ const CourseWishlistPage = () => {
     const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
     const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
     const { user } = useUser()
+    const axiosSecure = useAxiosSecure()
     
     // Fetch student's wishlist
-    const { data: wishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(user!.uuid)
-    const [wishlistItems, setWishlistItems] = useState<Array<WishlistItemType>>(wishlist || []) 
-
+    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(axiosSecure, user!.id)
+    
     // Fetch available courses from the database
-    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses()
-
+    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses(axiosSecure)
+    
     // Mutation for saving the wishlist to database
-    const { data: savedWishlist, isError: isSaveWishlistError, isLoading: isSaveWishlistLoading, mutate} = useSaveWishlist(wishlistItems)
+    const {mutate: saveWishlistMutation, isLoading: isSaveWishlistLoading} = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(axiosSecure, wishlistItems)
+    })
+    const [wishlist, setWishlist] = useState(initialWishlist?.data)
 
     if (isWishlistLoading|| isCoursesLoading) {
         return (
@@ -41,34 +46,47 @@ const CourseWishlistPage = () => {
         )
     }
     
-    // TODO: Use 'courses' (fetched from the backend) instead of available courses
-    const availableCourses = [
-        {
-            value: 'CS 101',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming I',
-            courseCode: 'CS 101',
-        },
-        {
-            value: 'CS 102',
-            uuid: 'aaabbb',
-            ECTSCredits: 5,
-            bilkentCredits: 3,
-            courseName: 'Intro to Programming II',
-            courseCode: 'CS 102',
+    // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
+    const availableCourses: Array<WishlistItemType & {value: string}> = courses.data.map((c) => {
+        return {
+            ...c,
+            value: c.courseName
         }
-    ]
+    })
+    // [
+    //     {
+    //         value: 'CS 101',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming I',
+    //         courseCode: 'CS 101',
+    //     },
+    //     {
+    //         value: 'CS 102',
+    //         uuid: 'aaabbb',
+    //         ECTSCredits: 5,
+    //         bilkentCredits: 3,
+    //         courseName: 'Intro to Programming II',
+    //         courseCode: 'CS 102',
+    //     }
+    // ]
 
     const handleWishlistSave = () => {
-        mutate()
+        saveWishlistMutation(wishlist)
     }
 
     const handleDeleteWish = (e: React.MouseEvent) => {
         const id = e.currentTarget.id
-        setDeletedItems(wishlistItems.filter((w) => w.uuid === id))
-        setWishlistItems(wishlistItems.filter((w) => w.uuid !== id))
+        setDeletedItems(wishlist ? wishlist.wishlistItems.filter((w) => w.uuid === id) : [])
+        setWishlist((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    wishlistItems: prev.wishlistItems.filter((w) => w.uuid !== id)
+                }
+            }
+        })
         setNewItems(newItems.filter((n => n.uuid !== id)))
     }
 
@@ -78,14 +96,14 @@ const CourseWishlistPage = () => {
             setOpenModal(false)
             return
         }
-        setWishlistItems((prev) => {
-            return (
-                [
-                    ...prev,
-                    selected
-                ]
-            )
-        })
+        setWishlist((prev) => {
+                if (prev) {
+                    return {
+                        ...prev,
+                        selected
+                    }
+                }
+            })
         setNewItems((prev) => {
             return (
                 [
@@ -113,7 +131,7 @@ const CourseWishlistPage = () => {
                         <Title order={2}>
                             Your Wishlist
                         </Title>
-                        <Wishlist wishlistItems={wishlistItems} handleDeleteWish={handleDeleteWish}/>
+                        <Wishlist wishlistItems={wishlist ? wishlist.wishlistItems : []} handleDeleteWish={handleDeleteWish}/>
                         <div>
                             <Button
                                 onClick={() => setOpenModal(true)}

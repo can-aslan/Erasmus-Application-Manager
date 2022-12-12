@@ -1,11 +1,10 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
+import { AxiosInstance } from "axios"
 import { getCourses } from "../api/Student/CourseService"
-import { getPreApprovalFileWithStatus } from "../api/Student/PreapprovalService"
-import { useUser } from "../provider/UserProvider"
 
-export const useCourses = () => {
+export const useCourses = (axios: AxiosInstance) => {
     return useQuery({
         queryKey: ['courses'],
-        queryFn: () => getCourses(),
+        queryFn: () => getCourses(axios),
     })
 }

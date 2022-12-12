@@ -1,15 +1,32 @@
 import { Anchor, Box, Button, Center, Divider, FileButton, Flex, Group, Select, Stack, Table, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { makeCourseRequest } from "../../api/Student/CourseService";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useCourses } from "../../hooks/useCourses";
+import { useUser } from "../../provider/UserProvider";
+import { Course, CourseRequest, PreviousCourseRequest } from "../../types";
 
 const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
     const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
-    //const [syllabusLink, setSyllabusLink] = useState('');
+    const axiosSecure = useAxiosSecure()
 
+    //const [syllabusLink, setSyllabusLink] = useState('');
+    const { user } = useUser()
+
+    // TODO: Use courses instead of allCoursesBilkent
+    const {data: courses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses(axiosSecure)
     const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
+
+    const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
+        mutationKey: ['courseRequest'],
+        mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course, user!.id)   
+    })
+
     const form = useForm({
         initialValues: {
             hostCourseCode: '',
@@ -21,7 +38,7 @@ const CourseRequestPage = () => {
             hostCourseCode: (value) => value.length > 0 ? null : "Course code cannot be empty.",
             courseName: (value) => value.length > 0 ? null : "Course name cannot be empty.",
             webpage: (value) => value.length > 0 ? null : "Webpage cannot be empty.",
-            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link cannot be empty." : null
+            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link/file cannot be empty." : null
         }
     })
     const handleRequestCourse = () => {
@@ -38,6 +55,10 @@ const CourseRequestPage = () => {
         }
         if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
             // send request to api
+            // const course: Course = {
+
+            // }
+            // mutateCourseRequest()
             console.log("error yok");
         }
     }
@@ -54,7 +75,7 @@ const CourseRequestPage = () => {
             <td>{course.courseName}</td>
             <td>{course.bilkentCredits}</td>
             <td>{course.ectsCredits}</td>
-            <td>{""}
+            <td style={{maxWidth:"200"}}>{""}
                 <Group>
                     {course.requestStatus == 0 ? <IconCheck color={"green"} /> : course.requestStatus == 1 ? <IconSearch color={"blue"} /> : <IconX color={"red"} />}
                     <Text color={course.requestStatus == 0 ? "green" : course.requestStatus == 1 ? "blue" : "red"}> {course.requestStatus == 0 ? "Approved" : course.requestStatus == 1 ? "Pending Approval" : "Rejected"}</Text>

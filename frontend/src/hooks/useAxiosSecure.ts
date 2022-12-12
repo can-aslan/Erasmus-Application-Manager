@@ -4,7 +4,7 @@ import { useUser } from "../provider/UserProvider";
 import { User } from "../types";
 import useRefreshToken from "./useRefreshToken";
 
-const useAxiosSecure = () => {
+const useAxiosSecure = (contentType?: string) => {
     const refresh = useRefreshToken()
     const { user } = useUser()
 

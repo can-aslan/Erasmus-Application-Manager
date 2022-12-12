@@ -7,6 +7,6 @@ export const useSaveWishlist = (wishlistItems: Array<WishlistItemType>) => {
     const { user } = useUser()
     return useMutation({
         mutationKey: ['saveWishlist'],
-        mutationFn: () => saveWishlist(user!.uuid, wishlistItems)
+        mutationFn: () => saveWishlist(user!.id, wishlistItems)
     })
 }

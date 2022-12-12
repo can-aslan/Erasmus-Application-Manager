@@ -1,23 +1,20 @@
-import axios from "../api/axios";
+import { axiosSecure } from "../api/axios";
 import { useUser } from "../provider/UserProvider";
-import { User } from "../types";
 
 const useRefreshToken = () => {
-    const { setUser } = useUser()
+    const { setUser, user } = useUser()
 
     const refresh = async () => {
-        const response = await axios.get('/api/auth/refresh', {
+        console.log(user)
+        console.log(`Bearer ${user?.refreshToken}`)
+        const response = await axiosSecure.get('/api/v1/auth/refresh', {
             withCredentials: true,
-        })
-
-        setUser((prev) => {
-            return {
-                ...prev!,
-                userType: response.data.userType,
-                accessToken: response.data.accessToken
+            headers: {
+                Authorization: `Bearer ${user?.refreshToken}`
             }
         })
 
+        setUser(response.data)
         return response.data.accessToken
     }
 
