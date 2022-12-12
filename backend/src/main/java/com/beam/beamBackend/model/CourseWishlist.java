@@ -5,11 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-@Entity
+// @Entity
 @Data
 public class CourseWishlist {
 
-    @Id
     Long wishlistId;
 
     // HashMap<BilkentCourse, OtherUniCourse> selectedCourses; // What does "set" mean on the diagram?

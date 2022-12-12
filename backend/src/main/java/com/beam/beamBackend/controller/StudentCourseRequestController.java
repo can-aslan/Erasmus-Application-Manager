@@ -27,47 +27,52 @@ public class StudentCourseRequestController {
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
     {
-        boolean responseResult = studentCourseRequestService.requestCourse(courseRequest);
+        try {
+            boolean responseResult = studentCourseRequestService.requestCourse(courseRequest);
 
-        return 
+            return 
             responseResult ?
                 Response.create("course requested", HttpStatus.OK)
                 :
                 Response.create("course request failed", HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Response.create("course request failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/fetch")
     public ResponseEntity<Object> getAllCourseRequests() {
-        List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequests();
-        return 
+        try {
+            List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequests();
+            
+            return 
             responseResult != null ?
                 Response.create("course requests fetch successful", HttpStatus.OK, responseResult)
                 :
                 Response.create("course requests fetch unsuccessful", HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Response.create("could not retrieve all course requests", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/fetch/{studentId}")
     public ResponseEntity<Object> getAllCourseRequestsOfStudent(@PathVariable("studentId") Long studentId) {
-        List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequestsOfStudent(studentId);
-        return 
+        try {
+            List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequestsOfStudent(studentId);
+            
+            return 
             responseResult != null ?
                 Response.create("course requests fetch successful", HttpStatus.OK, responseResult)
                 :
                 Response.create("course requests fetch unsuccessful", HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Response.create("could not retrieve course requests of student", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    
-    /* DEPRECATED, NOT USED ANYMORE
-    @PostMapping("{studentId}/{code}/{name}/{bilkentCourse}/{webpage}/{additionalInfo}")
-    public ResponseEntity<Boolean> requestCourse(
-        @PathVariable("studentId") String studentId,
-        @PathVariable("code") String code,
-        @PathVariable("name") String name,
-        @PathVariable("bilkentCourse") String bilkentCourse,
-        @PathVariable("webpage") String webpage,
-        @PathVariable("additionalInfo") File additionalInfo
-    )
-    {
-        return ResponseEntity.ok(studentCourseRequestService.requestCourse(UUID.fromString(studentId), code, name, bilkentCourse, webpage, additionalInfo));
-    }
-    */
 }

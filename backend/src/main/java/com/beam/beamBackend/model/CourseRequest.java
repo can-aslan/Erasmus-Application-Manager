@@ -13,40 +13,42 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 // import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "course_request")
 // @RequiredArgsConstructor
+@NoArgsConstructor
 public class CourseRequest {
     @Id
     @GeneratedValue(generator = "UUID") // TODO check what happens with null
     @Column(name = "request_id")
-    private final UUID requestId;
+    private UUID requestId;
 
     @NotNull
     @Column(name = "student_id")
-    private final Long studentId; // was type UUID before
+    private Long studentId; // was type UUID before
 
     @NotBlank
     @Column(name = "host_code")
-    private final String hostCode;
+    private String hostCode;
 
     @NotBlank
     @Column(name = "name")
-    private final String name;
+    private String name;
 
     @NotNull
     @Column(name = "bilkent_code")
-    private final String bilkentCode;
+    private String bilkentCode;
 
     @NotBlank
     @Column(name = "webpage")
-    private final String webpage;
+    private String webpage;
 
     @NotBlank
     @Column(name = "syllabus_link")
-    private final String syllabusLink;
+    private String syllabusLink;
 
     public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
