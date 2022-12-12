@@ -11,15 +11,16 @@ import com.beam.beamBackend.model.CourseRequest;
 
 @Qualifier("courseRequest-arrayList")
 @Repository
-public class CourseRequestRepositoryArrayList implements ICourseRequestRepository {
+public class CourseRequestRepositoryArrayList // implements ICourseRequestRepository
+{
     private static List<CourseRequest> DB = new ArrayList<CourseRequest>();
 
-    @Override
+    // @Override
     public boolean saveRequest(CourseRequest courseRequest) {
         return DB.add(courseRequest);
     }
 
-    @Override
+    // @Override
     public boolean editRequestByRequestId(UUID courseRequestId, CourseRequest newCourseRequest) {
         if (!courseRequestExists(courseRequestId)) {
             return false;
@@ -34,7 +35,7 @@ public class CourseRequestRepositoryArrayList implements ICourseRequestRepositor
         return true;
     }
 
-    @Override
+    // @Override
     public boolean deleteRequestByRequestId(UUID courseRequestId) {
         if (!courseRequestExists(courseRequestId)) {
             return false;
@@ -50,17 +51,17 @@ public class CourseRequestRepositoryArrayList implements ICourseRequestRepositor
         return false;
     }
 
-    @Override
+    // @Override
     public List<CourseRequest> getCourseRequestsByStudentId(Long studentId) {
         return DB.stream().filter(request -> request.getStudentId().equals(studentId)).collect(Collectors.toList());
     }
 
-    @Override
+    // @Override
     public List<CourseRequest> getAllCourseRequests() {
         return DB;
     }
 
-    @Override
+    // @Override
     public boolean courseRequestExists(UUID courseRequestId) {
         return DB.stream().filter(request -> request.getRequestId() == courseRequestId).findFirst().isPresent();
     }

@@ -26,10 +26,11 @@ public class StudentCourseRequestServiceTests {
             "CS-XYZ",
             "Other_Course",
             "CS-319",
-            "www.othercourselink.com"
+            "www.othercourselink.com",
+            "www.syllabus.com"
         );
 
-        Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(true);
+        // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(true); // saveRequest() does not exist for ICourseRequestRepository
         boolean result = studentCourseRequestService.requestCourse(courseRequest);
         assertThat(result).isTrue();
     }
@@ -42,10 +43,11 @@ public class StudentCourseRequestServiceTests {
             "WRONG_COURSE_INFO",
             "Other_Course",
             "CS-319",
-            "www.othercourselink.com"
+            "www.othercourselink.com",
+            "www.syllabus.com"
         );
 
-        Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(false);
+        // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(false); // saveRequest() does not exist for ICourseRequestRepository
         boolean result = studentCourseRequestService.requestCourse(courseRequest);
         assertThat(result).isFalse();
     }

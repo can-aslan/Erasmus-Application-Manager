@@ -1,11 +1,11 @@
 package com.beam.beamBackend.request;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 import lombok.Data;
 
 @Data
-@Entity
+// @Entity
 public class ChangePassword {
     private String oldPassword;
     private String newPassword;

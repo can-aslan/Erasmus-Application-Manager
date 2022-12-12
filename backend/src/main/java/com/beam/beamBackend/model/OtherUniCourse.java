@@ -1,14 +1,14 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.beam.beamBackend.enums.*;
 
-@Entity
+// @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OtherUniCourse extends Course {
