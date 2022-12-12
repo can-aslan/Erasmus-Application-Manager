@@ -1,5 +1,7 @@
 package com.beam.beamBackend.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,7 +52,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            ResponseId ids = accountService.addUser(userInfo);
+            boolean ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -105,7 +107,7 @@ public class AccountController {
     @GetMapping("/")
     public ResponseEntity<Object> getUsers() {
         try {
-            RUserList userList = accountService.getUsers();
+            List<User> userList = accountService.getUsers();
             return Response.create("ok", HttpStatus.OK, userList);
         } catch (Exception e) {
             return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later

@@ -1,46 +1,45 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import com.beam.beamBackend.enums.EvalStatus;
-import com.beam.beamBackend.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-public class EvaluationForm {
-    @Id
-    private UUID id; //evalId
+@EqualsAndHashCode(callSuper=true)
+public class UniEvaluationForm extends EvaluationForm {
+    // @Id
+    // private UUID id; //evalId
 
-    @NotNull //unique
-    private long authorId;
+    // @NotNull
+    // private long authorId;
+
+    // @NotNull
+    // private double rate;
+
+    // @NotBlank
+    // private String comment;
 
     @NotNull
-    private double rate;
+    private UUID uniId; //courseId
 
-    @NotNull
-    private String comment;
-    
-    @NotNull
-    private EvalStatus evalStatus;
-
-    public EvaluationForm(@JsonProperty("id") UUID id,
+    public UniEvaluationForm(@JsonProperty("id") UUID id,
                 @JsonProperty("authorId") long authorId,
                 @JsonProperty("rate") double rate,
                 @JsonProperty("comment") String comment,
+                @JsonProperty("uniId") UUID uniId,
                 @JsonProperty("evalStatus") EvalStatus evalStatus) {
-
-        this.id = id;
-        this.authorId = authorId;
-        this.rate = rate;
-        this.comment = comment;
-        this.evalStatus = evalStatus;
-    }
+        super(id, authorId, rate, comment, evalStatus);    
+        this.uniId = uniId;
+    }    
 }

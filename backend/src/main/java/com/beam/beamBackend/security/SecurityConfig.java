@@ -34,7 +34,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests((request) -> {
 					try {
 						request
-							.requestMatchers("/api/v1/auth/login", "/hello", "/api/v1/auth/register", "/api/v1/auth/register_chunk")
+							.requestMatchers("/api/v1/auth/login", "/hello", "/api/v1/auth/register", "/api/v1/auth/register_chunk", "/api/v1/eval/evaluateUni", "/api/v1/eval/uniEval/{uniId}")
 							.permitAll()						
 							.anyRequest().authenticated()							
 							.and()
