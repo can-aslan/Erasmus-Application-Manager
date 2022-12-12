@@ -68,6 +68,7 @@ const LoginForm = () => {
             // FIXME: Commented until database is connected
             //loginMutation.mutate({bilkentID, pwd})
 
+
             setUser({
                 refreshToken: "refreshT",
                 accessToken: "accessT",
@@ -78,6 +79,7 @@ const LoginForm = () => {
                 userType: UserEnum.OutgoingStudent,
             })
             navigate("/")
+
         }
     }
 

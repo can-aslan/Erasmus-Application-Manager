@@ -1,4 +1,4 @@
-package com.beam.beamBackend.aws;
+package com.beam.beamBackend.service.file;
 
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
