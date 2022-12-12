@@ -2,7 +2,6 @@ package com.beam.beamBackend.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,6 +48,20 @@ public class AccountRepository {
                     .filter(u -> u.getBilkentId() == bilkentId)
                     .findFirst()
                     .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
+    }
+
+    public boolean existsByBilkentId(long bilkentId) {
+        return DB.stream()
+                    .filter(u -> u.getBilkentId() == bilkentId)
+                    .findFirst()
+                    .isPresent();
+    }
+
+    public boolean existsByUserId(UUID userId) {
+        return DB.stream()
+                    .filter(u -> u.getId().equals(userId))
+                    .findFirst()
+                    .isPresent();
     }
 
     public boolean editPasswordByBilkentId(long bilkentId, String newPassword) {

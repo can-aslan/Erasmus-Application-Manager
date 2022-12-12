@@ -1,3 +1,4 @@
+
 import { Course, CourseRequest, PastEvaluation, PastEvaluationItem, PreApprovalForm, PreviousCourseRequest, SchoolAssociatedCourse, StudentAssociatedCourse, StudentAssociatedWishlist, UniversityDetailed, UniversityProxy, User } from ".";
 
 export type ResponseUser = Record<'data', User>
@@ -31,3 +32,4 @@ export type ResponseUniversities = Record<'data', Array<UniversityProxy>>
 export type ResponseUniversity = Record<'data', UniversityDetailed>
 
 export type ResponseEvaluation = Record <'data', PastEvaluation>
+
