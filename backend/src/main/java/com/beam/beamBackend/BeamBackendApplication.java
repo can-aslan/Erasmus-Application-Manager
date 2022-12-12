@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.beam.beamBackend.model.CourseRequest;
+
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 // @Configuration
@@ -16,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // @ComponentScan
 @SpringBootApplication
 // @EnableJpaRepositories
-@EntityScan(basePackages = {"com.beam.beamBackend.model"})
+@EntityScan(basePackageClasses = {CourseRequest.class})
 public class BeamBackendApplication {
 
 	public static void main(String[] args) {

@@ -25,7 +25,7 @@ public class StudentCourseRequestService implements IStudentCourseRequestService
 
     @Override
     public List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId) {
-        return courseRequestRepository.findAllByStudentID(studentId);
+        return courseRequestRepository.findAllByStudentId(studentId);
     }
     
 }

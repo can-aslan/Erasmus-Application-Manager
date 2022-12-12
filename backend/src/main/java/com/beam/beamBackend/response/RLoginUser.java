@@ -2,7 +2,8 @@ package com.beam.beamBackend.response;
 
 import java.util.UUID;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.User;
@@ -12,6 +13,7 @@ import lombok.Data;
 @Data
 @Entity
 public class RLoginUser {
+    @Id
     private UUID id;
     private String name;
     private String surname;

@@ -10,7 +10,7 @@ import com.beam.beamBackend.model.CourseRequest;
 
 @Repository
 public interface ICourseRequestRepository extends JpaRepository<CourseRequest, UUID> {
-    List<CourseRequest> findAllByStudentID(Long studentID);
+    List<CourseRequest> findAllByStudentId(Long studentId);
     /*
     boolean saveRequest(CourseRequest courseRequest);
     boolean editRequestByRequestId(UUID courseRequestId, CourseRequest newCourseRequest);
