@@ -43,8 +43,6 @@ const CourseTransferPage = () => {
     const students: Array<CoordinatorAssociatedStudents> = [
         {
             studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
             studentName: "Selim Can Güler",
             studentSurname: "Güler",
             studentId: "22002811",
@@ -52,8 +50,6 @@ const CourseTransferPage = () => {
         },
         {
             studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
             studentName: "Selim Can Güler",
             studentSurname: "Güler",
             studentId: "22002811",
@@ -61,8 +57,6 @@ const CourseTransferPage = () => {
         },
         {
             studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
             studentName: "Selim Can Güler",
             studentSurname: "Güler",
             studentId: "22002811",

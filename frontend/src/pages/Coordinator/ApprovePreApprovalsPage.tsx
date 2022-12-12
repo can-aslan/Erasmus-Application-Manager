@@ -7,7 +7,7 @@ import { useUser } from "../../provider/UserProvider";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
-const ApprovePreApprovalsPage = () => {
+const CoordinatorApprovePreApprovalsPage = () => {
     const { user } = useUser()
     const axiosSecure = useAxiosSecure()
     const { data, isError, isLoading } = useQuery({
@@ -36,10 +36,10 @@ const ApprovePreApprovalsPage = () => {
                     spacing='xl'
                 >
                     <Title color='blue' size='36px'>Submitted PreApprovals</Title>
-                    <ApprovePreApprovalsTable preApprovals={data.data}/>
+                    <ApprovePreApprovalsTable preApprovals={data.data} />
                 </Stack>
             </Box>
         </Center>
     );
 }
-export default ApprovePreApprovalsPage;
+export default CoordinatorApprovePreApprovalsPage;
