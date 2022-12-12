@@ -21,7 +21,7 @@ public class FileService {
         String bucketName = PREAPPROVAL_BUCKET_NAME;
         
         // TODO: Add decorator pattern for naming files. prefix file type, postfix file type and date
-        String filename = file.getOriginalFilename();
+        String filename = file.getName();
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
         final String key = filename + timestamp;
 
