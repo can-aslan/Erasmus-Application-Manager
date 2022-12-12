@@ -1,6 +1,7 @@
 package com.beam.beamBackend.aws;
 
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -15,6 +16,7 @@ public class S3ClientSingleton {
             Region region = Region.US_EAST_1;
             s3 = S3Client.builder()
                 .region(region)
+                .httpClientBuilder(ApacheHttpClient.builder())
                 .credentialsProvider(credentialsProvider)
                 .build();
         }
