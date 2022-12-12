@@ -1,14 +1,14 @@
 import React from "react";
 
 export enum UserEnum {
-    OutgoingStudent='OUTGOING_STUDENT',
-    IncomingStudent='INCOMING_STUDENT',
-    Coordinator='COORDINATOR',
-    FACMember='FAC_MEMBER',
-    Admin='ADMIN',
-    Instructor='INSTRUCTOR',
-    ExperiencedStudent='EXPERIENCED_STUDENT',
-    OISEPStaff='OISEP_STAFF'
+    OutgoingStudent = 'OUTGOING_STUDENT',
+    IncomingStudent = 'INCOMING_STUDENT',
+    Coordinator = 'COORDINATOR',
+    FACMember = 'FAC_MEMBER',
+    Admin = 'ADMIN',
+    Instructor = 'INSTRUCTOR',
+    ExperiencedStudent = 'EXPERIENCED_STUDENT',
+    OISEPStaff = 'OISEP_STAFF'
 }
 
 export type User = {
@@ -157,8 +157,12 @@ export type ProgressBarStep = {
     description: string
 }
 
+export type PastEvaluation = {
+    average_rate: number,
+    eval_list: Array<PastEvaluationItem>
+}
 export type PastEvaluationItem = {
     authorId: string,
     rate: number,
-    comment: string
+    comment: string
 }

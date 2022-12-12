@@ -29,6 +29,7 @@ import LearningAgreementPage from './pages/OutgoingStudent/LearningAgreementPage
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
 import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
+import SeeCourseEvaluationsPage from './pages/SeeCourseEvaluationsPage'
 import { UserEnum } from './types'
 
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: '/forgot-password',
     element: <ForgotPasswordPage />
+  },
+  {
+    path: '/course-evaluations',
+    element: <SeeCourseEvaluationsPage/>
   },
   {
     element: <PersistentLogin />,
@@ -91,6 +96,10 @@ const router = createBrowserRouter([
                   {
                     path: '/student/learning-agreement',
                     element: <LearningAgreementPage/>
+                  },
+                  {
+                    path: '/student/course-evaluations',
+                    element: <SeeCourseEvaluationsPage/>
                   }
                 ]
               },

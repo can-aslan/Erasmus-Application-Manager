@@ -1,6 +1,6 @@
 import { Box, Center, ScrollArea, Stack, Table, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { getSubmittedPreApprovalsFAC } from "../../api/FACMember/PreapprovalService";
+import { getSubmittedPreApprovalsCoord } from "../../api/Coordinator/PreapprovalService";
 import ApprovePreApprovalsTable from "../../components/tables/ApprovePreApprovalsTable";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useUser } from "../../provider/UserProvider";
@@ -11,7 +11,7 @@ const CoordinatorApprovePreApprovalsPage = () => {
     const { user } = useUser()
     const axiosSecure = useAxiosSecure()
     const { data, isError, isLoading } = useQuery({
-        queryFn: () => getSubmittedPreApprovalsFAC(axiosSecure, user?.id!)
+        queryFn: () => getSubmittedPreApprovalsCoord(axiosSecure, user?.id!)
     })
 
     if (isLoading) {
