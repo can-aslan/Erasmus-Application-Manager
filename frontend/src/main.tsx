@@ -11,6 +11,7 @@ import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
+import CoordinatorApprovePreApprovalsPage from './pages/Coordinator/ApprovePreApprovalsPage'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
 import EvaluateCoursesPage from './pages/ExperiencedStudent/EvaluateCoursesPage'
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
                   {
                     path: '/coordinator/course-transfer-form',
                     element: <CourseTransferPage />
+                  },
+                  {
+                    path: '/coordinator/approve-pre-approvals',
+                    element: <CoordinatorApprovePreApprovalsPage/>
                   }
                 ]
               },

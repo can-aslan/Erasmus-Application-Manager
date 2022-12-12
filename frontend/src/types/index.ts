@@ -99,14 +99,28 @@ export type StudentAssociatedCourse = Course & {
     approvalStatus: 'rejected' | 'pending' | 'approved',
 }
 
+export type PreApprovalFormItemType = {
+    courseCode: string,
+    courseName: string,
+    ectsCredits: string,
+    bilkentCourseInfo: string,
+    bilkentCredit: string,
+    electiveEquivalent: string
+}
+
 export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
+    studentName: string,
+    studentID: string,
     file: string,
-    status?: 'rejected' | 'pending' | 'approved',
+    rejectionFeedback: string,
+    status?: 'Rejected' | 'Pending' | 'Approved',
+    preApprovalFormItems: Array<PreApprovalFormItemType>
 }
 
-export type CoordinatorAssociatedStudents = PreApprovalForm & {
+export type CoordinatorAssociatedStudents = {
+    studentUuid: string,
     studentName: string,
     studentSurname: string,
     studentId: string,

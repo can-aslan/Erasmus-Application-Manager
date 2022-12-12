@@ -107,6 +107,11 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             to: '/coordinator/course-transfer-form',
             icon: <IconArrowsTransferDown />
         },
+        {
+            label: 'Approve Pre-Approvals',
+            to: '/coordinator/approve-pre-approvals',
+            icon: <IconFileSearch />
+        }
     ],
     [UserEnum.Admin]: [
         {
