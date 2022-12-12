@@ -51,6 +51,20 @@ public class AccountRepository {
                     .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
     }
 
+    public boolean existsByBilkentId(long bilkentId) {
+        return DB.stream()
+                    .filter(u -> u.getBilkentId() == bilkentId)
+                    .findFirst()
+                    .isPresent();
+    }
+
+    public boolean existsByUserId(UUID userId) {
+        return DB.stream()
+                    .filter(u -> u.getId().equals(userId))
+                    .findFirst()
+                    .isPresent();
+    }
+
     public boolean editPasswordByBilkentId(long bilkentId, String newPassword) {
         User user = DB.stream()
                 .filter(u -> u.getBilkentId() == bilkentId)

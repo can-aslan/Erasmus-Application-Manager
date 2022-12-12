@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.beam.beamBackend.enums.EvalStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -36,8 +37,9 @@ public class UniEvaluationForm extends EvaluationForm {
                 @JsonProperty("authorId") long authorId,
                 @JsonProperty("rate") double rate,
                 @JsonProperty("comment") String comment,
-                @JsonProperty("uniId") UUID uniId) {
-        super(id, authorId, rate, comment);    
+                @JsonProperty("uniId") UUID uniId,
+                @JsonProperty("evalStatus") EvalStatus evalStatus) {
+        super(id, authorId, rate, comment, evalStatus);    
         this.uniId = uniId;
     }    
 }

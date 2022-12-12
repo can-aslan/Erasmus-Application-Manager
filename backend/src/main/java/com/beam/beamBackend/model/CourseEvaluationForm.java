@@ -3,12 +3,10 @@ package com.beam.beamBackend.model;
 import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
+import com.beam.beamBackend.enums.EvalStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,8 +34,9 @@ public class CourseEvaluationForm extends EvaluationForm {
                 @JsonProperty("authorId") long authorId,
                 @JsonProperty("rate") double rate,
                 @JsonProperty("comment") String comment,
-                @JsonProperty("courseId") UUID courseId) {
-        super(id, authorId, rate, comment);    
+                @JsonProperty("courseId") UUID courseId,
+                @JsonProperty("evalStatus") EvalStatus evalStatus) {
+        super(id, authorId, rate, comment, evalStatus);   
         this.courseId = courseId;
     }
     

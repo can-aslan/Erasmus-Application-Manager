@@ -5,20 +5,42 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.enums.EvalStatus;
+import com.beam.beamBackend.model.CourseEvaluationForm;
+import com.beam.beamBackend.model.EvaluationForm;
 import com.beam.beamBackend.model.UniEvaluationForm;
-import com.beam.beamBackend.repository.EvaluationRepository;
+import com.beam.beamBackend.repository.AccountRepository;
+import com.beam.beamBackend.repository.CourseEvaluationRepository;
+import com.beam.beamBackend.repository.UniEvaluationRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
 public class EvaluationService {
 
-    private final EvaluationRepository evalRepository;
+    private final UniEvaluationRepository uniEvalRepo;
+    private final CourseEvaluationRepository courseEvalRepo;
+    private final AccountRepository userRepo;
 
     public UUID evaluateUni(UniEvaluationForm uniEval) throws Exception {
         try {
-            uniEval.setId(UUID.randomUUID());
-            Boolean result = evalRepository.save(uniEval);
+            // throw exception if user is not found in the db
+            if (!userRepo.existsByBilkentId(uniEval.getAuthorId())) {
+                throw new Exception("user not found");
+            }
+
+            EvalStatus evalStatus = uniEvalRepo.findEvalStatusByAuthorId(uniEval.getAuthorId());
+
+            if (evalStatus == null) {
+                uniEval.setId(UUID.randomUUID());
+                Boolean result = uniEvalRepo.save(uniEval);
+            } else if (evalStatus == EvalStatus.SUBMITTED) {
+                throw new Exception("uni eval already exists for this author");
+            } else {
+                // update current evaluation
+            }
+
+            // this will be inaccurate for update !!!!!
             return uniEval.getUniId();
             
         } catch (Exception e) {
@@ -30,7 +52,7 @@ public class EvaluationService {
 
     public List<UniEvaluationForm> getUniEval(UUID uniId) throws Exception {
         try {
-            List<UniEvaluationForm> result = evalRepository.findByUniId(uniId);
+            List<UniEvaluationForm> result = uniEvalRepo.findByUniIdAndEvalStatus(uniId, EvalStatus.SUBMITTED);
             return result;            
         } catch (Exception e) {
             System.out.println("cannot get eval exception");
@@ -39,119 +61,98 @@ public class EvaluationService {
         }
     }
 
-    // public RRefreshToken refreshToken(String auth) throws Exception {
-    //     try {
-    //         String username = jwtUtils.extractRefreshUsername(JWTFilter.getTokenWithoutBearer(auth));
+    public UUID evaluateCourse(CourseEvaluationForm courseEval) throws Exception {
+        try {
+            // throw exception if user is not found in the db
+            if (!userRepo.existsByBilkentId(courseEval.getAuthorId())) {
+                throw new Exception("user not found");
+            }
 
-    //         // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
+            EvalStatus evalStatus = courseEvalRepo.findEvalStatusByAuthorId(courseEval.getAuthorId());
 
-    //         final UserDetails userDetails = jwtUserService.loadUserByUsername(username);
-    //         final String accessToken = jwtUtils.createAccessToken(userDetails);
-    //         return new RRefreshToken(accessToken);
+            if (evalStatus == null) {
+                courseEval.setId(UUID.randomUUID());
+                Boolean result = courseEvalRepo.save(courseEval);
+            } else if (evalStatus == EvalStatus.SAVED) {
+                throw new Exception("uni eval already exists for this author");
+            } else {
+                // update current evaluation
+            }
+
+            // this will be inaccurate for update !!!!!
+            return courseEval.getCourseId();
             
-    //     } catch (Exception e) {
-    //         System.out.println("refresh token exception");
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    // }
+        } catch (Exception e) {
+            System.out.println("course eval exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
-    // public boolean changePassword(String auth, ChangePassword passwords) throws Exception {
-    //     try {
-    //         // username is bilkentId in this context
-    //         String username = jwtUtils.extractAccessUsername(JWTFilter.getTokenWithoutBearer(auth));
+    public List<CourseEvaluationForm> getCourseEval(UUID courseId) throws Exception {
+        try {
+            List<CourseEvaluationForm> result = courseEvalRepo.findByCourseId(courseId);
+
+            if (result == null) {
+                throw new Exception("course not found or there is no eval"); //cahnge maybe
+            }
+            return result;            
+        } catch (Exception e) {
+            System.out.println("cannot get eval exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<CourseEvaluationForm> getAllCourseEval(UUID uniId) throws Exception {
+        try {
+
+            // check if uni id exists
+
+            //
+            List<CourseEvaluationForm> result = courseEvalRepo.findByUniId(uniId);
+
+            if (result == null) {
+                throw new Exception("no eval is found"); //maybe not error?
+            }
+            return result;            
+        } catch (Exception e) {
+            System.out.println("cannot get eval exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public EvaluationForm getSavedUniEval(long authorId) {
+        try {
+            // throw exception if user is not found in the db
+            if (!userRepo.existsByBilkentId(authorId)) {
+                throw new Exception("user not found");
+            }
+
+            EvalStatus evalStatus = uniEvalRepo.findEvalStatusByAuthorId(authorId);
+
+            if (evalStatus == null) {
+                // empty evaluation
+            } else if (evalStatus == EvalStatus.SUBMITTED) {
+                throw new Exception("uni eval already exists for this author");
+            } else {
+                // get saved eval
+            }
+
+            // this will be inaccurate for update !!!!!
+            return ;
             
-    //         String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(username));
-    //         boolean passwordMatch = passwordEncoder.matches(passwords.getOldPassword(), hashedPassword);
+        } catch (Exception e) {
+            System.out.println("course eval exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
-    //         if (!passwordMatch) {
-    //             System.out.println("passwords does not match");
-    //             throw new Exception();
-    //         } else {
-    //             System.out.println("passwords are matched");
-    //             // hash new password
-    //             String hashedNewPassword = passwordEncoder.encode(passwords.getNewPassword());
+    public EvaluationForm getSavedCourseEval(long authorId, UUID courseId) {
 
-    //             return accountRepository.editPasswordByBilkentId(Long.parseLong(username), hashedNewPassword);
-    //         }
-            
-    //     } catch (Exception e) {
-    //         System.out.println("password change exception exception");
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    // }
+    }
 
-    // public ResponseId addUser(User user) throws Exception {
-    //     try {
-    //         boolean userExist = accountRepository.userExist(user.getBilkentId());
-            
-    //         if (userExist) {
-    //             throw new Exception();
-    //         } else {
-    //             // generate uuid and hash password if user does not exist in the system
-    //             user.setUUID(UUID.randomUUID());
-    //             user.setPassword(encodePassword(user.getPassword()));
-
-    //             return accountRepository.insertUser(user);
-    //         }
-    //     } catch (Exception e) {
-    //         throw e;
-    //     }
-    // }
-
-    // public boolean addUserChunk(User[] users) throws Exception {
-    //     // HashSet<User> usersSet = new HashSet<>(Arrays.asList(users));
-    //     // HashSet<User> removedUsers = new HashSet<>();
-
-    //     for (User user : users) {
-    //         try {
-    //             addUser(user);
-    //         } catch (Exception e) {
-    //             throw e;
-    //         }
-    //     }
-
-    //     return true;
-
-    //     // for (User user : usersSet) {
-    //     //     try {
-    //     //         user.setUUID(UUID.randomUUID());
-    //     //         boolean userExist = accountRepository.userExist(user.getBilkentId());
-
-    //     //         if (userExist) {
-    //     //             usersSet.remove(user);
-    //     //             removedUsers.add(user);
-    //     //         } else {
-    //     //             accountRepository.insertUser(user);
-    //     //         }
-    //     //     } catch (Exception e) {
-    //     //         throw e;
-    //     //     }
-    //     // }
-
-    //     // try {
-            
-    //     //     return true;
-    //     // } catch (Exception e) {
-
-    //     // }
-    //     // return false;
-    // }
-
-    // private String encodePassword(String plainPassword) {
-    //     try {
-    //         return passwordEncoder.encode(plainPassword);
-    //     } catch (Exception e) {
-    //         throw e;
-    //     }       
-    // }
-
-    // public RUserList getUsers() {
-    //     try {
-    //         return accountRepository.getUsers();
-    //     } catch (Exception e) {
-    //         throw e;
-    //     }
-    // }
+    
 }

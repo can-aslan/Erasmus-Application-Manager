@@ -42,7 +42,7 @@ public class EvaluationController {
     private final EvaluationService evalService;
 
     // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "evaluateUni")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "university")
     public ResponseEntity<Object> evaluateUni(@Valid @RequestBody UniEvaluationForm uniEval) {
         try {
             UUID id = evalService.evaluateUni(uniEval);
@@ -53,11 +53,66 @@ public class EvaluationController {
     }
 
     // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/uniEval/{uniId}")
+    @GetMapping("/university/{uniId}")
     public ResponseEntity<Object> getUniEvals(@Valid @PathVariable("uniId") UUID uniId) {
         try {
             List<UniEvaluationForm> uniEvals = evalService.getUniEval(uniId);
             return Response.create("ok", HttpStatus.OK, uniEvals);
+        } catch (Exception e) {
+            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "course")
+    public ResponseEntity<Object> evaluateCourse(@Valid @RequestBody CourseEvaluationForm courseEval) {
+        try {
+            UUID id = evalService.evaluateCourse(courseEval);
+            return Response.create("university evaluation is saved", HttpStatus.OK, id);
+        } catch (Exception e) {
+            return Response.create("evaluation failed", 499); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<Object> getCourseEval(@Valid @PathVariable("courseId") UUID courseId) {
+        try {
+            List<CourseEvaluationForm> courseEvals = evalService.getCourseEval(courseId);
+            return Response.create("ok", HttpStatus.OK, courseEvals);
+        } catch (Exception e) {
+            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @GetMapping("/course/")
+    public ResponseEntity<Object> getCourseEvals(@Valid @RequestParam(name = "uniId") UUID uniId) {
+        try {
+            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
+            return Response.create("ok", HttpStatus.OK, courseEvals);
+        } catch (Exception e) {
+            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @GetMapping("/saved/{studentId}/uniEval/")
+    public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId) {
+        try {
+            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
+            return Response.create("ok", HttpStatus.OK, courseEvals);
+        } catch (Exception e) {
+            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @GetMapping("/saved/{studentId}/courseEval/{courseId}") ///!!!!!!!!!!!!!!!!!!!!!!!!
+    public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId) {
+        try {
+            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
+            return Response.create("ok", HttpStatus.OK, courseEvals);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
         }        
