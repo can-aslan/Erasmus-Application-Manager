@@ -1,4 +1,4 @@
-import { Container, Group, Header, Title } from "@mantine/core";
+import { Container, Flex, Group, Header, Title } from "@mantine/core";
 import { useUser } from "../../provider/UserProvider";
 import { UserEnum } from "../../types";
 import { PROGRESSBAR_STEP_OBJECTS } from "../../utils/constants";
@@ -14,14 +14,12 @@ const AppHeader = () => {
             height={80}
             p="lg"
         >
-            {/* <Group position="apart">
+            <Group position="apart">
                 <Title ml={20}>Beam</Title>
-                <ToggleThemeIcon mr={50}/>
-            </Group> */}
-
-            <Container size={1500}>
                 <GenericProgressBar active={2} user={user} progressBarSteps={progressBarSteps} />
-            </Container>
+                <ToggleThemeIcon mr={50}/>
+            </Group>
+
         </Header>;
     }
     return <Header

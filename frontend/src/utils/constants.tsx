@@ -15,20 +15,24 @@ import { NavbarLink, ProgressBarStep, UserEnum } from "../types";
 export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> = {
     [UserEnum.OutgoingStudent]: [
         {
-            label: "ApplyToHost",
+            label: "Apply To Host",
             description: "Apply to host university"
         },
         {
-            label: "SubmitWishlist",
+            label: "Submit Wishlist",
             description: "Submit Wishlist to Coordinator"
         },
         {
-            label: "SubmitPreApproval",
+            label: "Submit Pre Approval",
             description: "Submit Pre Approval to Coordinator"
         },
         {
-            label: "SubmitLearningAgreement",
+            label: "Submit Learning Agreement Coordinator",
             description: "Submit Learning Agreement to Coordinator"
+        },
+        {
+            label: "SubmitLearningAgreementOISEP",
+            description: "Submit Learning Agreement to OISEP"
         }
     ],
     [UserEnum.IncomingStudent]: [],
