@@ -8,37 +8,19 @@ type CoursePair = {
     bilkentCourse: Course,
 }
 
+const NO_OF_MAX_COURSE_PAIRS = 7
+
 const CourseTransferPage = () => {
-    const isCoursePair = (p: any): p is CoursePair => Object.keys(p).length !== 0
     const [selectedStudent, setSelectedStudent] = useState('')
-    const [coursePairs, setCoursePairs] = useState<Array<CoursePair | {}>>([
-        {
-            bilkentCourse: {
-                bilkentCredits: 3,
-                ECTSCredits: 5,
-                courseCode: "CS 299",
-                courseName: "Internship and All",
-                uuid: "superlongid",
-                elective: false,
-            },
-             hostUniCourse: {
-                courseCode: "CENG 7172",
-                courseName: "Internship and Beyond",
-                ECTSCredits: 5,
-                id: "extralongid",
-                grade: "A",
-             }
-        },
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-    ])
-    const lengthOfCoursePairs = coursePairs.map(p => isCoursePair(p)).length
 
 
+    // {
+    //     courseCode: "CENG 7172",
+    //     courseName: "Internship and Beyond",
+    //     ECTSCredits: 5,
+    //     id: "extralongid",
+    //     grade: "A",
+    //  },
     // TODO: Replace this variable with database request that will fetch students associated with the current coordinator
     const students: Array<CoordinatorAssociatedStudents> = [
         {
@@ -69,13 +51,9 @@ const CourseTransferPage = () => {
             studentDepartment: ["CS"],
         },
     ]
-    // TODO: Fetch pre-approval of selected student
-    
-    // TODO: Fetch transcript of selected student
-
 
     // TODO: Fetch Bilkent courses
-    const bilkentCourses: Array<Course> = [
+    const mockBilkentCourses: Array<Course> = [
         {
             bilkentCredits: 12,
             ECTSCredits: 16,
@@ -119,20 +97,20 @@ const CourseTransferPage = () => {
             id: "unique course id 3",
         },
     ]
-    const courses = bilkentCourses.map(c => {
+    const courses = mockBilkentCourses.map(c => {
         return {
             ...c,
             value: c.courseName,
         }
     })
-    const hostCourses = hostCoursesMock.map(c => {
+    const hostCoursesData = hostCoursesMock.map(c => {
         return {
             ...c,
             value: c.courseName,
         }
     })
 
-    const data = students.map(s => {
+    const studentData = students.map(s => {
         return {
             ...s,
             value: s.studentName,
@@ -143,12 +121,15 @@ const CourseTransferPage = () => {
         // TODO: useMutation()
     }
 
+        // TODO: Fetch pre-approval of selected student
+    
+    // TODO: Fetch transcript of selected student
     return (
         <Center>
             <Flex maw={1200} direction="column" gap={36}>
                 <Autocomplete 
                     label={<Text fw={600} size={18}>Student:</Text>}
-                    data={data}
+                    data={studentData}
                     placeholder="Select a student"
                     onChange={(value) => setSelectedStudent(value)}
                 />
@@ -183,56 +164,7 @@ const CourseTransferPage = () => {
                             <Grid.Col span={1}>
                                 <Text size={22} fw={600} ta='center'>Course in Bilkent</Text>
                             </Grid.Col>
-                            {coursePairs.map((p, index) => {
-                                return (
-                                    <>
-                                        <Grid.Col span={1}>
-                                            <Autocomplete 
-                                                data={hostCourses}
-                                                placeholder="Course in host university"
-                                                value={isCoursePair(p) ? p?.hostUniCourse?.courseName : ''}
-                                                onChange={(value) =>  {
-                                                    setCoursePairs(coursePairs.map((p, pairIndex) => {
-                                                        const selectedHostCourse: HostCourse | undefined = hostCourses.find((c) => c.courseName === value)
-                                                        
-                                                        if (index === pairIndex) {
-                                                            return {
-                                                                selectedHostCourse
-                                                            }
-                                                        }
-
-                                                        return p
-                                                    }))
-
-                                                    return value
-                                                }}
-                                            />
-                                        </Grid.Col>
-                                        <Grid.Col span={1}>
-                                            <Autocomplete 
-                                                data={courses}
-                                                value={isCoursePair(p) ? p?.hostUniCourse?.courseName : ''}
-                                                onChange={(value) =>  {
-                                                    setCoursePairs(coursePairs.map((p, pairIndex) => {
-                                                        const selectedBilkentCourse: Course | undefined = bilkentCourses.find((c) => c.courseName === value)
-                                                        
-                                                        if (index === pairIndex) {
-                                                            return {
-                                                                selectedBilkentCourse
-                                                            }
-                                                        }
-
-                                                        return p
-                                                    }))
-
-                                                    return value
-                                                }}
-                                                placeholder="Correspondant course in Bilkent"
-                                            />
-                                        </Grid.Col>
-                                    </>
-                                )
-                            })}
+                            {/* TODO */}
                         </Grid>
                         <Button 
                             leftIcon={<IconDeviceFloppy />}
