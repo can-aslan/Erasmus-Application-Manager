@@ -24,6 +24,7 @@ import LoginPage from './pages/LoginPage'
 import TranscriptUploadPage from './pages/OISEPStaff/TranscriptUploadPage'
 import CourseRequestPage from './pages/OutgoingStudent/CourseRequestPage'
 import CourseWishlistPage from './pages/OutgoingStudent/CourseWishlistPage'
+import LearningAgreementPage from './pages/OutgoingStudent/LearningAgreementPage'
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
 import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
                   {
                     path: '/student/universities/:universityId',
                     element: <UniversityDetails />
+                  },
+                  {
+                    path: '/student/learning-agreement',
+                    element: <LearningAgreementPage/>
                   }
                 ]
               },
