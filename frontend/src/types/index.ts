@@ -142,6 +142,7 @@ export type UniversityDetailed = {
     universityWebsite: string,
     generalInfo: string,
     acceptedDepartmentsInBilkent: Array<string>
+    evals : Array<PastEvaluationItem>,
     bgImage?: string, // URL to image
     logoImage?: string, //URL to image
 }
@@ -154,4 +155,10 @@ export type SpecialCases = {
 export type ProgressBarStep = {
     label: string,
     description: string
+}
+
+export type PastEvaluationItem = {
+    authorId: string,
+    rate: number,
+    comment: string
 }

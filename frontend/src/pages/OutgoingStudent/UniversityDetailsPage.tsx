@@ -1,15 +1,18 @@
-import { Accordion, Anchor, Badge, Card, Center, Flex, Header, Image, List, Text, TextInput, Title } from "@mantine/core";
+import { Accordion, Anchor, Badge, Card, CardSection, Center, Divider, Flex, Grid, Header, Image, List, Rating, Text, TextInput, Title } from "@mantine/core";
 import { AccordionControl } from "@mantine/core/lib/Accordion/AccordionControl/AccordionControl";
+import { IconGenderThird, IconSchool } from "@tabler/icons";
 import { useParams } from "react-router-dom";
+import EvaluationCard from "../../components/evaluation/EvaluationCard";
+import RatingBar from "../../components/rating/RatingBar";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { UniversityDetailed, UniversityProxy } from "../../types";
 
 const UniversityDetails = () => {
     const { universityId } = useParams()
     const universityProxy = JSON.parse(localStorage.getItem('universityProxy') || '') as unknown as UniversityProxy
-    const axiosSecure = useAxiosSecure()
 
-    // Fetch University details
+    // const axiosSecure = useAxiosSecure()
+    // // Fetch University details
     // const {data: university, isError: isUniError, isLoading: isUniLoading} = useUniversity(axiosSecure, universityId!)
     // if (isUniLoading) {
     //     return <LoadingPage />
@@ -26,13 +29,32 @@ const UniversityDetails = () => {
         specialCase,
     } = universityProxy
 
+    // TODO: Fetch uni
     const university: UniversityDetailed = {
         acceptedDepartmentsInBilkent: ["CS", "ME", "EEE"],
         generalInfo: "As a public research university, our mission is the creation, dissemination, preservation and application of knowledge for the betterment of our global society. UCLA combines the close-knit learning environment of a spirited public school with the endless opportunities of a world-class city. Located in beautiful Westwood, minutes from Hollywood and the downtown city center of Los Angeles, the university offers everything you need to reach your full potential.",
         universityWebsite: "www.website.com",
         bgImage: '',
         logoImage: '',
+        evals: [
+            {
+                authorId: 'abc',
+                comment: "perfect uni",
+                rate: 5,
+            },
+            {
+                authorId: 'abcd',
+                comment: "mediocre uni",
+                rate: 3,
+            },
+            {
+                authorId: 'abcdf',
+                comment: "somewhat nice unihdfsdfsdfsdfsdfasfqweqdfcxadqasda sdqwedqdsadas dasd asda wedw ",
+                rate: 4,
+            },
+        ]
     }
+
 
     return (
         <Flex direction='column' gap={36}>
@@ -43,6 +65,7 @@ const UniversityDetails = () => {
                 radius='sm'
                 fit="cover"
             />
+            <Title order={1} color="blue">{universityName}</Title>
             <Card shadow="lg" radius="lg">
                 <Accordion sx={{fontSize: 20}}>
                     <Accordion.Item value="quick-info">
@@ -103,9 +126,26 @@ const UniversityDetails = () => {
 
                         </Accordion.Panel>
                     </Accordion.Item>
-                    <Accordion.Item value="contact">
-                        <Accordion.Control>Previously Visited Students</Accordion.Control>
+                    <Accordion.Item value="universitiy-evals">
+                        <Accordion.Control>Evaluations</Accordion.Control>
                         <Accordion.Panel p={18}> 
+                        <Grid>
+                                {university.evals.map(e => {
+                                    return (
+                                        <Grid.Col 
+                                            md={6}
+                                            lg={3}
+                                            key={e.authorId}
+                                        >
+                                            <EvaluationCard 
+                                                evaluation={e}
+                                                emptyRatingIcon={<IconSchool/>}
+                                                fullRatingIcon={<IconSchool color="blue"/>}
+                                            />
+                                        </Grid.Col>
+                                    )
+                                })}
+                        </Grid>
                         </Accordion.Panel>
                     </Accordion.Item>
                 </Accordion>
