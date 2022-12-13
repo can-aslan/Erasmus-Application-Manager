@@ -1,6 +1,8 @@
 package com.beam.beamBackend.controller;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.HashSet;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,7 +54,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            boolean ids = accountService.addUser(userInfo);
+            UUID ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -60,12 +62,12 @@ public class AccountController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_chunk")
-    public ResponseEntity<HttpStatus> register(@RequestBody User[] userInfo) {
+    public ResponseEntity<Object> register(@RequestBody User[] userInfo) {
         try {
-            accountService.addUserChunk(userInfo);
-            return ResponseEntity.ok(HttpStatus.OK);
+            HashSet<User> users = accountService.addUserChunk(userInfo);
+            return Response.create("accounts are created", HttpStatus.OK, users);
         } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.FOUND); // might change later
+            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 

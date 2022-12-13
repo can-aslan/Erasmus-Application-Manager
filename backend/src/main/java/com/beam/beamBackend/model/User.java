@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "user_table")
 @NoArgsConstructor
-public class User{
+public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(name = "id", nullable = false)

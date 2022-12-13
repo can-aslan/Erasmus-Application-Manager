@@ -14,6 +14,7 @@ import com.beam.beamBackend.response.ResponseId;
 
 @Qualifier("account")
 @Repository
+@Deprecated
 public class AccountRepository {
     private static List<User> DB = new ArrayList<>();
 
