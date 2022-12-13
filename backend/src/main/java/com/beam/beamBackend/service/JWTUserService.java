@@ -10,20 +10,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.model.User;
-import com.beam.beamBackend.repository.AccountRepository;
+import com.beam.beamBackend.repository.IAccountRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class JWTUserService implements UserDetailsService {
-    private final AccountRepository accountRepository;
+    private final IAccountRepository accountRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             User appUser = accountRepository.findUserByBilkentId(Long.parseLong(username));
-        
+    
             UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                                         username, 
                                         appUser.getPassword(), 
