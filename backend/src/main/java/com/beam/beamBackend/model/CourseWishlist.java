@@ -27,6 +27,10 @@ public class CourseWishlist {
     private List<UUID> wishlistItems;
     
     @NotNull
+    @Column(name = "is_sent")
+    private Boolean isSent;
+
+    @NotNull
     @Column(name = "is_approved")
     private Boolean isApproved;
     
@@ -37,11 +41,13 @@ public class CourseWishlist {
     public CourseWishlist(
         @JsonProperty("wishlistId") UUID wishlistId,
         @JsonProperty("wishlistItems") List<UUID> wishlistItems,
+        @JsonProperty("isSent") Boolean isSent,
         @JsonProperty("isApproved") Boolean isApproved,
         @JsonProperty("studentId") Long studentId
     ) {
         this.wishlistId = (wishlistId == null) ? UUID.randomUUID() : wishlistId;
         this.wishlistItems = wishlistItems;
+        this.isSent = isSent;
         this.isApproved = isApproved;
         this.studentId = studentId;
     }
