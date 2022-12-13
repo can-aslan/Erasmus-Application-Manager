@@ -3,6 +3,7 @@ package com.beam.beamBackend.service;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -21,23 +22,28 @@ public class UniversityCountryService {
     private final IUniversityRepository uniRepository;
     private final ICountryRepository countryRepository;
 
-    public HashSet<University> addUniversity(AddUni[] uni) {
+    public HashSet<University> addUniversity(AddUni[] uni) throws Exception {
         HashSet<University> uniSet = new HashSet<>();
         HashSet<AddUni> removedUni = new HashSet<>();
 
-        for (AddUni u : uni) {
-            boolean uniExists = uniRepository.existsByName(u.getName());
-
-            if (uniExists) {
-                removedUni.add(u);
-            } else {
-                Country c = getCountry(u.getCountryId());
-                University university = u.toUniversity(u);
-                university.setId(UUID.randomUUID());
-                university.setCountry(c);                
-
-                uniSet.add(university);
+        try {
+            for (AddUni u : uni) {
+                boolean uniExists = uniRepository.existsByName(u.getName());
+    
+                if (uniExists) {
+                    removedUni.add(u);
+                } else {
+                    Country c = getCountry(u.getCountryId());
+                    University university = u.toUniversity(u);
+                    university.setId(UUID.randomUUID());
+                    university.setCountry(c);                
+    
+                    uniSet.add(university);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
 
         try {
@@ -52,17 +58,31 @@ public class UniversityCountryService {
         return uniSet;
     }
 
-    public University getUni(UUID id) {
+    public University getUni(UUID id) throws Exception {
         try {
-            return uniRepository.findUniById(id);
+            Optional<University> uni = uniRepository.findUniById(id);
+
+            if (!uni.isPresent()) {
+                throw new Exception("uni not found");
+            }
+
+            return uni.get();
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public List<University> getUniByCountry(UUID countryId) {
+    public List<University> getUniByCountry(UUID countryId) throws Exception {
         try {
-            return uniRepository.findUniByCountryId(countryId);
+            boolean countryExist = countryRepository.existsById(countryId);
+
+            if (!countryExist) {
+                throw new Exception("country is not found");
+            }
+
+            List<University> uni = uniRepository.findUniByCountryId(countryId);
+
+            return uni;
         } catch (Exception e) {
             throw e;
         }
@@ -70,6 +90,7 @@ public class UniversityCountryService {
 
     public List<University> getAllUni() {
         try {
+            System.out.println("himm");
             return uniRepository.findAll();
         } catch (Exception e) {
             throw e;
@@ -105,25 +126,23 @@ public class UniversityCountryService {
         return countrySet;
     }
 
-    public Country getCountry(UUID id) {
+    public Country getCountry(UUID id) throws Exception {
         try {
-            return countryRepository.findCountryById(id);
+            Optional<Country> country = countryRepository.findCountryById(id);
+
+            if (!country.isPresent()) {
+                throw new Exception("country not found");
+            }
+
+            return countryRepository.findCountryById(id).get();
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public List<Country> getErasmusCountry() {
+    public List<Country> getCountryByEasmus(boolean isIncludedInErasmus) {
         try {
-            return countryRepository.findCountryByIsIncludedInErasmus(true);
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    public List<Country> getNonErasmusCountry() {
-        try {
-            return countryRepository.findCountryByIsIncludedInErasmus(false);
+            return countryRepository.findCountryByIsIncludedInErasmus(isIncludedInErasmus);
         } catch (Exception e) {
             throw e;
         }
@@ -131,7 +150,7 @@ public class UniversityCountryService {
 
     public List<Country> getAllCountry() {
         try {
-            System.out.println("himm");
+            
             return countryRepository.findAll();
         } catch (Exception e) {
             throw e;

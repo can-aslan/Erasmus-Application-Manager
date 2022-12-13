@@ -20,7 +20,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JWTUtils {
     private String accessSingKey = "broccoliisthegreatestfood";
     private String refreshSingKey = "pizzaisalsogood";
-    private long accessExp = TimeUnit.HOURS.toMillis(1);
+    private long accessExp = TimeUnit.HOURS.toMillis(10); //change
     private long refreshExp = TimeUnit.HOURS.toMillis(24);
 
     private Claims extractAllClaims(String token, String singKey) throws SignatureException {
