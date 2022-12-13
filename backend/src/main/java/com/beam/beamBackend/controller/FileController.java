@@ -19,23 +19,16 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/fileService")
 public class FileController {
     private final FileService fileService;
 
-    /**
-     * 
-     * @param file Multipart file sent from the backend containing a form. 
-     * @param studentId UUID of the user sending the request.
-     * @return
-     */
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "student/preApproval/{studentUuid}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> uploadPreApproval(@RequestParam("file") MultipartFile file,
+    @RequestMapping(path = "form/{studentUuid}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Object> uploadForm(@RequestParam("file") MultipartFile file,
                                                     @RequestParam("fileType") FileEnum fileType,
                                                     @PathVariable(value="studentUuid") String studentUuid) {
         try {
-            // TODO: Instead of studentUuid pass bilkent student ID.
             fileService.uploadFile(file, studentUuid, fileType);
             return Response.create("Successfully uploaded the file", HttpStatus.OK);
         } catch (Exception e) {
@@ -45,11 +38,10 @@ public class FileController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "student/preApproval/{studentUuid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deletePreApproval(@PathVariable(value = "studentId") String studentUuid) {
+    @RequestMapping(path = "form/{studentUuid}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentId") String studentUuid) {
         try {
-            // TODO: fetch file key based on user uuid
-            // fileService.deleteFile()
+            fileService.deleteFile(studentUuid);
             return Response.create("Successfully deleted the file", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -58,12 +50,35 @@ public class FileController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "student/preApproval/{studentUuid}", method = RequestMethod.GET)
-    public ResponseEntity<Object> downloadPreApproval(@PathVariable(value = "studentId") String studentUuid) {
+    @RequestMapping(path = "form/{studentUuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentId") String studentUuid) {
         try {
-            // TODO: fetch file key based on user uuid. send back the response of file service to frontend
-            fileService.downloadFile(studentUuid);
-            return Response.create("Successfully downloaded the file", HttpStatus.OK);
+            byte[] file = fileService.downloadFile(studentUuid);
+            return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @RequestMapping(path = "form/generate/submit/{studentUuid}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") String studentUuid) {
+        try {
+            byte[] file = fileService.downloadFile(studentUuid);
+            return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
+        }
+    }
+    
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @RequestMapping(path = "form/generate/download/{studentUuid}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") String studentUuid) {
+        try {
+            byte[] file = fileService.downloadFile(studentUuid);
+            return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later

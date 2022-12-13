@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { login } from "../../api/User/UserService";
+import { login } from "../../api/UserService";
 import { useUser } from "../../provider/UserProvider";
 import { UserEnum } from "../../types";
 
