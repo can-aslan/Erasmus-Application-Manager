@@ -3,13 +3,9 @@ package com.beam.beamBackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-import com.beam.beamBackend.model.BilkentCourse;
-import com.beam.beamBackend.model.Course;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
-import com.beam.beamBackend.model.OtherUniCourse;
 import com.beam.beamBackend.model.User;
 
 @SpringBootApplication

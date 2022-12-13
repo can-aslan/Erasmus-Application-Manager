@@ -3,17 +3,16 @@ package com.beam.beamBackend.model;
 import java.util.UUID;
 import jakarta.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import com.beam.beamBackend.enums.*;
 
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class BilkentCourse extends Course {
     @NotNull
     private Double bilkentCredit;

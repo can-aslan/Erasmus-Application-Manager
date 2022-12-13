@@ -1,7 +1,6 @@
 package com.beam.beamBackend.model;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
