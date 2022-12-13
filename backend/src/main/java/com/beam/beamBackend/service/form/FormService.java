@@ -93,7 +93,7 @@ public class FormService {
         return s3.getObject(getObjectRequest).readAllBytes();
     }
 
-    public boolean deleteFile(String userUuid) {
+    public boolean deleteFile(UUID userUuid, FormEnum formType) {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         

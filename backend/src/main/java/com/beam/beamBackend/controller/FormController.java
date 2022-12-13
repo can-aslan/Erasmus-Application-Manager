@@ -40,10 +40,11 @@ public class FormController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/{studentUuid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentId") String studentUuid) {
+    @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentUuid") UUID studentUuid,
+                                                @PathVariable(value = "formType") FormEnum formType) {
         try {
-            formService.deleteFile(studentUuid);
+            formService.deleteFile(studentUuid, formType);
             return Response.create("Successfully deleted the file", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -53,7 +54,7 @@ public class FormController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentId") UUID studentUuid,
+    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentUuid") UUID studentUuid,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
             byte[] file = formService.downloadForm(studentUuid, formType);
@@ -66,7 +67,7 @@ public class FormController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/generate/submit/student/{studentUuid}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") UUID studentUuid,
+    public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentUuid") UUID studentUuid,
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
             // TODO: Send the already generated file rather than calling S3
@@ -80,7 +81,7 @@ public class FormController {
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/generate/download/{studentUuid}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentUuid,
+    public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentUuid") UUID studentUuid,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
 
         try {
