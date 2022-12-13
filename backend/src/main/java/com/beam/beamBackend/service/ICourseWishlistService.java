@@ -5,12 +5,12 @@ import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
 
 public interface ICourseWishlistService {
-    List<CourseWishlist> getAllWishlists();
-    boolean submitWishlist(CourseWishlist wishlist);
-    boolean submitWishlist(Long studentId);
-    List<CourseWishlist> getAllWishlistsOfStudent(Long studentId);
-    boolean addWishlistItem(Long studentId, CourseWishlistItem itemToAdd);
-    boolean removeWishlistItem(Long studentId, CourseWishlistItem itemToRemove);
-    List<CourseWishlistItem> getAllWishlistItems();
-    List<CourseWishlistItem> getAllWishlistItemsOfStudent(Long studentId);
+    List<CourseWishlist> getAllWishlists() throws Exception;
+    boolean submitWishlist(CourseWishlist wishlist) throws Exception;
+    boolean submitWishlist(Long studentId) throws Exception;
+    List<CourseWishlist> getAllWishlistsOfStudent(Long studentId) throws Exception;
+    boolean addWishlistItem(Long studentId, CourseWishlistItem itemToAdd) throws Exception;
+    boolean removeWishlistItem(Long studentId, CourseWishlistItem itemToRemove) throws Exception;
+    List<CourseWishlistItem> getAllWishlistItems() throws Exception;
+    List<CourseWishlistItem> getAllWishlistItemsOfStudent(Long studentId) throws Exception;
 }
