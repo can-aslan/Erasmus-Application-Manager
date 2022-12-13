@@ -76,7 +76,7 @@ const LoginForm = () => {
                 name: "Selim Can",
                 surname: "Güler",
 
-                userType: UserEnum.Coordinator,
+                userType: UserEnum.OutgoingStudent,
             })
             navigate("/")
 
