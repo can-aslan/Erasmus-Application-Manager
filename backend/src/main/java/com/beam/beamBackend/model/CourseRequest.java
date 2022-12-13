@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseRequest {
     @Id
-    @GeneratedValue(generator = "UUID") // TODO check what happens with null
+    @GeneratedValue(generator = "UUID")
     @Column(name = "request_id")
     private UUID requestId;
 
