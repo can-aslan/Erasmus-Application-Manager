@@ -11,6 +11,7 @@ import com.beam.beamBackend.model.Country;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.repository.ICountryRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
+import com.beam.beamBackend.request.AddUni;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,18 +21,22 @@ public class UniversityCountryService {
     private final IUniversityRepository uniRepository;
     private final ICountryRepository countryRepository;
 
-    public HashSet<University> addUniversity(University[] uni) {
-        HashSet<University> uniSet = new HashSet<>(Arrays.asList(uni));
-        HashSet<University> removedUni = new HashSet<>();
+    public HashSet<University> addUniversity(AddUni[] uni) {
+        HashSet<University> uniSet = new HashSet<>();
+        HashSet<AddUni> removedUni = new HashSet<>();
 
-        for (University u : uniSet) {
+        for (AddUni u : uni) {
             boolean uniExists = uniRepository.existsByName(u.getName());
 
             if (uniExists) {
-                uniSet.remove(u);
                 removedUni.add(u);
             } else {
-                u.setId(UUID.randomUUID());
+                Country c = getCountry(u.getCountryId());
+                University university = u.toUniversity(u);
+                university.setId(UUID.randomUUID());
+                university.setCountry(c);                
+
+                uniSet.add(university);
             }
         }
 

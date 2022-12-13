@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.Country;
 import com.beam.beamBackend.model.University;
+import com.beam.beamBackend.request.AddUni;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.UniversityCountryService;
 
@@ -20,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,9 +35,8 @@ public class UniversityCountryController {
     private final UniversityCountryService uniCountryService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/university")
-    public ResponseEntity<Object> addUniversity(@Valid @RequestBody University[] university) {
+    public ResponseEntity<Object> addUniversity(@Valid @RequestBody AddUni[] university) {
         try {
-            System.out.println(university[0]);
             HashSet<University> addedUnis = uniCountryService.addUniversity(university);
             return Response.create("account is created", HttpStatus.OK, addedUnis);
         } catch (Exception e) {
