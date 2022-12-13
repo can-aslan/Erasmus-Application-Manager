@@ -2,6 +2,7 @@ package com.beam.beamBackend.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,7 @@ import com.beam.beamBackend.response.ResponseId;
 
 @Qualifier("account")
 @Repository
+@Deprecated
 public class AccountRepository {
     private static List<User> DB = new ArrayList<>();
 

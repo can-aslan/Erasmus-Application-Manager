@@ -31,7 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class AccountService {
     public static int hashStrength = 10;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(hashStrength, new SecureRandom());
+    @Autowired
+    final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // @Autowired
     private final IAccountRepository accountRepository;
@@ -47,29 +48,30 @@ public class AccountService {
 
     public RLoginUser login(UserLogin user) throws Exception {
         try {
-            // User dbUser = accountRepository.findUserByBilkentID(Long.parseLong(user.getBilkentId()));
+            System.out.println("id: "+ user.getBilkentId());
+            User dbUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
 
-            // if (dbUser == null) {
-            //     throw new Exception("user is not found");
-            // }
+            System.out.println("user: " + dbUser);
+            if (dbUser == null) {
+                throw new Exception("user is not found");
+            }
             
-            // String hashedPassword = dbUser.getPassword();
-            // //String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(user.getBilkentId()));
-            // boolean passwordMatch = passwordEncoder.matches(user.getPassword(), hashedPassword);
+            String hashedPassword = dbUser.getPassword();
+            //String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(user.getBilkentId()));
+            boolean passwordMatch = bCryptPasswordEncoder.matches(user.getPassword(), hashedPassword);
 
-            // if (!passwordMatch) {
-            //     throw new Exception("passwords do not match");
-            // }
+            if (!passwordMatch) {
+                throw new Exception("passwords do not match");
+            }
 
-            // System.out.println("passwords are matched");
+            System.out.println("passwords are matched");
 
-            // // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
-            // // User appUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
-            // final UserDetails userDetails = jwtUserService.loadUserByUsername(user.getBilkentId());
-            // final String accessToken = jwtUtils.createAccessToken(userDetails);
-            // final String refreshToken = jwtUtils.createRefreshToken(userDetails);
-            // return new RLoginUser(dbUser, accessToken, refreshToken);
-            return null;
+            // authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getBilkentId(), user.getPassword()));
+            // User appUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
+            final UserDetails userDetails = jwtUserService.loadUserByUsername(user.getBilkentId());
+            final String accessToken = jwtUtils.createAccessToken(userDetails);
+            final String refreshToken = jwtUtils.createRefreshToken(userDetails);
+            return new RLoginUser(dbUser, accessToken, refreshToken);
         } catch (Exception e) {
             System.out.println("login exception");
             e.printStackTrace();
@@ -96,32 +98,34 @@ public class AccountService {
 
     public boolean changePassword(String auth, ChangePassword passwords) throws Exception {
         try {
-            // String username = jwtUtils.extractAccessUsername(JWTFilter.getTokenWithoutBearer(auth));
-            // User dbUser = accountRepository.findUserByBilkentID(Long.parseLong(username));
+            String username = jwtUtils.extractAccessUsername(JWTFilter.getTokenWithoutBearer(auth));
+            User dbUser = accountRepository.findUserByBilkentId(Long.parseLong(username));
 
-            // if (dbUser == null) {
-            //     throw new Exception("user is not found");
-            // }
+            if (dbUser == null) {
+                throw new Exception("user is not found");
+            }
             
-            // String hashedPassword = dbUser.getPassword();
-            // // username is bilkentId in this context
+            String hashedPassword = dbUser.getPassword();
+            // username is bilkentId in this context
             
             
-            // // String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(username));
-            // boolean passwordMatch = passwordEncoder.matches(passwords.getOldPassword(), hashedPassword);
+            // String hashedPassword = accountRepository.getPasswordIfUserExist(Long.parseLong(username));
+            boolean passwordMatch = bCryptPasswordEncoder.matches(passwords.getOldPassword(), hashedPassword);
 
-            // if (!passwordMatch) {
-            //     System.out.println("passwords does not match");
-            //     throw new Exception("pasword no match");
-            // }
+            if (!passwordMatch) {
+                System.out.println("passwords does not match");
+                throw new Exception("pasword no match");
+            }
 
-            // System.out.println("passwords are matched");
-            // // hash new password
-            // String hashedNewPassword = passwordEncoder.encode(passwords.getNewPassword());
+            System.out.println("passwords are matched");
+            // hash new password
+            String hashedNewPassword = bCryptPasswordEncoder.encode(passwords.getNewPassword());
             
-            // dbUser.setPassword(hashedNewPassword);
+            dbUser.setPassword(hashedNewPassword);
+            int result = accountRepository.updatePassword(hashedNewPassword, dbUser.getId());
             // accountRepository.deleteById(dbUser.getId());
             // accountRepository.save(dbUser);
+            System.out.println("result: " + result);
             return true;
             
         } catch (Exception e) {
@@ -131,59 +135,60 @@ public class AccountService {
         }
     }
 
-    public boolean addUser(User user) throws Exception {
+    public UUID addUser(User user) throws Exception {
         try {
-            boolean userExist = false;
-            // = accountRepository.existsByBilkentID(user.getBilkentId());
+            boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
             
             if (userExist) {
                 throw new Exception();
             } else {
                 // generate uuid and hash password if user does not exist in the system
                 user.setId(UUID.randomUUID());
+                // user.setPassword(user.getPassword());
                 user.setPassword(encodePassword(user.getPassword()));
 
                 accountRepository.save(user);
-                return true;
+                return user.getId();
             }
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public boolean addUserChunk(User[] users) throws Exception {
-        // HashSet<User> usersSet = new HashSet<>(Arrays.asList(users));
-        // HashSet<User> removedUsers = new HashSet<>();
+    public HashSet<User> addUserChunk(User[] users) throws Exception {
+        HashSet<User> usersSet = new HashSet<>(Arrays.asList(users));
+        HashSet<User> removedUsers = new HashSet<>();
 
-        // for (User user : usersSet) {
-        //     try {
-        //         boolean userExist = accountRepository.existsByBilkentID(user.getBilkentId());
+        for (User user : usersSet) {
+            try {
+                boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
 
-        //         if (userExist) {
-        //             usersSet.remove(user);
-        //             removedUsers.add(user);
-        //         } else {
-        //             user.setId(UUID.randomUUID());
-        //             user.setPassword(encodePassword(user.getPassword()));
-        //         }
-        //     } catch (Exception e) {
-        //         throw e;
-        //     }
-        // }
+                if (userExist) {
+                    usersSet.remove(user);
+                    removedUsers.add(user);
+                } else {
+                    user.setId(UUID.randomUUID());
+                    // user.setPassword(user.getPassword());
+                    user.setPassword(encodePassword(user.getPassword()));
+                }
+            } catch (Exception e) {
+                throw e;
+            }
+        }
 
-        // try {
-        //     accountRepository.saveAll(usersSet);
-        // } catch (Exception e) {
-        //     System.out.println("users not saved: " + removedUsers);
-        //     throw e;
-        // }
+        try {
+            accountRepository.saveAll(usersSet);
+        } catch (Exception e) {
+            System.out.println("users not saved: " + removedUsers);
+            throw e;
+        }
 
-        return true;
+        return usersSet;
     }
 
     private String encodePassword(String plainPassword) {
         try {
-            return passwordEncoder.encode(plainPassword);
+            return bCryptPasswordEncoder.encode(plainPassword);
         } catch (Exception e) {
             throw e;
         }       
