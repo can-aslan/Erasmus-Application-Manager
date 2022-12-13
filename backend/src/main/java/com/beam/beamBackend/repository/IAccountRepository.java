@@ -13,7 +13,7 @@ import com.beam.beamBackend.model.User;
 @Repository
 public interface IAccountRepository extends JpaRepository<User, UUID> {
     //List<User> findAll();
-    List<User> findAllByUserUUID(UUID userUUID);
+    List<User> findAllById(UUID id);
     //List<User> findAllByBilkentID(Long bilkentID);
     //User findUserByBilkentID(Long bilkentID);
     //boolean existsByBilkentID(Long bilkentID);

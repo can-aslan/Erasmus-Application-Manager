@@ -1,6 +1,7 @@
 package com.beam.beamBackend.model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -29,11 +30,11 @@ public class CourseWishlistItem {
 
     @NotNull
     @Column(name = "other_uni_courses")
-    private List<OtherUniCourse> otherUniCourses;
+    private List<UUID> otherUniCourses;
 
     @NotNull
     @Column(name = "bilkent_course")
-    private BilkentCourse correspondingBilkentCourse;
+    private UUID correspondingBilkentCourse;
 
     @NotBlank
     @Column(name = "semester")
@@ -42,8 +43,8 @@ public class CourseWishlistItem {
     public CourseWishlistItem(
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
         @JsonProperty("studentId") Long studentId,
-        @JsonProperty("otherUniCourses") List<OtherUniCourse> otherUniCourses,
-        @JsonProperty("correspondingBilkentCourse") BilkentCourse correspondingBilkentCourse,
+        @JsonProperty("otherUniCourses") List<UUID> otherUniCourses,
+        @JsonProperty("correspondingBilkentCourse") UUID correspondingBilkentCourse,
         @JsonProperty("semester") String semester
     ) {
         this.wishlistItemId = (wishlistItemId == null) ? UUID.randomUUID() : wishlistItemId;

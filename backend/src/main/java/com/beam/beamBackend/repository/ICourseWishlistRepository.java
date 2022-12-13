@@ -17,6 +17,6 @@ public interface ICourseWishlistRepository extends JpaRepository<CourseWishlist,
     boolean existsByStudentId(Long studentId);
 
     @Modifying
-    @Query("update CourseWishlist cw set cw.wishlist_items = :wishlist_items where cw.wishlist_id = :wishlist_id")
-    int updateWishlistItems(@Param("wishlist_items") List<UUID> wishlistItems, @Param("wishlist_id") UUID wishlistId);
+    @Query("update CourseWishlist cw set cw.wishlistItems = :wishlistItems where cw.wishlistId = :wishlistId")
+    int updateWishlistItems(@Param("wishlistItems") List<UUID> wishlistItems, @Param("wishlistId") UUID wishlistId);
 }

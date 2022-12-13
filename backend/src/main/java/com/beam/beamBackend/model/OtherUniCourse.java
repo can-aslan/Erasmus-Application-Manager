@@ -6,15 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import com.beam.beamBackend.enums.*;
 
-// @Entity
+@Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class OtherUniCourse extends Course {
     
     @NotNull
-    private final CourseApproval courseApproval;
+    private CourseApproval courseApproval;
     
     public OtherUniCourse(
         @JsonProperty("courseUUID") UUID courseUUID,
