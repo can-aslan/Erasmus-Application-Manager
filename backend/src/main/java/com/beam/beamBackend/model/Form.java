@@ -19,7 +19,7 @@ import lombok.Data;
 public class Form {
     @Id
     @Column(name = "form_uuid")
-    private UUID formUuid;
+    private UUID id;
 
     @NotNull
     @Column(name = "user_uuid")
@@ -37,7 +37,7 @@ public class Form {
                 @JsonProperty("userUuid") UUID userUuid,
                 @JsonProperty("fileType") FormEnum fileType,
                 @JsonProperty("fileName") String key ) {
-        this.formUuid = formUuid == null ? UUID.randomUUID() : formUuid;;
+        this.id = formUuid == null ? UUID.randomUUID() : formUuid;;
         this.userUuid = userUuid;
         this.formType = fileType;
         this.key = key;

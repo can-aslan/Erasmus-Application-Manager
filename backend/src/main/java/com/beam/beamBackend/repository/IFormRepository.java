@@ -10,5 +10,5 @@ import com.beam.beamBackend.model.Form;
 
 @Repository
 public interface IFormRepository extends JpaRepository<Form, UUID> {
-    Form findFormByUserUUIDAndFormType(UUID userUuid, FormEnum formType);
+    Form findFormByIdAndFormType(UUID id, FormEnum formType);
 }
