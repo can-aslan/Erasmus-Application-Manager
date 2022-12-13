@@ -7,10 +7,10 @@ import { Course, CourseRequest } from "../../types";
 const ApproveCourseRequestPage = () => {
     const [hostName, setHostName] = useState("Host name from Api");
     const [waitingCourses, setWaitingCourses] = useState<Array<CourseRequest>>([
-    { courseRequestUuid: "0", courseCode: "CS-XXX", courseName: "xxx course", correspondingCourseInBilkent: "CS-201", courseWebPage: "somewebpage.com/cs-201", syllabusLink: "somewebpage.com/syllabus/cs-201" },
-    { courseRequestUuid: "1", courseCode: "CS-YYY", courseName: "yyy course", correspondingCourseInBilkent: "CS-202", courseWebPage: "somewebpage.com/cs-202", syllabusLink: "somewebpage.com/syllabus/cs-202" },
-    { courseRequestUuid: "2", courseCode: "CS-ZZZ", courseName: "zzz course", correspondingCourseInBilkent: "CS-315", courseWebPage: "somewebpage.com/cs-315", syllabusLink: "somewebpage.com/syllabus/cs-315" },
-    { courseRequestUuid: "3", courseCode: "CS-AAA", courseName: "aaa course", correspondingCourseInBilkent: "CS-115", courseWebPage: "somewebpage.com/cs-115", syllabusLink: "somewebpage.com/syllabus/cs-115" }
+    { requestId: "0", hostCode: "CS-XXX", name: "xxx course", bilkentCode: "CS-201", webpage: "somewebpage.com/cs-201", syllabusLink: "somewebpage.com/syllabus/cs-201" },
+    { requestId: "1", hostCode: "CS-YYY", name: "yyy course", bilkentCode: "CS-202", webpage: "somewebpage.com/cs-202", syllabusLink: "somewebpage.com/syllabus/cs-202" },
+    { requestId: "2", hostCode: "CS-ZZZ", name: "zzz course", bilkentCode: "CS-315", webpage: "somewebpage.com/cs-315", syllabusLink: "somewebpage.com/syllabus/cs-315" },
+    { requestId: "3", hostCode: "CS-AAA", name: "aaa course", bilkentCode: "CS-115", webpage: "somewebpage.com/cs-115", syllabusLink: "somewebpage.com/syllabus/cs-115" }
     ]);
     return (<Center sx={{ height: '100vh' }}>
         <Box

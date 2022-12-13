@@ -85,12 +85,13 @@ export type PreviousCourseRequest = CourseRequest & {
 }
 
 export type CourseRequest = {
-    courseRequestUuid: string,
-    courseCode: string,
-    courseName: string,
-    courseWebPage: string,
+    requestId?: string | null,
+    studentId: string
+    hostCode: string,
+    name: string,
+    bilkentCode: string,
+    webpage: string,
     syllabusLink: string,
-    correspondingCourseInBilkent: string,
 }
 
 export type StudentAssociatedCourse = Course & {

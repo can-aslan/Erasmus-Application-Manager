@@ -55,10 +55,17 @@ const CourseRequestPage = () => {
         }
         if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
             // send request to api
-            // const course: Course = {
 
-            // }
-            // mutateCourseRequest()
+            const courseRequest: CourseRequest ={
+                requestId: null,
+                studentId: user.id,
+                hostCode: {...form.getInputProps('hostCourseCode')},
+                name: {...form.getInputProps('courseName')},
+                webpage: {...form.getInputProps('webpage')},
+                syllabusLink: {...form.getInputProps('syllabusLink')},
+                bilkentCode: searchedBilkentCourseInfo
+            }
+            mutateCourseRequest(courseRequest)
             console.log("error yok");
         }
     }
