@@ -11,6 +11,7 @@ import com.beam.beamBackend.model.Course;
 
 @Qualifier("course-arrayList")
 @Repository
+// not yet @Deprecated
 public class CourseRepositoryArrayList implements ICourseRepository {
     private static List<Course> DB = new ArrayList<Course>();
 
