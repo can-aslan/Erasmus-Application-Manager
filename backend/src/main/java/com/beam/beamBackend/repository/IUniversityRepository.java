@@ -1,6 +1,7 @@
 package com.beam.beamBackend.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import com.beam.beamBackend.model.University;
 @Repository
 @Transactional
 public interface IUniversityRepository extends JpaRepository<University, UUID> {
-    University findUniById(UUID id);
+    Optional<University> findUniById(UUID id);
     List<University> findUniByCountryId(UUID countryId);
     boolean existsByName(String name);
 }

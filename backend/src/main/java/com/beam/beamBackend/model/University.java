@@ -17,6 +17,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -45,26 +46,25 @@ public class University {
     @NotBlank
     @Column(name = "city", nullable = false)
     private String city;
-
-    @NotBlank
-    @Column(name = "info", nullable = false)
-    private String info;
     
-    @NotNull
+    // @NotNull
+    // private UUID countryId;    
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id", nullable = false)
-    private Country countryId;
+    @JoinColumn(name = "country_id", referencedColumnName = "id", nullable = false)
+    private Country country;
 
     public University(@JsonProperty("id") UUID id,
                 @JsonProperty("name") String name,
                 @JsonProperty("city") String city,
-                @JsonProperty("info") String info,
-                @JsonProperty("country_id") Country countryId) {
+                // @JsonProperty("countryId") UUID countryId,
+                Country country) {
 
         this.id = id;
         this.name = name;
         this.city = city;
-        this.info = info;
-        this.countryId = countryId;
+        // this.countryId = countryId;
+        this.country = country;
     }
 }
