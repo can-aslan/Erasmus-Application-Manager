@@ -1,7 +1,7 @@
-import useAxiosSecure from "../../hooks/useAxiosSecure"
-import { User } from "../../types"
-import { ResponseUser } from "../../types/responseTypes"
-import axios from "../axios"
+import useAxiosSecure from "../hooks/useAxiosSecure"
+import { User } from "../types"
+import { ResponseUser } from "../types/responseTypes"
+import axios from "./axios"
 
 export const login = async (bilkentId: string, password: string) => {
     // const axiosSecure = useAxiosSecure()
