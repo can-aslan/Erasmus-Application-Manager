@@ -24,6 +24,10 @@ public class CourseWishlistItem {
     private UUID wishlistItemId;
     
     @NotNull
+    @Column(name = "student_id")
+    private Long studentId;
+
+    @NotNull
     @Column(name = "other_uni_courses")
     private List<OtherUniCourse> otherUniCourses;
 
@@ -37,11 +41,13 @@ public class CourseWishlistItem {
 
     public CourseWishlistItem(
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
+        @JsonProperty("studentId") Long studentId,
         @JsonProperty("otherUniCourses") List<OtherUniCourse> otherUniCourses,
         @JsonProperty("correspondingBilkentCourse") BilkentCourse correspondingBilkentCourse,
         @JsonProperty("semester") String semester
     ) {
         this.wishlistItemId = (wishlistItemId == null) ? UUID.randomUUID() : wishlistItemId;
+        this.studentId = studentId;
         this.otherUniCourses = otherUniCourses;
         this.correspondingBilkentCourse = correspondingBilkentCourse;
         this.semester = semester;
