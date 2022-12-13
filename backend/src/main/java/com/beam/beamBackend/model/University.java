@@ -45,10 +45,6 @@ public class University {
     @NotBlank
     @Column(name = "city", nullable = false)
     private String city;
-
-    @NotBlank
-    @Column(name = "info", nullable = false)
-    private String info;
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,13 +54,11 @@ public class University {
     public University(@JsonProperty("id") UUID id,
                 @JsonProperty("name") String name,
                 @JsonProperty("city") String city,
-                @JsonProperty("info") String info,
                 @JsonProperty("country_id") Country countryId) {
 
         this.id = id;
         this.name = name;
         this.city = city;
-        this.info = info;
         this.countryId = countryId;
     }
 }
