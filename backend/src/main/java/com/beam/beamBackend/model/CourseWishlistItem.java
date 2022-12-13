@@ -52,4 +52,11 @@ public class CourseWishlistItem {
         this.correspondingBilkentCourse = correspondingBilkentCourse;
         this.semester = semester;
     }
+
+    public boolean equalsWithoutUUID(CourseWishlistItem other) {
+        return this.studentId.equals(other.studentId)
+            && this.otherUniCourses.equals(other.otherUniCourses)
+            && this.correspondingBilkentCourse.equals(other.correspondingBilkentCourse)
+            && this.semester.equals(other.semester);
+    }
 }
