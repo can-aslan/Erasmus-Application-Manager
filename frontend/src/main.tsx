@@ -48,7 +48,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/course-evaluations',
-    element: <SeeCourseEvaluationsPage/>
+    element: <SeeCourseEvaluationsPage uniId='1'/>
   },
   {
     element: <PersistentLogin />,
@@ -100,7 +100,7 @@ const router = createBrowserRouter([
                   },
                   {
                     path: '/student/course-evaluations',
-                    element: <SeeCourseEvaluationsPage/>
+                    element: <SeeCourseEvaluationsPage uniId='1'/>
                   }
                 ]
               },

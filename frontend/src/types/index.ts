@@ -70,9 +70,9 @@ export type HostCourse = {
     grade?: string,
 }
 
-export type SchoolAssociatedCourse = {
-    schoolId: string,
-    schoolName: string,
+export type UniAssociatedCourse = {
+    uniId: string,
+    uniName: string,
     uuid: string,
     courseCode: string,
     courseName: string,
