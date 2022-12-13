@@ -83,7 +83,7 @@ public class FormService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        final String key = formRepository.findFormByUserUUIDAndFormType(userUuid, formType).getKey();
+        final String key = formRepository.findFormByIdAndFormType(userUuid, formType).getKey();
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
@@ -97,7 +97,7 @@ public class FormService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        final String key = formRepository.findFormByUserUUIDAndFormType(userUuid, formType).getKey();
+        final String key = formRepository.findFormByIdAndFormType(userUuid, formType).getKey();
 
         try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
