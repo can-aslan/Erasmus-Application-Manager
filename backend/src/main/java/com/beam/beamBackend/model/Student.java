@@ -111,10 +111,15 @@ public class Student {
     @Column(name = "semester", nullable = true)
     private Semester semester;
 
-    public static Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni) {
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coordinator", referencedColumnName = "id", nullable = true)
+    private Staff coordinator;
+
+    public static Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni, Staff coordinator) {
         return new Student(null, u, sReq.getDepartment1(), sReq.getFaculty1(),
                             sReq.getDepartment2(), sReq.getFaculty2(), sReq.getTelephoneNo(),
                             sReq.getStudyType(), sReq.getNationality(), sReq.getDateOfBirth(),
-                            sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester());
+                            sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester(), coordinator);
     }
 }
