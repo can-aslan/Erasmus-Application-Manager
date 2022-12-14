@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
 import com.beam.beamBackend.repository.ICourseWishlistItemRepository;
@@ -43,7 +44,7 @@ public class CourseWishlistService implements ICourseWishlistService {
 
         // At this point we know the course wishlist items exists in the system,
         // and that the student has no course wishlist(s) in the system.
-        wishlist.setIsSent(true);
+        wishlist.setStatus(CourseWishlistStatus.PENDING);
         wishlistRepository.save(wishlist);
         return true;
     }
@@ -71,7 +72,7 @@ public class CourseWishlistService implements ICourseWishlistService {
         wishlistRepository.deleteById(wishlist.getWishlistId());
 
         // Edit wishlist and save new wishlist to repository
-        wishlist.setIsSent(true);
+        wishlist.setStatus(CourseWishlistStatus.PENDING);
         wishlistRepository.save(wishlist);
         return true;
     }
@@ -93,9 +94,8 @@ public class CourseWishlistService implements ICourseWishlistService {
             wishlistRepository.save(new CourseWishlist(
                 UUID.randomUUID(),
                 wishlistItems,
-                false,
-                false,
-                studentId));
+                studentId,
+                CourseWishlistStatus.NOT_SENT));
 
             // Add the wishlist item to wishlist item repository
             wishlistItemRepository.save(itemToAdd);
@@ -106,7 +106,7 @@ public class CourseWishlistService implements ICourseWishlistService {
         CourseWishlist wishlist = wishlistRepository.findCourseWishlistByStudentId(studentId); 
 
         // Checks if the wishlist is sent
-        if (wishlist.getIsSent() || wishlist.getIsApproved()) {
+        if (wishlist.getStatus() != CourseWishlistStatus.NOT_SENT ) {
             throw new Exception("course wishlist for student with id " + studentId + " is already sent or approved, cannot be edited");
         }
 
