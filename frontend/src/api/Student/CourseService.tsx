@@ -1,7 +1,8 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
+
 import { Course, CourseRequest, PreviousCourseRequest, StudentAssociatedWishlist } from "../../types"
-import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseSchoolSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
+import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseUniSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
 export const getCourses = async (axios: AxiosInstance) => {
     const response = await axios.get<ResponseCourseList>(`/student/courses`)
@@ -13,8 +14,8 @@ export const getCourse = async (axios: AxiosInstance, courseId: string) => {
     return response.data
 }
 
-export const getSchoolCourses = async (axios: AxiosInstance, schoolId: string) => {
-    const response = await axios.get<ResponseSchoolSpecificCourses>(`/student/school/${schoolId}/courses`)
+export const getUniCourses = async (axios: AxiosInstance, uniId: string) => {
+    const response = await axios.get<ResponseUniSpecificCourses>(`/uni/${uniId}/courses`)
     return response.data
 }
 
@@ -23,11 +24,22 @@ export const getCourseWishlist = async (axios: AxiosInstance, studentId: string)
     return response.data
 }
 
-export const saveWishlist = async (axios: AxiosInstance, wishlist: StudentAssociatedWishlist | undefined) => {
-    const response = await axios.post<ResponseStudentSpecificCourseWishlist>(`/student/courseWishlist/${wishlist?.studentId}`,
+export const saveWishlist = async (axios: AxiosInstance, studentId: string, wishlistItems: CourseWishlistItem[] | undefined) => {
+    const response = await axios.post(`/student/${studentId}/courseWishlist/save`,
         JSON.stringify({
             data: {
-                ...wishlist
+                wishlistItems
+            }
+        })    
+    )
+    return response.data
+}
+
+export const submitWishlist = async (axios: AxiosInstance, studentId: string, wishlistItems: CourseWishlistItem[] | undefined) => {
+    const response = await axios.post(`/student/${studentId}/courseWishlist/submit`,
+        JSON.stringify({
+            data: {
+                wishlistItems
             }
         })    
     )

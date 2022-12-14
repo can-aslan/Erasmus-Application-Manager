@@ -7,6 +7,7 @@ import {
     IconGift,
     IconLicense,
     IconList,
+    IconRegistered,
     IconSchool,
     IconUpload
 } from "@tabler/icons";
@@ -126,9 +127,9 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.Admin]: [
         {
             // TODO: Admin pages are not determined
-            label: 'Course Transfer Forms',
-            to: '/coordinator/course-transfer-form',
-            icon: <IconArrowsTransferDown />
+            label: 'Register User',
+            to: '/admin/register-page',
+            icon: <IconRegistered />
         }
     ],
     [UserEnum.Instructor]: [

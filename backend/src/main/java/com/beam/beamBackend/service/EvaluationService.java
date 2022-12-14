@@ -15,6 +15,9 @@ import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.ICourseEvalRepository;
 import com.beam.beamBackend.repository.IUniversityEvalRepository;
 import com.beam.beamBackend.repository.UniEvaluationRepository;
+import com.beam.beamBackend.response.RCourseEval;
+import com.beam.beamBackend.response.RUniEval;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -55,10 +58,11 @@ public class EvaluationService {
         }
     }
 
-    public List<UniEvaluationForm> getUniEval(UUID uniId) throws Exception {
+    public RUniEval getUniEval(UUID uniId) throws Exception {
         try {
-            List<UniEvaluationForm> result = uniEvalRepo.findByUniIdAndEvalStatus(uniId, EvalStatus.SUBMITTED);
-            return result;            
+            List<UniEvaluationForm> eval = uniEvalRepo.findByUniIdAndEvalStatus(uniId, EvalStatus.SUBMITTED);
+            double avg = uniEvalRepo.getAverage();
+            return new RUniEval(eval, avg);            
         } catch (Exception e) {
             System.out.println("cannot get eval exception");
             e.printStackTrace();
@@ -94,15 +98,15 @@ public class EvaluationService {
         }
     }
 
-    public List<CourseEvaluationForm> getCourseEval(UUID courseId) throws Exception {
+    public RCourseEval getCourseEval(UUID courseId) throws Exception {
         try {
-            List<CourseEvaluationForm> result = courseEvalRepo.findByCourseId(courseId);
+            List<CourseEvaluationForm> eval = courseEvalRepo.findByCourseId(courseId);
 
-            if (result == null || result.size() == 0) {
-                throw new Exception("course not found or there is no eval"); //cahnge maybe
+            if (eval == null || eval.size() == 0) {
+                throw new Exception("course not found or there is no eval"); //change maybe
             }
 
-            return result;            
+            return new RCourseEval(eval, courseEvalRepo.getAverage());            
         } catch (Exception e) {
             System.out.println("cannot get eval exception");
             e.printStackTrace();

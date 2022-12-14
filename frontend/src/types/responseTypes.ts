@@ -1,5 +1,5 @@
 
-import { Course, CourseRequest, LearningAgreement, PastEvaluation, PastEvaluationItem, PreApprovalForm, PreviousCourseRequest, SchoolAssociatedCourse, StudentAssociatedCourse, StudentAssociatedWishlist, UniversityDetailed, UniversityProxy, User } from ".";
+import { Course, CourseRequest, LearningAgreement, PastEvaluation, PastEvaluationItem, PreApprovalForm, PreviousCourseRequest, UniAssociatedCourse, StudentAssociatedCourse, StudentAssociatedWishlist, UniversityDetailed, UniversityProxy, User } from ".";
 
 export type ResponseUser = Record<'data', User>
 
@@ -15,7 +15,7 @@ export type ResponseCourseList = Record<'data', Array<Course>>
 
 export type ResponseCourse = Record<'data', Course>
 
-export type ResponseSchoolSpecificCourses = Record<'data', Array<SchoolAssociatedCourse>>
+export type ResponseUniSpecificCourses = Record<'data', Array<UniAssociatedCourse>>
 
 export type ResponseStudentSpecificCourseWishlist = Record<'data', StudentAssociatedWishlist>
 

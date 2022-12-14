@@ -79,7 +79,6 @@ const LoginForm = () => {
                 userType: UserEnum.Coordinator,
             })
             navigate("/")
-
         }
     }
 
