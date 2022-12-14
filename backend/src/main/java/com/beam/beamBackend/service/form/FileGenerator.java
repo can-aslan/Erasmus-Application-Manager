@@ -1,4 +1,4 @@
-package com.beam.beamBackend.service;
+package com.beam.beamBackend.service.form;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
@@ -29,9 +30,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class FileGenerator {
-  
 
-    public File generatePDF() throws BadElementException, MalformedURLException, IOException{
+    public File generatePreApprovalForm(UUID userUuid) throws BadElementException, MalformedURLException, IOException{
         Document document = new Document();
         String name = "Kubilay";
         String surname = "Yilmaz";
@@ -209,8 +209,6 @@ public class FileGenerator {
 
         document.add(siTable);
     }
-
-    
 
     private void addInstAndPeriodInfo(Document document, String hostInst, String academicYear, String semester) throws DocumentException {
 
