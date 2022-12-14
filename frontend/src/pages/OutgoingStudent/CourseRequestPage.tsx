@@ -55,11 +55,11 @@ const CourseRequestPage = () => {
             const courseRequest: CourseRequest = {
                 requestId: null,
                 studentId: user.id,
-                hostCode: { ...form.getInputProps('hostCourseCode') },
-                name: { ...form.getInputProps('courseName') },
-                webpage: { ...form.getInputProps('webpage') },
-                syllabusLink: { ...form.getInputProps('syllabusLink') },
-                ectsCredits: { ...form.getInputProps('ectsCredits') },
+                hostCode: form.values.hostCourseCode,
+                name: form.values.courseName,
+                webpage: form.values.webpage ,
+                syllabusLink: form.values.syllabusLink,
+                ectsCredits: form.values.ectsCredits,
                 bilkentCode: searchedBilkentCourseInfo
             }
             //mutateCourseRequest(courseRequest)

@@ -32,8 +32,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com",
-            "6"
+            "www.syllabus.com"
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(true);
@@ -71,8 +70,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com",
-            "6"
+            "www.syllabus.com"
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(false);

@@ -50,10 +50,6 @@ public class CourseRequest {
     @Column(name = "syllabus_link")
     private String syllabusLink;
 
-    @NotBlank
-    @Column(name = "ects_credits")
-    private String ectsCredits;
-
     public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
         @JsonProperty("studentId") Long studentId,
@@ -61,8 +57,7 @@ public class CourseRequest {
         @JsonProperty("name") String name,
         @JsonProperty("bilkentCode") String bilkentCode,
         @JsonProperty("webpage") String webpage,
-        @JsonProperty("syllabusLink") String syllabusLink,
-        @JsonProperty("ectsCredits") String ectsCredits
+        @JsonProperty("syllabusLink") String syllabusLink
     ) {
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
         this.studentId = studentId;
@@ -71,6 +66,5 @@ public class CourseRequest {
         this.bilkentCode = bilkentCode;
         this.webpage = webpage;
         this.syllabusLink = syllabusLink;
-        this.ectsCredits = ectsCredits;
     }
 }

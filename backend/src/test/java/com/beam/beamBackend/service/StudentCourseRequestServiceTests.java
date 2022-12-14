@@ -27,8 +27,7 @@ public class StudentCourseRequestServiceTests {
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com",
-            "6"
+            "www.syllabus.com"
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(true); // saveRequest() does not exist for ICourseRequestRepository
@@ -45,8 +44,7 @@ public class StudentCourseRequestServiceTests {
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com",
-            "6"
+            "www.syllabus.com"
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(false); // saveRequest() does not exist for ICourseRequestRepository
