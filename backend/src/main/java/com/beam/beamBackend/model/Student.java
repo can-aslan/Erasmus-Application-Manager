@@ -43,27 +43,27 @@ public class Student {
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(name = "id", nullable = false)
-    UUID id;
+    private UUID id;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    User user;
+    private User user;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "department1", nullable = false)
-    Department department;
+    private Department department;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "faculty1", nullable = false)
-    Faculty faculty;
+    private Faculty faculty;
     
     // these are for minor or major students
     @Enumerated(EnumType.STRING)
     @Column(name = "department2", nullable = true)
-    Department department2;
+    private Department department2;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "faculty2", nullable = true)
@@ -72,25 +72,25 @@ public class Student {
     @NotBlank
     @Size(min = 8)
     @Column(name = "telephone", nullable = false)
-    String telephoneNo;
+    private String telephoneNo;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "study_type", nullable = false)
-    StudyType studyType;
+    private StudyType studyType;
 
     @NotBlank
     @Column(name = "nationality", nullable = false)
-    String nationality;
+    private String nationality;
 
     @NotBlank
     @Column(name = "dateOfBirth", nullable = false)
-    String dateOfBirth;
+    private String dateOfBirth;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "sex", nullable = false)
-    Sex sex;
+    private Sex sex;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
@@ -117,10 +117,4 @@ public class Student {
                             sReq.getStudyType(), sReq.getNationality(), sReq.getDateOfBirth(),
                             sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester());
     }
-    // public static Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni) {
-    //     return new Student(null, u, sReq.getDepartment1(), sReq.getFaculty1(),
-    //                         sReq.getDepartment2(), sReq.getFaculty2(), sReq.getTelephoneNo(),
-    //                         sReq.getStudyType(), sReq.getNationality(), sReq.getDateOfBirth(),
-    //                         sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester());
-    // }
 }
