@@ -19,10 +19,11 @@ export type NewUser = {
     surname: string,
     email: string,
     bilkentId: string,
-    userType: UserEnum,
+    department?: string,
+    faculty?: string,
+    userType?: UserEnum,
     password?: string
 }
-
 
 export type User = {
     id: string,

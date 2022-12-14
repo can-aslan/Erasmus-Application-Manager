@@ -1,7 +1,7 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck } from '@tabler/icons';
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { submitFile } from '../../api/FileService';
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -36,12 +36,17 @@ const PreApprovalFormPage = () => {
         setFile(payload)
     }
 
+    useEffect(() => {
+        console.log(manualUploadMutation.data)
+    }, [manualUploadMutation.data])
+
     const handleFileSubmit = () => {
         if (file) {
             let formData = new FormData()
             formData.append('file', file)
             formData.append("fileType", "PRE_APPROVAL")
             manualUploadMutation.mutate(formData)
+            console.log(manualUploadMutation.data)
         }
         else {
             // TODO: Toast error notification
