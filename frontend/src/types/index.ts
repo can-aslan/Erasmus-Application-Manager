@@ -111,6 +111,7 @@ export type CourseRequest = {
     bilkentCode: string,
     webpage: string,
     syllabusLink: string,
+    ectsCredits: string
 }
 
 export type StudentAssociatedCourse = Course & {
