@@ -41,12 +41,12 @@ public class Staff {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "department", nullable = false)
+    @Column(name = "department", nullable = true)
     private Department department;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "faculty", nullable = false)
+    @Column(name = "faculty", nullable = true)
     private Faculty faculty;
 
     public static Staff toStaff(StaffRequest sReq, User u) {
