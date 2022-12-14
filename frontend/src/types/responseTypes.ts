@@ -1,36 +1,41 @@
 
-import { Course, CourseRequest, LearningAgreement, PastEvaluation, PastEvaluationItem, PreApprovalForm, PreviousCourseRequest, UniAssociatedCourse, StudentAssociatedCourse, StudentAssociatedWishlist, UniversityDetailed, UniversityProxy, User } from ".";
+import { BilkentCourse, Course, CourseRequest, LearningAgreement, PastEvaluation, PreApprovalForm, PreviousCourseRequest, StudentAssociatedCourse, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
 
-export type ResponseUser = Record<'data', User>
+interface Response<T> {
+    data: T,
+    message: string,
+}
 
-export type ResponseStudentCourseWishlist = Record<'data', Array<StudentAssociatedWishlist>>
+export type ResponseUser = Response<User>
 
-export type ResponseAllStudentCourseWishlist = Record<'data', Array<StudentAssociatedCourse>>
+export type ResponseStudentCourseWishlist = Response<Array<StudentAssociatedWishlist>>
 
-export type ResponseAllSubmitedPreApprovals = Record<'data', Array<PreApprovalForm>>
+export type ResponseAllStudentCourseWishlist = Response<Array<StudentAssociatedCourse>>
 
-export type ResponseApprovePreApproval = Record<'data', PreApprovalForm>
+export type ResponseAllSubmitedPreApprovals = Response<Array<PreApprovalForm>>
 
-export type ResponseCourseList = Record<'data', Array<Course>>
+export type ResponseApprovePreApproval = Response<PreApprovalForm>
 
-export type ResponseCourse = Record<'data', Course>
+export type ResponseCourseList = Response<Array<BilkentCourse>>
 
-export type ResponseUniSpecificCourses = Record<'data', Array<UniAssociatedCourse>>
+export type ResponseCourse = Response<Course>
 
-export type ResponseStudentSpecificCourseWishlist = Record<'data', StudentAssociatedWishlist>
+export type ResponseUniSpecificCourses = Response<Array<UniAssociatedCourse>>
 
-export type ResponsePreviousCourseRequests = Record<'data', Array<PreviousCourseRequest>>
+export type ResponseStudentSpecificCourseWishlist = Response<StudentAssociatedWishlist>
 
-export type ResponseCourseRequest = Record<'data', CourseRequest>
+export type ResponsePreviousCourseRequests = Response<Array<PreviousCourseRequest>>
 
-export type ResponsePreApprovalForm = Record<'data', PreApprovalForm>
+export type ResponseCourseRequest = Response<CourseRequest>
 
-export type ResponsePreApprovalFormList = Record<'data', Array<PreApprovalForm>>
+export type ResponsePreApprovalForm = Response<PreApprovalForm>
 
-export type ResponseUniversities = Record<'data', Array<UniversityProxy>>
+export type ResponsePreApprovalFormList = Response<Array<PreApprovalForm>>
 
-export type ResponseUniversity = Record<'data', UniversityDetailed>
+export type ResponseUniversities = Response<Array<UniversityProxy>>
 
-export type ResponseEvaluation = Record <'data', PastEvaluation>
+export type ResponseUniversity = Response<UniversityDetailed>
 
-export type ResponseAllLearningAgreements = Record <'data', Array<LearningAgreement>>
+export type ResponseEvaluation = Response< PastEvaluation>
+
+export type ResponseAllLearningAgreements = Response< Array<LearningAgreement>>

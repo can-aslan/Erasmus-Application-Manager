@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.beam.beamBackend.model.CourseEvaluationForm;
 
+
+@Deprecated
 @Qualifier("course_evaluation")
 @Repository
 public class CourseEvaluationRepository {

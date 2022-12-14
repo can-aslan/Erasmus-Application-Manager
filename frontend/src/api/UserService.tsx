@@ -23,7 +23,17 @@ export const logout = async (userUuid: string) => {
     return response.data
 }
 
-export const register = async (axios: AxiosInstance, newUser: NewUser) => {
+export const registerUser = async (axios: AxiosInstance, newUser: NewUser) => {
     const response = await axios.post<NewUser>('/auth/register', newUser)
+    return response.data
+}
+
+export const registerStaff = async (axios: AxiosInstance, newUser: NewUser) => {
+    const response = await axios.post<NewUser>('auth/register/staff', newUser)
+    return response.data
+}
+
+export const registerInstructor = async (axios: AxiosInstance, newUser: NewUser) => {
+    const response = await axios.post<NewUser>('auth/register/instructor', newUser)
     return response.data
 }

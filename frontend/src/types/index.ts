@@ -19,10 +19,11 @@ export type NewUser = {
     surname: string,
     email: string,
     bilkentId: string,
-    userType: UserEnum,
+    department?: string,
+    faculty?: string,
+    userType?: UserEnum,
     password?: string
 }
-
 
 export type User = {
     id: string,
@@ -110,6 +111,7 @@ export type CourseRequest = {
     bilkentCode: string,
     webpage: string,
     syllabusLink: string,
+    ectsCredits: string
 }
 
 export type StudentAssociatedCourse = Course & {
