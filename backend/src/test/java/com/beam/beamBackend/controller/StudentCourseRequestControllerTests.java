@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 // import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 
+import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.model.CourseRequest;
 // import com.beam.beamBackend.enums.StudentType;
 import com.beam.beamBackend.service.IStudentCourseRequestService;
@@ -29,10 +30,12 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             null,
             (long) 22001943,
             "CS-XYZ",
+            5.5,
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com"
+            "www.syllabus.com",
+            CourseRequestStatus.PENDING
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(true);
@@ -44,12 +47,14 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                 .content(
                     "{"
                     +     "\"requestId\": \"" + courseRequest.getRequestId().toString() + "\","
-                    +     "\"studentId\": \"" + courseRequest.getStudentId().toString() + "\","
+                    +     "\"studentId\": " + courseRequest.getStudentId().toString() + ","
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
+                    +     "\"hostEcts\": " + courseRequest.getHostEcts() + ","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
                     +     "\"bilkentCode\": \"" + courseRequest.getBilkentCode() + "\","
                     +     "\"webpage\": \"" + courseRequest.getWebpage() + "\","
-                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\""
+                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\","
+                    +     "\"status\": \"" + courseRequest.getStatus() + "\""
                     + "}"
                 )
             )
@@ -66,11 +71,13 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
         final CourseRequest courseRequest = new CourseRequest(
             null,
             (long) 22001943,
-            "WRONG_COURSE_INFO",
+            "CS-XYZ",
+            5.5,
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com"
+            "www.syllabus.com",
+            CourseRequestStatus.PENDING
         );
         
         when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(false);

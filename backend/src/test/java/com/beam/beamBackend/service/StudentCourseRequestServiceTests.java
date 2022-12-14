@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
 
@@ -24,10 +26,12 @@ public class StudentCourseRequestServiceTests {
             null,
             (long) 22001943,
             "CS-XYZ",
+            5.5,
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com"
+            "www.syllabus.com",
+            CourseRequestStatus.PENDING
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(true); // saveRequest() does not exist for ICourseRequestRepository
@@ -40,11 +44,13 @@ public class StudentCourseRequestServiceTests {
         final CourseRequest courseRequest = new CourseRequest(
             null,
             (long) 22001943,
-            "WRONG_COURSE_INFO",
+            "CS-XYZ",
+            5.5,
             "Other_Course",
             "CS-319",
             "www.othercourselink.com",
-            "www.syllabus.com"
+            "www.syllabus.com",
+            CourseRequestStatus.PENDING
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(false); // saveRequest() does not exist for ICourseRequestRepository
