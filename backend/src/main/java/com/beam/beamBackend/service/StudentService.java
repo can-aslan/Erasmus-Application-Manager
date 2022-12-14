@@ -14,10 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.model.Student;
+import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
+import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.request.StudentRequest;
 import com.beam.beamBackend.response.RLoginUser;
@@ -34,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentService {
     final private IStudentRepository studentRepo;
     final private IAccountRepository userRepo;
+    private final IUniversityRepository uniRepository;
 
     public UUID addStudent(StudentRequest student) throws Exception {
         try {
@@ -43,13 +46,24 @@ public class StudentService {
                 throw new Exception("user not found");
             }
 
-            System.out.println("helo: " + student);
-            Student studentDB = student.toStudent(student, user.get());
-            studentDB.setId(UUID.randomUUID());
+            Optional<University> homeUni = uniRepository.findUniById(student.getHomeUniId());
+
+            if (!homeUni.isPresent()) {
+                throw new Exception("home university not found");
+            }
+            
+            Optional<University> hostUni = uniRepository.findUniById(student.getHomeUniId());
+
+            if (!hostUni.isPresent()) {
+                throw new Exception("host university not found");
+            }
+
+            Student studentDB = Student.toStudent(student, user.get(), homeUni.get(), hostUni.get());
+            // studentDB.setId(UUID.randomUUID());
             System.out.println("helodb: " + studentDB);
 
             studentRepo.save(studentDB);
-            return studentDB.getId();
+            return studentDB.getUser().getId();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -74,7 +88,7 @@ public class StudentService {
 
     public Student getStudentById(UUID id) throws Exception {
         try {
-            Optional<Student> s = studentRepo.findById(id);
+            Optional<Student> s = studentRepo.findByUserId(id);
 
             if (!s.isPresent()) {
                 throw new Exception("user not found");
@@ -96,7 +110,37 @@ public class StudentService {
         }
     }
 
-    public Student updateStudent(StudentRequest student) {
+    public University getUniOfStudent(Long bilkentId) throws Exception {
+        Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
+
+        if (!student.isPresent()) {
+            throw new Exception("user not found");
+        }
+
+        return student.get().getHostUni();
+    }
+
+    public UUID getUniIdOfStudent(Long bilkentId) throws Exception {
+        Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
+
+        if (!student.isPresent()) {
+            throw new Exception("user not found");
+        }
+
+        return student.get().getHostUni().getId();
+    }
+
+    public Student getStudentByBilkentId(Long bilkentId) throws Exception {
+        Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
+
+        if (!student.isPresent()) {
+            throw new Exception("user not found");
+        }
+
+        return student.get();
+    }
+
+    public Student updateStudent(StudentRequest student) throws Exception {
         try {
             Student studentToUpdate = studentRepo.getReferenceById(student.getUserId());
 
@@ -134,6 +178,34 @@ public class StudentService {
 
             if (student.getSex() != null) {
                 studentToUpdate.setSex(student.getSex());
+            }
+
+            if (student.getAcademicYear() != null) {
+                studentToUpdate.setAcademicYear(student.getAcademicYear());
+            }
+
+            if (student.getSemester() != null) {
+                studentToUpdate.setSemester(student.getSemester());
+            }
+
+            if (student.getHomeUniId() != null) {
+                Optional<University> homeUniNew = uniRepository.findUniById(student.getHomeUniId());
+
+                if (!homeUniNew.isPresent()) {
+                    throw new Exception("uni not found");
+                }
+
+                studentToUpdate.setHomeUni(homeUniNew.get());
+            }
+
+            if (student.getHostUniId() != null) {
+                Optional<University> hostUniNew = uniRepository.findUniById(student.getHostUniId());
+
+                if (!hostUniNew.isPresent()) {
+                    throw new Exception("uni not found");
+                }
+
+                studentToUpdate.setHomeUni(hostUniNew.get());
             }
 
             return studentRepo.save(studentToUpdate);

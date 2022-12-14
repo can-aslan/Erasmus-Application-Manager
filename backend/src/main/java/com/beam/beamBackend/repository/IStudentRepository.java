@@ -12,6 +12,8 @@ import com.beam.beamBackend.model.Student;
 @Repository
 public interface IStudentRepository extends JpaRepository<Student, UUID> {
     Optional<Student> findById(UUID id);
+    Optional<Student> findByUserBilkentId(Long bilkentId);
+    Optional<Student> findByUserId(UUID id);
     // Optional<Student> findByBilkentId(Long bilkentId);
     List<Student> findAll();
 }

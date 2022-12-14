@@ -65,15 +65,37 @@ public class StudentController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getStudentById(@Valid @PathVariable("id") UUID id) {
+    @GetMapping("/{bilkentId}")
+    public ResponseEntity<Object> getStudentByBilkentId(@Valid @PathVariable("bilkentId") Long bilkentId) {
         try {
-            Student student = studentService.getStudentById(id);
-            return Response.create("student is added", HttpStatus.OK, student);
+            Student student = studentService.getStudentByBilkentId(bilkentId);
+            return Response.create("student is retrieved", HttpStatus.OK, student);
         } catch (Exception e) {
             return Response.create("student is not created", 499); // might change later
         }        
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @GetMapping("/{bilkentId}/uniId")
+    public ResponseEntity<Object> getStudentUni(@Valid @PathVariable("bilkentId") Long bilkentId) {
+        try {
+            UUID uniId = studentService.getUniIdOfStudent(bilkentId);
+            return Response.create("uni id of student is retrieved", HttpStatus.OK, uniId);
+        } catch (Exception e) {
+            return Response.create("student is not created", 499); // might change later
+        }        
+    }
+
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Object> getStudentById(@Valid @PathVariable("id") UUID id) {
+    //     try {
+    //         Student student = studentService.getStudentById(id);
+    //         return Response.create("student is added", HttpStatus.OK, student);
+    //     } catch (Exception e) {
+    //         return Response.create("student is not created", 499); // might change later
+    //     }        
+    // }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "")
