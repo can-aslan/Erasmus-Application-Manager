@@ -1,8 +1,8 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
 
-import { Course, CourseRequest, PreviousCourseRequest, StudentAssociatedWishlist } from "../../types"
-import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseUniSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
+import { Course, CourseRequest, CourseWishlistItem, } from "../../types"
+import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseStudentSpecificCourseWishlist, ResponseUniSpecificCourses } from "../../types/responseTypes"
 
 export const getCourses = async (axios: AxiosInstance) => {
     const response = await axios.get<ResponseCourseList>(`/student/courses`)
