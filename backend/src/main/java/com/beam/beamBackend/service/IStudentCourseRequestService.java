@@ -7,15 +7,4 @@ public interface IStudentCourseRequestService {
     boolean requestCourse(CourseRequest courseRequest);
     List<CourseRequest> getAllCourseRequests();
     List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId);
-    
-    /* DEPRECATED, NOT USED
-    boolean requestCourse(
-        UUID studentId,
-        String code,
-        String name,
-        String bilkentCourse,
-        String webpage,
-        File additionalInfo
-    );
-    */
 }

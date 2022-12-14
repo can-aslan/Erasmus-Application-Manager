@@ -13,6 +13,7 @@ import com.beam.beamBackend.enums.*;
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class OtherUniCourse extends Course {
     
     @NotNull
