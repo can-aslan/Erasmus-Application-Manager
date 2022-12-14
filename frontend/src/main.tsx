@@ -22,6 +22,7 @@ import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import Unauthorized from './pages/Feedback/UnauthorizedPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import GuestPage from './pages/Guest/GuestPage'
 import ApproveCourseRequestPage from './pages/Instructor/ApproveCourseRequestPage'
 import LoginPage from './pages/LoginPage'
 import TranscriptUploadPage from './pages/OISEPStaff/TranscriptUploadPage'
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: '/forgot-password',
     element: <ForgotPasswordPage />
+  },
+  {
+    path: '/guest',
+    element: <GuestPage/>
   },
   {
     path: '/course-evaluations',
