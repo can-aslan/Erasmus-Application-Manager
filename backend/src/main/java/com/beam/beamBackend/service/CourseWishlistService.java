@@ -95,7 +95,7 @@ public class CourseWishlistService implements ICourseWishlistService {
                 UUID.randomUUID(),
                 wishlistItems,
                 studentId,
-                CourseWishlistStatus.NOT_SENT));
+                CourseWishlistStatus.WAITING));
 
             // Add the wishlist item to wishlist item repository
             wishlistItemRepository.save(itemToAdd);
@@ -106,7 +106,7 @@ public class CourseWishlistService implements ICourseWishlistService {
         CourseWishlist wishlist = wishlistRepository.findCourseWishlistByStudentId(studentId); 
 
         // Checks if the wishlist is sent
-        if (wishlist.getStatus() != CourseWishlistStatus.NOT_SENT ) {
+        if (wishlist.getStatus() != CourseWishlistStatus.WAITING ) {
             throw new Exception("course wishlist for student with id " + studentId + " is already sent or approved, cannot be edited");
         }
 
