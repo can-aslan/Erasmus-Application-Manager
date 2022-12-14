@@ -1,174 +1,173 @@
-import { Autocomplete, Button, Card, Center, Flex, Modal, Stack, Title } from '@mantine/core';
-import { IconPlus } from '@tabler/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Autocomplete, Button, Card, Center, Divider, Flex, Modal, Stack, Title } from '@mantine/core';
+import { IconDeviceFloppy, IconFile, IconPlus, IconSend } from '@tabler/icons';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { getCourses, getCourseWishlist, saveWishlist } from '../../api/Student/CourseService';
-import Wishlist from "../../components/wishlist/Wishlist";
+import { toast } from 'react-toastify';
+import { saveWishlist, submitWishlist } from '../../api/Student/CourseService';
+import StatusFeedback from '../../components/cards/StatusFeedback';
+import CourseTable from '../../components/tables/CourseTable';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-import { useCourses } from '../../hooks/useCourses';
-import { useSaveWishlist } from '../../hooks/useSaveWishlist';
-import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
-import { StudentAssociatedWishlist, WishlistItemType } from "../../types";
-import ErrorPage from '../Feedback/ErrorPage';
-import LoadingPage from '../Feedback/LoadingPage';
+import { BilkentCourse, Course, CourseWishlist, CourseWishlistItem, HostCourse } from "../../types";
+import { ResponseStudentSpecificCourseWishlist } from '../../types/responseTypes';
+
+type CourseTableCourses = {
+    bilkentCourse: BilkentCourse
+    hostCourse: HostCourse
+}
 
 const CourseWishlistPage = () => {
-    const [openModal, setOpenModal] = useState(false)
-    const [selectedCourse, setSelectedCourse] = useState('')
-    const [deletedItems, setDeletedItems] = useState<Array<WishlistItemType>>([])
-    const [newItems, setNewItems] = useState<Array<WishlistItemType>>([])
-    const { user } = useUser()
+    // TODO: Fetch initial wishlist.
+    const [wishlist, setWishlist] = useState<CourseWishlist | null>(null)
+    const [wishlistItems, setWishlistItems] = useState(wishlist?.wishlistItems)
+    const [selectedBilkentCourse, setSelectedBilkentCourse] = useState('')
+    const [selectedHostCourse, setSelectedHostCourse] = useState('')
+    const [error, setError] = useState(false)
     const axiosSecure = useAxiosSecure()
+    const { user } = useUser()
     
-    // Fetch student's wishlist
-    const { data: initialWishlist, isError: isWishlistError, isLoading: isWishlistLoading } = useStudentWishlist(axiosSecure, user!.id)
-    
-    // Fetch available courses from the database
-    const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses(axiosSecure)
-    
-    // Mutation for saving the wishlist to database
-    const {mutate: saveWishlistMutation, isLoading: isSaveWishlistLoading} = useMutation({
-        mutationKey: ['saveWishlist'],
-        mutationFn: (wishlistItems: StudentAssociatedWishlist | undefined) => saveWishlist(axiosSecure, wishlistItems)
-    })
-    const [wishlist, setWishlist] = useState(initialWishlist?.data)
-
-    if (isWishlistLoading|| isCoursesLoading) {
-        return (
-            <LoadingPage />
-        )
-    }
-
-    if (isWishlistError || isCoursesError) {
-        return (
-            <ErrorPage />
-        )
-    }
-    
-    // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
-    const availableCourses: Array<WishlistItemType & {value: string}> = courses.data.map((c) => {
-        return {
-            ...c,
-            value: c.courseName
+    // TODO: Fetch initial wishlist, fetch bilkent courses, fetch host courses
+    const bilkentCourses: Array<BilkentCourse> = [
+        {
+            bilkentCredits: 10,
+            ECTSCredits: 12,
+            courseCode: "CS 200",
+            courseName: "Hello ",
+            courseUUID: "uuid",
+            department: "CS",
         }
-    })
-    // [
-    //     {
-    //         value: 'CS 101',
-    //         uuid: 'aaabbb',
-    //         ECTSCredits: 5,
-    //         bilkentCredits: 3,
-    //         courseName: 'Intro to Programming I',
-    //         courseCode: 'CS 101',
-    //     },
-    //     {
-    //         value: 'CS 102',
-    //         uuid: 'aaabbb',
-    //         ECTSCredits: 5,
-    //         bilkentCredits: 3,
-    //         courseName: 'Intro to Programming II',
-    //         courseCode: 'CS 102',
-    //     }
-    // ]
+    ]
 
-    const handleWishlistSave = () => {
-        saveWishlistMutation(wishlist)
-    }
+    const hostCourses: Array<HostCourse> = [
+        {
+            ECTSCredits: 12,
+            courseCode: "CS 200",
+            courseName: "Hello ",
+            courseUUID: "uuid",
+            department: "CS",
+        }
+    ]
 
-    const handleDeleteWish = (e: React.MouseEvent) => {
-        const id = e.currentTarget.id
-        setDeletedItems(wishlist ? wishlist.wishlistItems.filter((w) => w.uuid === id) : [])
-        setWishlist((prev) => {
-            if (prev) {
-                return {
-                    ...prev,
-                    wishlistItems: prev.wishlistItems.filter((w) => w.uuid !== id)
-                }
-            }
-        })
-        setNewItems(newItems.filter((n => n.uuid !== id)))
-    }
+    const bilkentCoursesData = bilkentCourses.map((c) => c.courseName)
+
+    const hostCoursesData = hostCourses.map((h) => h.courseName)
 
     const handleAddWish = () => {
-        const selected = availableCourses.find((c) => c.value === selectedCourse)
-        if (!selected) {
-            setOpenModal(false)
+        setError(false)
+        if (!selectedBilkentCourse || !selectedHostCourse ) {
+            setError(true)
             return
         }
-        setWishlist((prev) => {
-                if (prev) {
-                    return {
-                        ...prev,
-                        selected
-                    }
-                }
-            })
-        setNewItems((prev) => {
-            return (
-                [
+
+
+        setWishlistItems((prev) => {
+            const bilkentCourse: BilkentCourse = bilkentCourses.find(b => b.courseName === selectedBilkentCourse)!
+            const hostCourse: HostCourse = hostCourses.find(h => h.courseName === selectedHostCourse)!
+            const newWishlistItem: CourseWishlistItem = {
+                correspondingBilkentCourse: bilkentCourse,
+                otherUniCourses: [hostCourse],
+            }
+            if (prev) {
+                return [
                     ...prev,
-                    selected
+                    newWishlistItem
                 ]
-            )
+            }
+            else {
+                return [
+                    newWishlistItem
+                ]
+            }
         })
-        setOpenModal(false)
+    }
+
+    const handleRemoveWish = (e: React.MouseEvent, bilkentCourseId: string): void => {
+        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseUUID !== bilkentCourseId))
+    }
+
+    const tableItems: Array<CourseTableCourses> | undefined = wishlistItems?.map((w) => {
+        return {
+            bilkentCourse: w.correspondingBilkentCourse,
+            hostCourse: w.otherUniCourses[0]
+        }
+    })
+
+
+    const { mutate: save, isLoading: isSaveLoading } = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => toast.success("Successfully saved the wishlist!"),
+        onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
+    })
+
+    const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
+        mutationKey: ['submitWishlist'],
+        mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
+        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
+    })
+
+    const handleSave = () => {
+        save()
+    }
+
+    const handleSubmit = () => {
+        submit()
     }
 
     return (
-        <Center sx={{height: '50vh'}}>
-            <Flex direction='column' gap='xl'>
-                <Card
-                    p='xl'
-                    shadow='lg'
-                    radius='lg'
-                    sx={(theme) => ({
-                        bacgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
-                    })}
-                    
-                >
-                    <Flex gap={24} direction='column' align='center'>
-                        <Title order={2}>
-                            Your Wishlist
-                        </Title>
-                        <Wishlist wishlistItems={wishlist ? wishlist.wishlistItems : []} handleDeleteWish={handleDeleteWish}/>
-                        <div>
-                            <Button
-                                onClick={() => setOpenModal(true)}
-                                leftIcon={<IconPlus />}
-                            >
-                                Add New Wish
-                            </Button>
-                        </div>
-                    </Flex>
-                </Card> 
-                <Button 
-                    disabled={newItems.length === 0 && deletedItems.length === 0}
-                    loading={isSaveWishlistLoading}
-                    onClick={handleWishlistSave}
-                >
-                    Save
-                </Button>
-                {/* TODO: Report error in case of saving wishlist is unsuccessful: 'isSaveWishlistError' */}
+        <Center sx={{height: '65vh'}}>
+            <Flex direction='column' align='center' gap={100}>
+                <StatusFeedback 
+                    title='Wishlist Status'
+                    status={wishlist?.wishlistStatus || "PENDING"}
+                />
+                <Flex gap={100}>
+                    <Card miw={400} shadow='xl' radius='lg' p={36}>
+                        <Flex direction='column' gap="xl">
+                            <Title order={1} color='blue' mb={12}>Add a wish</Title>
+                            <Autocomplete 
+                                data={hostCoursesData}
+                                label='Host course'
+                                value={selectedHostCourse}
+                                onChange={setSelectedHostCourse}
+                                placeholder="Host course you would like to take"
+                                error={error}
+                            />
+                            <Autocomplete
+                                data={bilkentCoursesData}
+                                label='Corresponding Bilkent course'
+                                value={selectedBilkentCourse}
+                                onChange={setSelectedBilkentCourse}
+                                placeholder="Corresponding course in Bilkent University"
+                                error={error}
+                            />
+                            <Button leftIcon={<IconPlus />} size='md' onClick={handleAddWish}>Add</Button>
+                        </Flex>
+                    </Card>
+                    <Divider orientation='vertical' />
+                    <Card 
+                        miw={700} 
+                        shadow='xl' 
+                        radius='lg' 
+                        p={36}
+                    >
+                        <Flex
+                            direction='column'
+                            gap='xl'
+                        >
+                            <CourseTable
+                                records={tableItems}
+                                handleRemoveItem={handleRemoveWish}
+                            />
+                            <Flex gap='xl' align='center' justify='center'>
+                                <Button onClick={handleSave} loading={isSaveLoading} leftIcon={<IconDeviceFloppy/>}>Save</Button>
+                                <Button onClick={handleSubmit} loading={isSubmitLoading} color='red' leftIcon={<IconSend />}>Submit for Approval</Button>
+                            </Flex>
+                        </Flex>
+                    </Card>
+                </Flex>
             </Flex>
-            <Modal
-                opened={openModal}
-                onClose={() => setOpenModal(false)}
-                title={'Add new course'}
-                padding='xl'
-                centered={true}
-            >
-                <Stack align='center' spacing='lg'>
-                    <Autocomplete 
-                        data={availableCourses}
-                        value={selectedCourse}
-                        onChange={setSelectedCourse}
-                        defaultValue={''}
-                        placeholder={'Select a course'}
-                    />
-                    <Button size='md' onClick={handleAddWish}>Add</Button>
-                </Stack>
-            </Modal>
         </Center>
     );
 }

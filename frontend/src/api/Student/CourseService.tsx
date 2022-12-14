@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
+
 import { Course, CourseRequest, PreviousCourseRequest, StudentAssociatedWishlist } from "../../types"
 import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseUniSpecificCourses, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
@@ -23,11 +24,22 @@ export const getCourseWishlist = async (axios: AxiosInstance, studentId: string)
     return response.data
 }
 
-export const saveWishlist = async (axios: AxiosInstance, wishlist: StudentAssociatedWishlist | undefined) => {
-    const response = await axios.post<ResponseStudentSpecificCourseWishlist>(`/student/courseWishlist/${wishlist?.studentId}`,
+export const saveWishlist = async (axios: AxiosInstance, studentId: string, wishlistItems: CourseWishlistItem[] | undefined) => {
+    const response = await axios.post(`/student/${studentId}/courseWishlist/save`,
         JSON.stringify({
             data: {
-                ...wishlist
+                wishlistItems
+            }
+        })    
+    )
+    return response.data
+}
+
+export const submitWishlist = async (axios: AxiosInstance, studentId: string, wishlistItems: CourseWishlistItem[] | undefined) => {
+    const response = await axios.post(`/student/${studentId}/courseWishlist/submit`,
+        JSON.stringify({
+            data: {
+                wishlistItems
             }
         })    
     )

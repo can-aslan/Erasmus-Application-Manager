@@ -6,7 +6,7 @@ import { approveWishlist, rejectWishlist } from '../../api/Coordinator/CourseWis
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
 import { useUser } from "../../provider/UserProvider";
-import { StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemType } from "../../types";
+import { Course, StudentAssociatedCourse, StudentAssociatedWishlist } from "../../types";
 
 interface ApproveWishlistTableProps {
     wishlists: Array<StudentAssociatedCourse>
@@ -53,11 +53,11 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
 
     // Below are mock data, they will be changed.
     //------------------------------------------ Mock Data Starts ----------------------------------------------------------------
-    const wishlistList: WishlistItemType[] = [
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, uuid: "xxx"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, uuid: "abc"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, uuid: "abd"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, uuid: "aby"},
+    const wishlistList: Course[] = [
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "xxx"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "abc"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "abd"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "aby"},
     ];
     const waitingWishlist: StudentAssociatedWishlist[] = [
         { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},

@@ -53,21 +53,21 @@ const CourseTransferPage = () => {
             ECTSCredits: 16,
             courseCode: "CS 319",
             courseName: "Erasmus Application Management Creation",
-            uuid: "course1"
+            courseUuid: "course1"
         },
         {
             bilkentCredits: 12,
             ECTSCredits: 16,
             courseCode: "CS 315",
             courseName: "Python Quizes",
-            uuid: "course2"
+            courseUuid: "course2"
         },
         {
             bilkentCredits: 12,
             ECTSCredits: 16,
             courseCode: "CS 202",
             courseName: "Red-Black Tree Something Something",
-            uuid: "course3"
+            courseUuid: "course3"
         },
     ]
     // TODO: Fetch host courses
