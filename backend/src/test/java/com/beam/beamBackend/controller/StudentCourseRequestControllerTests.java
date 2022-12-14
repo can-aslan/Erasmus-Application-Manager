@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 // import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 
+import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.model.CourseRequest;
 // import com.beam.beamBackend.enums.StudentType;
@@ -35,6 +36,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "CS-319",
             "www.othercourselink.com",
             "www.syllabus.com",
+            CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING
         );
         
@@ -54,6 +56,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                     +     "\"bilkentCode\": \"" + courseRequest.getBilkentCode() + "\","
                     +     "\"webpage\": \"" + courseRequest.getWebpage() + "\","
                     +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\","
+                    +     "\"destination\": \"" + courseRequest.getDestination() + "\","
                     +     "\"status\": \"" + courseRequest.getStatus() + "\""
                     + "}"
                 )
@@ -77,6 +80,7 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "CS-319",
             "www.othercourselink.com",
             "www.syllabus.com",
+            CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING
         );
         
@@ -89,12 +93,15 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                 .content(
                     "{"
                     +     "\"requestId\": \"" + courseRequest.getRequestId().toString() + "\","
-                    +     "\"studentId\": \"" + courseRequest.getStudentId().toString() + "\","
+                    +     "\"studentId\": " + courseRequest.getStudentId().toString() + ","
                     +     "\"hostCode\": \"" + courseRequest.getHostCode() + "\","
+                    +     "\"hostEcts\": " + courseRequest.getHostEcts() + ","
                     +     "\"name\": \"" + courseRequest.getName() + "\","
                     +     "\"bilkentCode\": \"" + courseRequest.getBilkentCode() + "\","
                     +     "\"webpage\": \"" + courseRequest.getWebpage() + "\","
-                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\""
+                    +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\","
+                    +     "\"destination\": \"" + courseRequest.getDestination() + "\","
+                    +     "\"status\": \"" + courseRequest.getStatus() + "\""
                     + "}"
                 )
             )

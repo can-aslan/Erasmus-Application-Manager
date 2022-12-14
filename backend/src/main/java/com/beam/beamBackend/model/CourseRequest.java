@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -59,6 +60,11 @@ public class CourseRequest {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "destination")
+    private CourseRequestDestination destination;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CourseRequestStatus status;
 
@@ -71,6 +77,7 @@ public class CourseRequest {
         @JsonProperty("bilkentCode") String bilkentCode,
         @JsonProperty("webpage") String webpage,
         @JsonProperty("syllabusLink") String syllabusLink,
+        @JsonProperty("destination") CourseRequestDestination destination,
         @JsonProperty("status") CourseRequestStatus status
     ) {
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
@@ -80,6 +87,7 @@ public class CourseRequest {
         this.bilkentCode = bilkentCode;
         this.webpage = webpage;
         this.syllabusLink = syllabusLink;
+        this.destination = (destination == null) ? CourseRequestDestination.COORDINATOR : destination;
         this.status = (status == null) ? CourseRequestStatus.PENDING : status;
     }
 }

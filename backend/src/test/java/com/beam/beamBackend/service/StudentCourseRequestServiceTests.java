@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
@@ -31,6 +32,7 @@ public class StudentCourseRequestServiceTests {
             "CS-319",
             "www.othercourselink.com",
             "www.syllabus.com",
+            CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING
         );
 
@@ -50,6 +52,7 @@ public class StudentCourseRequestServiceTests {
             "CS-319",
             "www.othercourselink.com",
             "www.syllabus.com",
+            CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING
         );
 
