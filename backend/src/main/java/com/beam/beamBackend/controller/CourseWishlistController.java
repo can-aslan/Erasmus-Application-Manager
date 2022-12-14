@@ -1,6 +1,7 @@
 package com.beam.beamBackend.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,11 +117,11 @@ public class CourseWishlistController {
         }
     }
 
-    @DeleteMapping(path = "/delete/{studentId}")
-    public ResponseEntity<Object> deleteWishlistItem(@PathVariable("studentId") Long studentId, @Valid @RequestBody CourseWishlistItem courseWishlistItem)
+    @DeleteMapping(path = "/delete/{studentId}/{wishlistItemUUID}")
+    public ResponseEntity<Object> deleteWishlistItem(@PathVariable("studentId") Long studentId, @PathVariable("wishlistItemUUID") UUID wishlistItemUUID)
     {
         try {
-            boolean responseResult = courseWishlistService.removeWishlistItem(studentId, courseWishlistItem);
+            boolean responseResult = courseWishlistService.removeWishlistItem(studentId, wishlistItemUUID);
             
             return 
             responseResult ?

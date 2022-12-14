@@ -167,6 +167,27 @@ public class CourseWishlistService implements ICourseWishlistService {
     }
 
     @Override
+    public boolean removeWishlistItem(Long studentId, UUID wishlistItemUUID) throws Exception {
+        // Checks whether or not if the given wishlist item UUID exists in the system
+        if (!wishlistItemRepository.existsById(wishlistItemUUID)) {
+            throw new Exception("student with id " + studentId + " cannot delete course wishlist item, specified item does not exist");
+        }
+
+        // Checks whether or not if the student owns the wishlist item in the system.
+        // We can also use get() because at this point we know
+        // the Optional<> does not contain a null value due to a previous check
+        CourseWishlistItem item = wishlistItemRepository.findById(wishlistItemUUID).get();
+        Long itemStudentId = item.getStudentId();
+        if (!itemStudentId.equals(studentId)) {
+            throw new Exception("student with id " + studentId + " cannot delete course wishlist item, does not own it");
+        }
+
+        // At this point we know the student has the specified wishlist item in the repository
+        wishlistItemRepository.deleteById(wishlistItemUUID);
+        return true;
+    }
+
+    @Override
     public List<CourseWishlistItem> getAllWishlistItems() throws Exception {
         return wishlistItemRepository.findAll();
     }
