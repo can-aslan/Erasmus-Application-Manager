@@ -35,7 +35,7 @@ const GenericNavbar = ({user, navlinks}: GenericNavbarProps) => {
             styles={(theme) => ({
                 main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
             })} 
-            width={{ base: 250 }} 
+            width={{ base: 275 }} 
             height="100"
             p="xs"
         >
