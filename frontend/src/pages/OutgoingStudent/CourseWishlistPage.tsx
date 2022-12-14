@@ -51,6 +51,39 @@ const CourseWishlistPage = () => {
     const bilkentCoursesData = bilkentCourses.map((c) => c.courseName)
 
     const hostCoursesData = hostCourses.map((h) => h.courseName)
+    
+    const tableItems: Array<CourseTableCourses> | undefined = wishlistItems?.map((w) => {
+        return {
+            bilkentCourse: w.correspondingBilkentCourse,
+            hostCourse: w.otherUniCourses[0]
+        }
+    })
+    
+    const { mutate: save, isLoading: isSaveLoading } = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => toast.success("Successfully saved the wishlist!"),
+        onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
+    })
+    
+    const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
+        mutationKey: ['submitWishlist'],
+        mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
+        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
+    })
+    
+    const handleSave = () => {
+        save()
+    }
+    
+    const handleSubmit = () => {
+        submit()
+    }
+    
+    const handleRemoveWish = (e: React.MouseEvent, bilkentCourseId: string): void => {
+        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseUUID !== bilkentCourseId))
+    }
 
     const handleAddWish = () => {
         setError(false)
@@ -80,48 +113,14 @@ const CourseWishlistPage = () => {
             }
         })
     }
-
-    const handleRemoveWish = (e: React.MouseEvent, bilkentCourseId: string): void => {
-        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseUUID !== bilkentCourseId))
-    }
-
-    const tableItems: Array<CourseTableCourses> | undefined = wishlistItems?.map((w) => {
-        return {
-            bilkentCourse: w.correspondingBilkentCourse,
-            hostCourse: w.otherUniCourses[0]
-        }
-    })
-
-
-    const { mutate: save, isLoading: isSaveLoading } = useMutation({
-        mutationKey: ['saveWishlist'],
-        mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
-        onSuccess: () => toast.success("Successfully saved the wishlist!"),
-        onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
-    })
-
-    const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
-        mutationKey: ['submitWishlist'],
-        mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
-        onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
-        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
-    })
-
-    const handleSave = () => {
-        save()
-    }
-
-    const handleSubmit = () => {
-        submit()
-    }
-
+    
     return (
         <Center sx={{height: '65vh'}}>
             <Flex direction='column' align='center' gap={100}>
                 <StatusFeedback 
                     title='Wishlist Status'
                     status={wishlist?.wishlistStatus || "PENDING"}
-                />
+                    />
                 <Flex gap={100}>
                     <Card miw={400} shadow='xl' radius='lg' p={36}>
                         <Flex direction='column' gap="xl">
@@ -133,7 +132,7 @@ const CourseWishlistPage = () => {
                                 onChange={setSelectedHostCourse}
                                 placeholder="Host course you would like to take"
                                 error={error}
-                            />
+                                />
                             <Autocomplete
                                 data={bilkentCoursesData}
                                 label='Corresponding Bilkent course'
@@ -141,7 +140,7 @@ const CourseWishlistPage = () => {
                                 onChange={setSelectedBilkentCourse}
                                 placeholder="Corresponding course in Bilkent University"
                                 error={error}
-                            />
+                                />
                             <Button leftIcon={<IconPlus />} size='md' onClick={handleAddWish}>Add</Button>
                         </Flex>
                     </Card>
