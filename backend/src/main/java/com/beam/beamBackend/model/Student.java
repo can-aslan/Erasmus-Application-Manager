@@ -67,7 +67,7 @@ public class Student {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "faculty2", nullable = true)
-    Faculty faculty2;
+    private Faculty faculty2;
 
     @NotBlank
     @Size(min = 8)
