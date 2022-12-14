@@ -1,5 +1,8 @@
 import React from "react";
 
+export type Status = 'REJECTED' | 'PENDING' | 'APPROVED' | 'REJECTED'
+type Semester = 'Fall' | 'Spring'
+
 export enum UserEnum {
     OutgoingStudent = 'OUTGOING_STUDENT',
     IncomingStudent = 'INCOMING_STUDENT',
@@ -37,37 +40,42 @@ export type NavbarLink = {
 }
 
 // Models
-export type WishlistItemType = {
-    uuid: string,
-    courseCode: string,
-    courseName: string,
-    bilkentCredits: number,
-    ECTSCredits: number
-}
-
 export type StudentAssociatedWishlist = {
-    wishlistItems: Array<WishlistItemType>,
+    wishlistItems: Array<Course>,
     wishlistUuid: string,
     studentName: string,
     studentId: string,
-    status: 'rejected' | 'pending' | 'approved'
+    status: Status
 }
 
 export type Course = {
-    uuid: string,
+    courseUUID: string,
     courseCode: string,
     courseName: string,
-    bilkentCredits: number,
+    department: string, 
     ECTSCredits: number,
+    instructorId?: string,
+    universityId?: string,
+}
+
+export type BilkentCourse = Course & {
+    bilkentCredits: number,
     elective?: boolean
 }
 
-export type HostCourse = {
-    id: string,
-    courseCode: string,
-    courseName: string,
-    ECTSCredits: number,
-    grade?: string,
+export type HostCourse = Course & {
+    courseApproval?: Status
+}
+
+export type CourseWishlist = {
+    wishlistStatus: Status,
+    wishlistId: string,
+    wishlistItems: Array<CourseWishlistItem>, //
+}
+
+export type CourseWishlistItem = {
+    otherUniCourses: Array<HostCourse>,
+    correspondingBilkentCourse: BilkentCourse,
 }
 
 export type SchoolAssociatedCourse = {
@@ -167,3 +175,4 @@ export type PastEvaluationItem = {
     rate: number,
     comment: string
 }
+
