@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -70,29 +71,9 @@ public class User {
         this.userType = userType;
     }
 
-    // public User(
-    //             @JsonProperty("name") String name,
-    //             @JsonProperty("surname") String surname,
-    //             @JsonProperty("email") String email,
-    //             @JsonProperty("bilkentId") long bilkentId,
-    //             @JsonProperty("password") String password,
-    //             @JsonProperty("userType") UserType userType) {
-
-    //     this.name = name;
-    //     this.surname = surname;
-    //     this.email = email;
-    //     this.bilkentId = bilkentId;
-    //     this.password = password;
-    //     this.userType = userType;
-    // }
-
-    // public User(
-    //             @JsonProperty("name") String name) {
-
-    //     this.name = name;
-    // }
-
-    public void setUUID(UUID newUUID) {
-        this.id = newUUID;
+    // do not send password to client
+    @JsonIgnore
+    public String getPassword() {
+        return password;
     }
 }
