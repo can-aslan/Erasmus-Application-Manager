@@ -14,6 +14,16 @@ export enum UserEnum {
     OISEPStaff = 'OISEP_STAFF'
 }
 
+export type NewUser = {
+    name: string,
+    surname: string,
+    email: string,
+    bilkentId: string,
+    userType: UserEnum,
+    password?: string
+}
+
+
 export type User = {
     id: string,
     name: string,
