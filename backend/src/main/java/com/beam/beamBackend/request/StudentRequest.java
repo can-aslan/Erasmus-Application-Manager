@@ -33,6 +33,7 @@ public class StudentRequest {//maybe add not null vs
     private UUID hostUniId;
     private String academicYear;
     private Semester semester;
+    private UUID coordinatorId;
 
     // @Deprecated
     // public Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni) {

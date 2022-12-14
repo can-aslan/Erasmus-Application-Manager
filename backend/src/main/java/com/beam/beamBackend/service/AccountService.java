@@ -1,6 +1,5 @@
 package com.beam.beamBackend.service;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
-import com.beam.beamBackend.response.RUserList;
-import com.beam.beamBackend.response.ResponseId;
 import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
 
@@ -147,7 +143,10 @@ public class AccountService {
                 // user.setPassword(user.getPassword());
                 user.setPassword(encodePassword(user.getPassword()));
 
+                System.out.println("user_id: " + user.getId());
                 accountRepository.save(user);
+
+                System.out.println("user_id after register: " + accountRepository.findUserByEmail(user.getEmail()).get().getId());
                 return user.getId();
             }
         } catch (Exception e) {

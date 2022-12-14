@@ -11,7 +11,7 @@ import com.beam.beamBackend.model.User;
 import lombok.Data;
 
 @Data
-@Entity
+@Entity //add bilkent id
 public class RLoginUser {
     @Id
     private UUID id;
