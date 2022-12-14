@@ -1,40 +1,43 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import com.beam.beamBackend.enums.*;
 
 @Entity
 @Data
-public abstract class Course {
+@NoArgsConstructor
+public class Course {
     @Id
-    private final UUID courseUUID;
+    private UUID courseUUID;
 
     @NotBlank
-    private final String courseCode;
+    private String courseCode;
 
     @NotBlank
-    private final String coursename;
+    private String coursename;
 
     @NotNull
-    private final Department department;
+    private Department department;
 
     @NotNull
-    private final Long courseID;
+    private Long courseID;
     
     @NotNull
-    private final Double ects;
+    private Double ects;
 
     @NotBlank
-    private final String syllabus; // shouldn't it be a file? yes probably, or a link
+    private String syllabus; // shouldn't it be a file? yes probably, or a link
     
     @NotNull
-    private final Long universityID;
+    private Long universityID;
 
     public Course(
         @JsonProperty("courseUUID") UUID courseUUID,

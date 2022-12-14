@@ -1,5 +1,6 @@
 package com.beam.beamBackend.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.beam.beamBackend.service.AccountService;
 import com.beam.beamBackend.service.JWTUserService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,14 +28,18 @@ public class SecurityConfig {
 	final private JWTUserService jwtUserService;
 	final private JWTFilter jwtFilter;
 
+	// @Autowired
+	// private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.cors();
 		http
 			.csrf().disable()
 			.authorizeHttpRequests((request) -> {
 					try {
 						request
-							.requestMatchers("/api/v1/auth/login", "/hello", "/api/v1/auth/register", "/api/v1/auth/register_chunk")
+							.requestMatchers("/api/v1/auth/login", "/hello", "/api/v1/auth/register", "/api/v1/auth/register_chunk", "/api/v1/eval/evaluateUni", "/api/v1/eval/uniEval/{uniId}")
 							.permitAll()						
 							.anyRequest().authenticated()							
 							.and()
@@ -56,7 +62,7 @@ public class SecurityConfig {
 	public AuthenticationProvider authenticationProvider() {
 		final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(jwtUserService);
-		//authProvider.setPasswordEncoder(passwordEncoder(AccountService.hashStrength));
+		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
 	}
@@ -64,6 +70,11 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
+	}
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(10);
 	}
 
 	// @Bean

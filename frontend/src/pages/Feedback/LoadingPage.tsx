@@ -1,4 +1,5 @@
-import { Center, Loader, Stack, Text } from "@mantine/core";
+import { Center, Stack, Text } from "@mantine/core";
+import ScreenLoadingLottie from "../../components/Loader/ScreenLoadingLottie";
 
 interface LoadingPageProps {
     message?: string,
@@ -6,9 +7,9 @@ interface LoadingPageProps {
 
 const LoadingPage = ({message}: LoadingPageProps) => {
     return (
-        <Center sx={{height: '100vh'}}>
+        <Center sx={{height: '72vh'}}>
             <Stack align='center'>
-                <Loader size={60}/>
+                <ScreenLoadingLottie/>
                 <Text size={22} color='blue'> {message || "Please wait while we get things ready for you!"}</Text>
             </Stack>
         </Center>

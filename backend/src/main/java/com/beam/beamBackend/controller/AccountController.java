@@ -1,5 +1,9 @@
 package com.beam.beamBackend.controller;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.HashSet;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,9 +22,7 @@ import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
-import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.response.ResponseId;
 import com.beam.beamBackend.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -50,7 +52,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            ResponseId ids = accountService.addUser(userInfo);
+            UUID ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -58,12 +60,12 @@ public class AccountController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_chunk")
-    public ResponseEntity<HttpStatus> register(@RequestBody User[] userInfo) {
+    public ResponseEntity<Object> register(@RequestBody User[] userInfo) {
         try {
-            accountService.addUserChunk(userInfo);
-            return ResponseEntity.ok(HttpStatus.OK);
+            HashSet<User> users = accountService.addUserChunk(userInfo);
+            return Response.create("accounts are created", HttpStatus.OK, users);
         } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.FOUND); // might change later
+            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 
@@ -105,7 +107,7 @@ public class AccountController {
     @GetMapping("/")
     public ResponseEntity<Object> getUsers() {
         try {
-            RUserList userList = accountService.getUsers();
+            List<User> userList = accountService.getUsers();
             return Response.create("ok", HttpStatus.OK, userList);
         } catch (Exception e) {
             return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later

@@ -1,29 +1,58 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck } from '@tabler/icons';
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { submitFile } from '../../api/FileService';
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
+import { useUser } from "../../provider/UserProvider";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
 const PreApprovalFormPage = () => {
+    const { user } = useUser()
     const [file, setFile] = useState<File | null>(null)
-    // Fetch pre approval status from backend.
-    const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus()
-    if (isPreApprovalLoading) {
-        return <LoadingPage />
-    }
 
-    if (isPreApprovalError || !preApprovalFile) {
-        return <ErrorPage />
-    }
+    const axiosSecure = useAxiosSecure('multipart/form-data')
+    // Fetch pre approval status from backend.
+    // const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus(axiosSecure)
+    // if (isPreApprovalLoading) {
+    //     return <LoadingPage />
+    // }
+
+
+    // if (isPreApprovalError || !preApprovalFile) {
+    //     return <ErrorPage />
+    // }
+
+    const manualUploadMutation = useMutation({
+        mutationKey: ['fileSubmit'],
+        mutationFn: (formData: FormData) => submitFile(axiosSecure, formData, user.id),
+    })
 
     // https://stackoverflow.com/questions/53914361/upload-a-file-in-react-and-send-it-to-an-express-server
     const handleFileUpload = (payload: File | null) => {
         setFile(payload)
     }
 
+    useEffect(() => {
+        console.log(manualUploadMutation.data)
+    }, [manualUploadMutation.data])
+
     const handleFileSubmit = () => {
-        // TODO: Submit the file to backend
+        if (file) {
+            let formData = new FormData()
+            formData.append('file', file)
+            formData.append("fileType", "PRE_APPROVAL")
+            manualUploadMutation.mutate(formData)
+            console.log(manualUploadMutation.data)
+        }
+        else {
+            // TODO: Toast error notification
+        }
+
+
     }
 
     const handleGenerateAndDownload = () => {

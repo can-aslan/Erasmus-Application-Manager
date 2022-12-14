@@ -6,7 +6,7 @@ interface ErrorPageProps {
 
 const ErrorPage = ({message}: ErrorPageProps) => {
     return (
-    <Center sx={{height: '100vh'}}>
+    <Center sx={{height: '87vh'}}>
         <Stack align='center'>
             <Text size={24} color='red'>{message || "Couldn't fetch relevant data."}</Text>
         </Stack>

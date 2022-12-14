@@ -3,209 +3,123 @@ package com.beam.beamBackend.model;
 import java.util.UUID;
 
 import com.beam.beamBackend.enums.*;
-public class Student extends User{
 
-    // Properties
-    UUID id;
-    String name;
-    String surname;
-    String email;
-    long bilkentId;
-    String password;
-    UserType userType;
-    Department department;
-    Faculty faculty;
-    Department department2;
-    Faculty faculty2;
-    String telephoneNo;
-    boolean hasMinor;
-    boolean hasMajor;
-    String nationality;
-    String dateOfBirth;
-    Sex sex;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    // Constructors
-    public Student(
-        UUID id,
-        String name,
-        String surname,
-        String email,
-        long bilkentId,
-        String password,
-        UserType userType,
-        Department department,
-        Faculty faculty,
-        Department department2,
-        Faculty faculty2,
-        String telephoneNo,
-        boolean hasMinor,
-        boolean hasMajor,
-        String nationality,
-        String dateOfBirth,
-        Sex sex
-    ){
-        super(id, name, surname, email, bilkentId, password, userType);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.bilkentId = bilkentId;
-        this.password = password;
-        this.userType = userType;
-        this.department = department;
-        this.faculty = faculty;
-        this.department2 = department2;
-        this.faculty2 = faculty2;
-        this.telephoneNo = telephoneNo;
-        this.hasMajor = hasMajor;
-        this.nationality = nationality;
-        this.dateOfBirth = dateOfBirth;
-        this.sex = sex;
-    }
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
+import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.request.StudentRequest;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public UUID getId() {
-        return this.id;
-    }
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "student")
+public class Student {
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
-    public String getName() {
-        return this.name;
-    }
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "department1", nullable = false)
+    private Department department;
 
-    public String getSurname() {
-        return this.surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public long getBilkentId() {
-        return this.bilkentId;
-    }
-
-    public void setBilkentId(long bilkentId) {
-        this.bilkentId = bilkentId;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserType getUserType() {
-        return this.userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
-
-    public Department getDepartment() {
-        return this.department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Faculty getFaculty() {
-        return this.faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
-    public Department getDepartment2() {
-        return this.department2;
-    }
-
-    public void setDepartment2(Department department2) {
-        this.department2 = department2;
-    }
-
-    public Faculty getFaculty2() {
-        return this.faculty2;
-    }
-
-    public void setFaculty2(Faculty faculty2) {
-        this.faculty2 = faculty2;
-    }
-
-    public String getTelephoneNo() {
-        return this.telephoneNo;
-    }
-
-    public void setTelephoneNo(String telephoneNo) {
-        this.telephoneNo = telephoneNo;
-    }
-
-    public boolean isHasMinor() {
-        return this.hasMinor;
-    }
-
-    public boolean getHasMinor() {
-        return this.hasMinor;
-    }
-
-    public void setHasMinor(boolean hasMinor) {
-        this.hasMinor = hasMinor;
-    }
-
-    public boolean isHasMajor() {
-        return this.hasMajor;
-    }
-
-    public boolean getHasMajor() {
-        return this.hasMajor;
-    }
-
-    public void setHasMajor(boolean hasMajor) {
-        this.hasMajor = hasMajor;
-    }
-
-    public String getNationality() {
-        return this.nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getDateOfBirth() {
-        return this.dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Sex getSex() {
-        return this.sex;
-    }
-
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "faculty1", nullable = false)
+    private Faculty faculty;
     
+    // these are for minor or major students
+    @Enumerated(EnumType.STRING)
+    @Column(name = "department2", nullable = true)
+    private Department department2;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "faculty2", nullable = true)
+    private Faculty faculty2;
+
+    @NotBlank
+    @Size(min = 8)
+    @Column(name = "telephone", nullable = false)
+    private String telephoneNo;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "study_type", nullable = false)
+    private StudyType studyType;
+
+    @NotBlank
+    @Column(name = "nationality", nullable = false)
+    private String nationality;
+
+    @NotBlank
+    @Column(name = "dateOfBirth", nullable = false)
+    private String dateOfBirth;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sex", nullable = false)
+    private Sex sex;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_uni_id", referencedColumnName = "id", nullable = true)
+    private University homeUni;
+    
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_uni_id", referencedColumnName = "id", nullable = true)
+    private University hostUni;
+
+    // @NotNull
+    @Column(name = "academic_year", nullable = true)
+    private String academicYear;
+    
+    // @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "semester", nullable = true)
+    private Semester semester;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coordinator", referencedColumnName = "id", nullable = true)
+    private Staff coordinator;
+
+    public static Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni, Staff coordinator) {
+        return new Student(null, u, sReq.getDepartment1(), sReq.getFaculty1(),
+                            sReq.getDepartment2(), sReq.getFaculty2(), sReq.getTelephoneNo(),
+                            sReq.getStudyType(), sReq.getNationality(), sReq.getDateOfBirth(),
+                            sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester(), coordinator);
+    }
 }

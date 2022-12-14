@@ -6,7 +6,6 @@ import GenericNavbar from "./GenericNavbar";
 
 const AppNavbar = () => {
     const { user } = useUser()
-    console.log(user)
 
     if (user) {
         const navlinks = NAVBAR_LINK_OBJECTS[user.userType]
@@ -15,7 +14,6 @@ const AppNavbar = () => {
     
     return (
         <>
-        {console.log("why tho")}
             <Unauthorized />
         </>
     );

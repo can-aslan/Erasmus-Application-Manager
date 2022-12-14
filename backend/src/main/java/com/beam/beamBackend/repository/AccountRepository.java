@@ -14,6 +14,7 @@ import com.beam.beamBackend.response.ResponseId;
 
 @Qualifier("account")
 @Repository
+@Deprecated
 public class AccountRepository {
     private static List<User> DB = new ArrayList<>();
 
@@ -49,6 +50,20 @@ public class AccountRepository {
                     .filter(u -> u.getBilkentId() == bilkentId)
                     .findFirst()
                     .orElseThrow(() -> new UsernameNotFoundException("no user was found with bilkent id " + bilkentId));
+    }
+
+    public boolean existsByBilkentId(long bilkentId) {
+        return DB.stream()
+                    .filter(u -> u.getBilkentId() == bilkentId)
+                    .findFirst()
+                    .isPresent();
+    }
+
+    public boolean existsByUserId(UUID userId) {
+        return DB.stream()
+                    .filter(u -> u.getId().equals(userId))
+                    .findFirst()
+                    .isPresent();
     }
 
     public boolean editPasswordByBilkentId(long bilkentId, String newPassword) {

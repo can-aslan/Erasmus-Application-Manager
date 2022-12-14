@@ -1,22 +1,24 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import com.beam.beamBackend.enums.*;
 
 @Entity
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class BilkentCourse extends Course {
     @NotNull
-    private final Double bilkentCredit;
+    private Double bilkentCredit;
     
     @NotNull
-    private final Long instructorId;
+    private Long instructorId;
     
     public BilkentCourse(
         @JsonProperty("courseUUID") UUID courseUUID,

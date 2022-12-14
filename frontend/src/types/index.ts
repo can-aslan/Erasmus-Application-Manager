@@ -1,11 +1,28 @@
 import React from "react";
 
+export type Status = 'REJECTED' | 'PENDING' | 'APPROVED' | 'REJECTED'
+type Semester = 'Fall' | 'Spring'
+
 export enum UserEnum {
-    OutgoingStudent='OUTGOING_STUDENT',
-    IncomingStudent='INCOMING_STUDENT',
-    Coordinator='COORDINATOR',
-    FACMember='FAC_MEMBER',
-    Admin='ADMIN'
+    OutgoingStudent = 'OUTGOING_STUDENT',
+    IncomingStudent = 'INCOMING_STUDENT',
+    Coordinator = 'COORDINATOR',
+    FACMember = 'FAC_MEMBER',
+    Admin = 'ADMIN',
+    Instructor = 'INSTRUCTOR',
+    ExperiencedStudent = 'EXPERIENCED_STUDENT',
+    OISEPStaff = 'OISEP_STAFF'
+}
+
+export type NewUser = {
+    name: string,
+    surname: string,
+    email: string,
+    bilkentId: string,
+    department?: string,
+    faculty?: string,
+    userType?: UserEnum,
+    password?: string
 }
 
 export type User = {
@@ -33,30 +50,52 @@ export type NavbarLink = {
     icon?: React.ReactNode,
 }
 
-
 // Models
-export type WishlistItemType = {
-    uuid: string,
-    courseCode: string,
-    courseName: string,
-    bilkentCredits: number,
-    ECTSCredits: number
-}
-
 export type StudentAssociatedWishlist = {
-    wishlistItems: Array<WishlistItemType>,
+    wishlistItems: Array<Course>,
     wishlistUuid: string,
     studentName: string,
     studentId: string,
-    status: 'rejected' | 'pending' | 'approved'
+    status: Status
 }
 
 export type Course = {
+    courseUUID: string,
+    courseCode: string,
+    courseName: string,
+    department: string, 
+    ECTSCredits: number,
+    instructorId?: string,
+    universityId?: string,
+}
+
+export type BilkentCourse = Course & {
+    bilkentCredits: number,
+    elective?: boolean
+}
+
+export type HostCourse = Course & {
+    courseApproval?: Status
+}
+
+export type CourseWishlist = {
+    wishlistStatus: Status,
+    wishlistId: string,
+    wishlistItems: Array<CourseWishlistItem>, //
+}
+
+export type CourseWishlistItem = {
+    otherUniCourses: Array<HostCourse>,
+    correspondingBilkentCourse: BilkentCourse,
+}
+
+export type UniAssociatedCourse = {
+    uniId: string,
+    uniName: string,
     uuid: string,
     courseCode: string,
     courseName: string,
-    bilkentCredits: number,
-    ECTSCredits: number
+    ECTSCredits: number,
 }
 
 export type PreviousCourseRequest = CourseRequest & {
@@ -65,12 +104,14 @@ export type PreviousCourseRequest = CourseRequest & {
 }
 
 export type CourseRequest = {
-    courseRequestUuid: string,
-    courseCode: string,
-    courseName: string,
-    courseWebPage: string,
+    requestId?: string | null,
+    studentId: string
+    hostCode: string,
+    name: string,
+    bilkentCode: string,
+    webpage: string,
     syllabusLink: string,
-    correspondingCourseInBilkent: string,
+    ectsCredits: string
 }
 
 export type StudentAssociatedCourse = Course & {
@@ -79,9 +120,161 @@ export type StudentAssociatedCourse = Course & {
     approvalStatus: 'rejected' | 'pending' | 'approved',
 }
 
+export type PreApprovalFormItemType = {
+    courseCode: string,
+    courseName: string,
+    ectsCredits: string,
+    bilkentCourseInfo: string,
+    bilkentCredit: string,
+    electiveEquivalent: string
+}
+
 export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
-    file: File,
-    status?: 'rejected' | 'pending' | 'approved',
+    studentName: string,
+    studentID: string,
+    file: string,
+    rejectionFeedback: string,
+    status?: 'Rejected' | 'Pending' | 'Approved',
+    preApprovalFormItems: Array<PreApprovalFormItemType>
 }
+
+export type CoordinatorAssociatedStudents = {
+    studentUuid: string,
+    studentName: string,
+    studentSurname: string,
+    studentId: string,
+    studentDepartment: Array<string>,
+}
+
+export type UniversityProxy = {
+    id: string,
+    universityName: string,
+    city: string,
+    country: string,
+    dormitory?: boolean,
+    studentGrant?: number,
+    specialCase?: SpecialCases,
+    // TODO: Add accepted departments
+}
+
+export type UniversityDetailed = {
+    universityWebsite: string,
+    generalInfo: string,
+    acceptedDepartmentsInBilkent: Array<string>
+    evals : Array<PastEvaluationItem>,
+    bgImage?: string, // URL to image
+    logoImage?: string, //URL to image
+}
+
+export type SpecialCases = {
+    semesterLimit: string[],
+    languageRequirements: string[]
+}
+
+export type ProgressBarStep = {
+    label: string,
+    description: string
+}
+
+export type PastEvaluation = {
+    average_rate: number,
+    eval_list: Array<PastEvaluationItem>
+}
+export type PastEvaluationItem = {
+    authorId: string,
+    rate: number,
+    comment: string
+}
+
+export type LearningAgreement = {
+    formUuid: string,
+    studentName: string,
+    studentId: string,
+    status: string,
+    rejectionFeedback: string,
+}
+
+// export type LearningAgreement = {
+//     formUuid: string,
+//     studentId: string,
+//     studentInfo: StudentInfo,
+//     sendingInst: InstInfo,
+//     receivingInst: InstInfo,
+//     tableA: Array<LAStudyProgItem>,
+//     tableB: Array<LAStudyProgItem>,
+//     weblinkCatalogue: string,
+//     language: Language,
+//     studentCommitBefore: Commit,
+//     responsibleSendingCommitBefore: Commit,
+//     responsibleReceivingCommitBefore: Commit,
+//     tableAMobility: Array<TableMobilityItem>,
+//     tableBMobility: Array<TableMobilityItem>,
+//     studentCommitDuring: Commit,
+//     responsibleSendingCommitDuring: Commit,
+//     responsibleReceivingCommitDuring: Commit,
+//     tableC: Array<TableCandDItem>,
+//     tableD: Array<TableCandDItem>
+// }
+
+// export type StudentInfo = {
+//     lastName: string,
+//     name: string,
+//     dob: string,
+//     nationality: string,
+//     sex: string,
+//     academicYear: string,
+//     studyCycle: string,
+//     subjectArea: string,   
+// }
+
+// export type InstInfo = {
+//     name: string,
+//     faculty: string,
+//     erasmusCode: string,
+//     dept: string,
+//     adress: string,
+//     country: string,
+//     contactName: string,
+//     contactEmail: string,
+//     contactPhone: string,
+// }
+
+// export type LAStudyProgItem ={
+//     componentCode: string,
+//     componentTitle: string,
+//     semester: string,
+//     credits: string,
+// }
+
+// export type Language = {
+//     language: string,
+//     level: string,
+// }
+
+// export type Commit = {
+//     name: string,
+//     function: string,
+//     phone: string,
+//     email: string,
+//     date: string,
+//     signature: string,
+// }
+
+// export type TableMobilityItem = {
+//     componentCode: string,
+//     componentTitle: string,
+//     deletedComponent: boolean,
+//     addedComponent: boolean,
+//     reason: string,
+//     credits: string,
+// }
+
+// export type TableCandDItem = {
+//     componentCode: string,
+//     componentTitle: string,
+//     successful: string,
+//     credits: string,
+//     grade: string,
+// }
