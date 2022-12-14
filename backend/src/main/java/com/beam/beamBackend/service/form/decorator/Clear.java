@@ -1,4 +1,4 @@
-package com.beam.beamBackend.service.file.decorator;
+package com.beam.beamBackend.service.form.decorator;
 
 public class Clear extends UniqueNameDecorator {
 

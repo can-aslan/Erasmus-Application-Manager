@@ -6,11 +6,11 @@ const useRefreshToken = () => {
 
     const refresh = async () => {
         console.log(user)
-        console.log(`Bearer ${user?.refreshToken}`)
+        console.log(`Bearer ${user.refreshToken}`)
         const response = await axiosSecure.get('/api/v1/auth/refresh', {
             withCredentials: true,
             headers: {
-                Authorization: `Bearer ${user?.refreshToken}`
+                Authorization: `Bearer ${user.refreshToken}`
             }
         })
 

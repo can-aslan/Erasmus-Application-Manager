@@ -1,9 +1,9 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck } from '@tabler/icons';
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { submitPreApprovalFile } from '../../api/Student/PreapprovalService';
+import { submitFile } from '../../api/FileService';
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
 import { useUser } from "../../provider/UserProvider";
@@ -28,7 +28,7 @@ const PreApprovalFormPage = () => {
 
     const manualUploadMutation = useMutation({
         mutationKey: ['fileSubmit'],
-        mutationFn: (formData: FormData) => submitPreApprovalFile(axiosSecure, formData, user.id),
+        mutationFn: (formData: FormData) => submitFile(axiosSecure, formData, user.id),
     })
 
     // https://stackoverflow.com/questions/53914361/upload-a-file-in-react-and-send-it-to-an-express-server
@@ -36,12 +36,17 @@ const PreApprovalFormPage = () => {
         setFile(payload)
     }
 
+    useEffect(() => {
+        console.log(manualUploadMutation.data)
+    }, [manualUploadMutation.data])
+
     const handleFileSubmit = () => {
         if (file) {
             let formData = new FormData()
             formData.append('file', file)
             formData.append("fileType", "PRE_APPROVAL")
             manualUploadMutation.mutate(formData)
+            console.log(manualUploadMutation.data)
         }
         else {
             // TODO: Toast error notification

@@ -1,35 +1,25 @@
 package com.beam.beamBackend.controller;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.UniEvaluationForm;
-import com.beam.beamBackend.model.User;
-import com.beam.beamBackend.model.UserLogin;
-import com.beam.beamBackend.request.ChangePassword;
-import com.beam.beamBackend.response.RLoginUser;
-import com.beam.beamBackend.response.RRefreshToken;
-import com.beam.beamBackend.response.RUserList;
+import com.beam.beamBackend.response.RCourseEval;
+import com.beam.beamBackend.response.RUniEval;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.response.ResponseId;
-import com.beam.beamBackend.service.AccountService;
 import com.beam.beamBackend.service.EvaluationService;
 
 import jakarta.validation.Valid;
@@ -41,10 +31,11 @@ import lombok.AllArgsConstructor;
 public class EvaluationController {
     private final EvaluationService evalService;
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "university")
-    public ResponseEntity<Object> evaluateUni(@Valid @RequestBody UniEvaluationForm uniEval) {
+    public ResponseEntity<Object> evaluateUni( @RequestBody UniEvaluationForm uniEval) {
         try {
+            System.out.println(uniEval);
+            System.out.println(uniEval.getRate());
             UUID id = evalService.evaluateUni(uniEval);
             return Response.create("university evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
@@ -52,21 +43,20 @@ public class EvaluationController {
         }        
     }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/university/{uniId}")
     public ResponseEntity<Object> getUniEvals(@Valid @PathVariable("uniId") UUID uniId) {
         try {
-            List<UniEvaluationForm> uniEvals = evalService.getUniEval(uniId);
+            RUniEval uniEvals = evalService.getUniEval(uniId);
             return Response.create("ok", HttpStatus.OK, uniEvals);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "course")
     public ResponseEntity<Object> evaluateCourse(@Valid @RequestBody CourseEvaluationForm courseEval) {
         try {
+            System.out.println(courseEval);
             UUID id = evalService.evaluateCourse(courseEval);
             return Response.create("university evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
@@ -74,47 +64,33 @@ public class EvaluationController {
         }        
     }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/course/{courseId}")
     public ResponseEntity<Object> getCourseEval(@Valid @PathVariable("courseId") UUID courseId) {
         try {
-            List<CourseEvaluationForm> courseEvals = evalService.getCourseEval(courseId);
+            RCourseEval courseEvals = evalService.getCourseEval(courseId);
             return Response.create("ok", HttpStatus.OK, courseEvals);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/")
-    public ResponseEntity<Object> getCourseEvals(@Valid @RequestParam(name = "uniId") UUID uniId) {
+    @GetMapping("student/{studentId}/university")
+    public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
         try {
-            List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
-            return Response.create("ok", HttpStatus.OK, courseEvals);
+            UniEvaluationForm uniEval = evalService.getStudentUniEval(authorId, evalStatus);
+            return Response.create("ok", HttpStatus.OK, uniEval);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
         }        
     }
 
-    // // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    // @GetMapping("/saved/{studentId}/uniEval/")
-    // public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId) {
-    //     try {
-    //         List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
-    //         return Response.create("ok", HttpStatus.OK, courseEvals);
-    //     } catch (Exception e) {
-    //         return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
-    //     }        
-    // }
-
-    // // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    // @GetMapping("/saved/{studentId}/courseEval/{courseId}") ///!!!!!!!!!!!!!!!!!!!!!!!!
-    // public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId) {
-    //     try {
-    //         List<CourseEvaluationForm> courseEvals = evalService.getAllCourseEval(uniId);
-    //         return Response.create("ok", HttpStatus.OK, courseEvals);
-    //     } catch (Exception e) {
-    //         return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
-    //     }        
-    // }
+    @GetMapping("student/{studentId}/course/{courseId}")
+    public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
+        try {
+            CourseEvaluationForm courseEval = evalService.getStudentCourseEval(authorId, evalStatus);
+            return Response.create("ok", HttpStatus.OK, courseEval);
+        } catch (Exception e) {
+            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
 }

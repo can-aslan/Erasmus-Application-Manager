@@ -12,33 +12,33 @@ import { Course, CourseRequest, PreviousCourseRequest } from "../../types";
 const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
-    const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
-    const axiosSecure = useAxiosSecure()
+    const axiosSecure = useAxiosSecure();
 
-    //const [syllabusLink, setSyllabusLink] = useState('');
-    const { user } = useUser()
+    const { user } = useUser();
 
     // TODO: Use courses instead of allCoursesBilkent
-    const {data: courses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses(axiosSecure)
+    // const { data: courses, isLoading: isCoursesLoading, isError: isCoursesError } = useCourses(axiosSecure)
     const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
 
-    const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
-        mutationKey: ['courseRequest'],
-        mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course, user!.id)   
-    })
+    // const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
+    //     mutationKey: ['courseRequest'],
+    //     mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course)
+    // })
 
     const form = useForm({
         initialValues: {
             hostCourseCode: '',
             courseName: '',
             webpage: '',
-            syllabusLink:''
+            syllabusLink: '',
+            ectsCredits: ''
         },
         validate: {
             hostCourseCode: (value) => value.length > 0 ? null : "Course code cannot be empty.",
             courseName: (value) => value.length > 0 ? null : "Course name cannot be empty.",
             webpage: (value) => value.length > 0 ? null : "Webpage cannot be empty.",
-            syllabusLink: (value) => (value.length == 0) && !syllabusFile ?  "Syllabus link/file cannot be empty." : null
+            syllabusLink: (value) => value.length > 0 ? null : "Syllabus link/file cannot be empty.",
+            ectsCredits: (value) => value.length > 0 ? null : "ECTS Credits cannot be empty.",
         }
     })
     const handleRequestCourse = () => {
@@ -49,35 +49,40 @@ const CourseRequestPage = () => {
         else {
             setIsBilkentCourseEmpty(false);
         }
-        if (!syllabusFile){
-            //TODO: warn the user about missing syllabus
-            console.log("no syllabus");
-        }
-        if (!validate.hasErrors && !isBilkentCourseEmpty && syllabusFile) {
+        if (!validate.hasErrors && !isBilkentCourseEmpty) {
             // send request to api
-            // const course: Course = {
 
-            // }
-            // mutateCourseRequest()
+            const courseRequest: CourseRequest = {
+                requestId: null,
+                studentId: user.id,
+                hostCode: form.values.hostCourseCode,
+                name: form.values.courseName,
+                webpage: form.values.webpage ,
+                syllabusLink: form.values.syllabusLink,
+                ectsCredits: form.values.ectsCredits,
+                bilkentCode: searchedBilkentCourseInfo
+            }
+            //mutateCourseRequest(courseRequest)
             console.log("error yok");
         }
     }
 
     const previouslyRequestedCoursesList = [
-        { courseCode: "CS473", courseName: "Algorithms I", bilkentCredits: "4", ectsCredits: "6", requestStatus: 0 },
-        { courseCode: "CS319", courseName: "OOSE", bilkentCredits: "3", ectsCredits: "6", requestStatus: 1 },
-        { courseCode: "CS315", courseName: "Programming Languages", bilkentCredits: "3", ectsCredits: "6", requestStatus: 2 },
+        { courseCode: "Zart", courseName: "Zart Dersi", bilkentCode: "CS - 319", bilkentCredits: "4", ectsCredits: "6", requestStatus: 0 },
+        { courseCode: "Zurt", courseName: "Zurt Dersi", bilkentCode: "CS - 201", bilkentCredits: "3", ectsCredits: "6", requestStatus: 1 },
+        { courseCode: "Zort", courseName: "Zort Dersi", bilkentCode: "CS - 315", bilkentCredits: "3", ectsCredits: "6", requestStatus: 2 },
     ]
 
     const previouslyRequestedRows = previouslyRequestedCoursesList.map((course) => (
         <tr key={course.courseCode} >
             <td>{course.courseCode}</td>
             <td>{course.courseName}</td>
-            <td>{course.bilkentCredits}</td>
             <td>{course.ectsCredits}</td>
-            <td style={{maxWidth:"200"}}>{""}
+            <td>{course.bilkentCode}</td>
+            <td>{course.bilkentCredits}</td>
+            <td style={{ maxWidth: "200" }}>{""}
                 <Group>
-                    {course.requestStatus == 0 ? <IconCheck color={"green"} /> : course.requestStatus == 1 ? <IconSearch color={"blue"} /> : <IconX color={"red"} />}
+                    {course.requestStatus == 0 ? <IconCheck color={"#2f9e44"} /> : course.requestStatus == 1 ? <IconSearch color={"#1971c2"} /> : <IconX color={"#e03131"} />}
                     <Text color={course.requestStatus == 0 ? "green" : course.requestStatus == 1 ? "blue" : "red"}> {course.requestStatus == 0 ? "Approved" : course.requestStatus == 1 ? "Pending Approval" : "Rejected"}</Text>
                 </Group>
             </td>
@@ -112,18 +117,16 @@ const CourseRequestPage = () => {
                                 {...form.getInputProps('webpage')}
                             >
                             </TextInput>
-                            <Flex direction='row' align='center' justify="center" gap='lg'>
-                                <FileButton onChange={setSyllabusFile} accept="application/pdf">
-                                    {(props) => <Button {...props}>Upload Syllabus</Button>}
-                                </FileButton>
-                                <Title order={2}>OR</Title>
-                                <TextInput
+                            <TextInput
+                                label="ECTS Credits"
+                                placeholder="ECTS Credits of the course at host university"
+                                {...form.getInputProps('ectsCredits')}
+                            ></TextInput>
+                            <TextInput
                                     label="Syllabus Link"
                                     placeholder="Syllabus link of the course at host university"
-                                    {...form.getInputProps('syllabusLink')}
-                                />
-                                    
-                            </Flex>
+                                    {...form.getInputProps('syllabusLink')}/>
+                                
                             <Select
                                 searchable
                                 allowDeselect
@@ -133,12 +136,6 @@ const CourseRequestPage = () => {
                                 onSearchChange={setBilkentOnSearchChange}
                                 searchValue={searchedBilkentCourseInfo}
                                 data={allCoursesBilkent} />
-                            
-                            {syllabusFile && (
-                                <Text size="sm" align="center" mt="sm">
-                                    Selected Syllabus: {syllabusFile.name}
-                                </Text>
-                            )}
                             <Button onClick={handleRequestCourse}>Request Course</Button>
                         </Stack>
                     </form>
@@ -158,8 +155,9 @@ const CourseRequestPage = () => {
                             <tr>
                                 <th>Course Code At Host University</th>
                                 <th>Course Name At Host University</th>
-                                <th>Bilkent Credits</th>
                                 <th>ECTS Credits</th>
+                                <th>Bilkent Code</th>
+                                <th>Bilkent Credits</th>
                                 <th>Request Status</th>
                             </tr>
                         </thead>

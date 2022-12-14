@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { login } from "../../api/User/UserService";
+import { login } from "../../api/UserService";
 import { useUser } from "../../provider/UserProvider";
 import { UserEnum } from "../../types";
 
@@ -21,8 +21,9 @@ const LoginForm = () => {
         mutationFn: ({ bilkentID, pwd }: MutationFunctionProps) => {
             return login(bilkentID, pwd)
         },
-        onSuccess: (data) => {
-            setUser(data.data);
+        onSuccess: (result) => {
+            setUser(result.data);
+            console.log(result.message)
             toast.success("You've successfully logged in.", {
                 position: toast.POSITION.BOTTOM_LEFT
             })
@@ -66,20 +67,19 @@ const LoginForm = () => {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
             // FIXME: Commented until database is connected
-            //loginMutation.mutate({bilkentID, pwd})
+            loginMutation.mutate({bilkentID, pwd})
 
-            setUser({
-                refreshToken: "refreshT",
-                accessToken: "accessT",
-                email: "selim.guler@ug.bilkent.edu.tr",
-                id: "22002811",
-                name: "Selim Can",
-                surname: "Güler",
+            // setUser({
+            //     refreshToken: "refreshT",
+            //     accessToken: "accessT",
+            //     email: "selim.guler@ug.bilkent.edu.tr",
+            //     id: "22002811",
+            //     name: "Selim Can",
+            //     surname: "Güler",
 
-                userType: UserEnum.OutgoingStudent,
-            })
-            navigate("/")
-
+            //     userType: UserEnum.OutgoingStudent,
+            // })
+            // navigate("/")
         }
     }
 
