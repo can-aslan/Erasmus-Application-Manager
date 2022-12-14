@@ -1,4 +1,4 @@
-package com.beam.beamBackend.service;
+package com.beam.beamBackend.service.form;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
