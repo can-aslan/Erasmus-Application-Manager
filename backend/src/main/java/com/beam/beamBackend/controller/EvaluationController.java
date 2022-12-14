@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.UniEvaluationForm;
+import com.beam.beamBackend.response.RCourseEval;
+import com.beam.beamBackend.response.RUniEval;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.EvaluationService;
 
@@ -44,7 +46,7 @@ public class EvaluationController {
     @GetMapping("/university/{uniId}")
     public ResponseEntity<Object> getUniEvals(@Valid @PathVariable("uniId") UUID uniId) {
         try {
-            List<UniEvaluationForm> uniEvals = evalService.getUniEval(uniId);
+            RUniEval uniEvals = evalService.getUniEval(uniId);
             return Response.create("ok", HttpStatus.OK, uniEvals);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
@@ -65,7 +67,7 @@ public class EvaluationController {
     @GetMapping("/course/{courseId}")
     public ResponseEntity<Object> getCourseEval(@Valid @PathVariable("courseId") UUID courseId) {
         try {
-            List<CourseEvaluationForm> courseEvals = evalService.getCourseEval(courseId);
+            RCourseEval courseEvals = evalService.getCourseEval(courseId);
             return Response.create("ok", HttpStatus.OK, courseEvals);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later

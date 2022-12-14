@@ -26,4 +26,7 @@ public interface ICourseEvalRepository extends JpaRepository<CourseEvaluationFor
     @Modifying
     @Query("update CourseEvaluationForm form set form.comment = :comment, form.rate = :rate, form.evalStatus = :eval_status where form.authorId = :author_id")
     int updateEval(@Param("comment") String comment, @Param("rate") Double rate, @Param("eval_status") EvalStatus evalStat, @Param("author_id") Long authorId);
+
+    @Query("SELECT AVG(eval.rate) FROM CourseEvaluationForm eval")
+    double getAverage();
 }
