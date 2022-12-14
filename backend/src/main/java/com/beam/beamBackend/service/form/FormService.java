@@ -58,32 +58,31 @@ public class FormService {
         }
 
         Optional<User> user = accountRepository.findById(userUuid);
-        if (user.isPresent()) {
-            User u = user.get();
-            String bilkentId = Long.toString(u.getBilkentId());
-
-            // Generate key using file specs
-            MultipartFileWrapper fileWrapper = new MultipartFileWrapper(file);
-            UniquelyNameable nameable = new Clear(fileWrapper);
-            nameable = new Prefix(nameable, bilkentId + "_");
-            nameable = new Prefix(nameable, formType.toString() + "_");
-            nameable = new Postfix(nameable, timestamp);
-            nameable = new Postfix(nameable, ".pdf");
-    
-            try {
-                PutObjectRequest objectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(nameable.getUniqueName())
-                        .build();
-                s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-                return true;
-            }
-            catch (Exception e) {
-                return false;
-            }
-        }
-        else {
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with given ID could not be found.");
+        }
+
+        User u = user.get();
+        String bilkentId = Long.toString(u.getBilkentId());
+
+        // Generate key using file specs
+        MultipartFileWrapper fileWrapper = new MultipartFileWrapper(file);
+        UniquelyNameable nameable = new Clear(fileWrapper);
+        nameable = new Prefix(nameable, bilkentId + "_");
+        nameable = new Prefix(nameable, formType.toString() + "_");
+        nameable = new Postfix(nameable, timestamp);
+        nameable = new Postfix(nameable, ".pdf");
+
+        try {
+            PutObjectRequest objectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(nameable.getUniqueName())
+                    .build();
+            s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            return true;
+        }
+        catch (Exception e) {
+            return false;
         }
     }
 
@@ -101,27 +100,26 @@ public class FormService {
         }
 
         Optional<User> user = accountRepository.findById(userUuid);
-        if (user.isPresent()) {
-            User u = user.get();
-            String bilkentId = Long.toString(u.getBilkentId());
-            
-            FileWrapper fileWrapper = new FileWrapper(file);
-            UniquelyNameable nameable = new Clear(fileWrapper);
-            nameable = new Prefix(nameable, bilkentId + "_");
-            nameable = new Prefix(nameable, formType.toString() + "_");
-            nameable = new Postfix(nameable, timestamp);
-            nameable = new Postfix(nameable, ".pdf");
-
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key("key")
-                    .build();
-            s3.putObject(objectRequest, RequestBody.fromFile(file));
-            return true;
-        }
-        else {
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with given ID could not be found.");
         }
+        
+        User u = user.get();
+        String bilkentId = Long.toString(u.getBilkentId());
+        
+        FileWrapper fileWrapper = new FileWrapper(file);
+        UniquelyNameable nameable = new Clear(fileWrapper);
+        nameable = new Prefix(nameable, bilkentId + "_");
+        nameable = new Prefix(nameable, formType.toString() + "_");
+        nameable = new Postfix(nameable, timestamp);
+        nameable = new Postfix(nameable, ".pdf");
+
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key("key")
+                .build();
+        s3.putObject(objectRequest, RequestBody.fromFile(file));
+        return true;
     }
 
     public byte[] downloadForm(UUID userUuid, FormEnum formType) throws IOException {
