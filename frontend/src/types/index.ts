@@ -88,9 +88,9 @@ export type CourseWishlistItem = {
     correspondingBilkentCourse: BilkentCourse,
 }
 
-export type SchoolAssociatedCourse = {
-    schoolId: string,
-    schoolName: string,
+export type UniAssociatedCourse = {
+    uniId: string,
+    uniName: string,
     uuid: string,
     courseCode: string,
     courseName: string,
@@ -186,3 +186,93 @@ export type PastEvaluationItem = {
     comment: string
 }
 
+export type LearningAgreement = {
+    formUuid: string,
+    studentName: string,
+    studentId: string,
+    status: string,
+    rejectionFeedback: string,
+}
+
+// export type LearningAgreement = {
+//     formUuid: string,
+//     studentId: string,
+//     studentInfo: StudentInfo,
+//     sendingInst: InstInfo,
+//     receivingInst: InstInfo,
+//     tableA: Array<LAStudyProgItem>,
+//     tableB: Array<LAStudyProgItem>,
+//     weblinkCatalogue: string,
+//     language: Language,
+//     studentCommitBefore: Commit,
+//     responsibleSendingCommitBefore: Commit,
+//     responsibleReceivingCommitBefore: Commit,
+//     tableAMobility: Array<TableMobilityItem>,
+//     tableBMobility: Array<TableMobilityItem>,
+//     studentCommitDuring: Commit,
+//     responsibleSendingCommitDuring: Commit,
+//     responsibleReceivingCommitDuring: Commit,
+//     tableC: Array<TableCandDItem>,
+//     tableD: Array<TableCandDItem>
+// }
+
+// export type StudentInfo = {
+//     lastName: string,
+//     name: string,
+//     dob: string,
+//     nationality: string,
+//     sex: string,
+//     academicYear: string,
+//     studyCycle: string,
+//     subjectArea: string,   
+// }
+
+// export type InstInfo = {
+//     name: string,
+//     faculty: string,
+//     erasmusCode: string,
+//     dept: string,
+//     adress: string,
+//     country: string,
+//     contactName: string,
+//     contactEmail: string,
+//     contactPhone: string,
+// }
+
+// export type LAStudyProgItem ={
+//     componentCode: string,
+//     componentTitle: string,
+//     semester: string,
+//     credits: string,
+// }
+
+// export type Language = {
+//     language: string,
+//     level: string,
+// }
+
+// export type Commit = {
+//     name: string,
+//     function: string,
+//     phone: string,
+//     email: string,
+//     date: string,
+//     signature: string,
+// }
+
+// export type TableMobilityItem = {
+//     componentCode: string,
+//     componentTitle: string,
+//     deletedComponent: boolean,
+//     addedComponent: boolean,
+//     reason: string,
+//     credits: string,
+// }
+
+// export type TableCandDItem = {
+//     componentCode: string,
+//     componentTitle: string,
+//     successful: string,
+//     credits: string,
+//     grade: string,
+// }
