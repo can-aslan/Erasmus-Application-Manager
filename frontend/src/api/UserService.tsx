@@ -1,5 +1,6 @@
+import { AxiosInstance } from "axios"
 import useAxiosSecure from "../hooks/useAxiosSecure"
-import { User } from "../types"
+import { NewUser, User } from "../types"
 import { ResponseUser } from "../types/responseTypes"
 import axios from "./axios"
 
@@ -19,5 +20,10 @@ export const login = async (bilkentId: string, password: string) => {
 export const logout = async (userUuid: string) => {
     const axiosSecure = useAxiosSecure()
     const response = await axiosSecure.post('/auth/logout', JSON.stringify({userUuid}))
-    return response
+    return response.data
+}
+
+export const register = async (axios: AxiosInstance, newUser: NewUser) => {
+    const response = await axios.post<NewUser>('/auth/register', newUser)
+    return response.data
 }

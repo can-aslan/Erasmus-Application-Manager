@@ -11,6 +11,7 @@ import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
+import RegisterPage from './pages/Admin/RegisterPage'
 import CoordinatorApprovePreApprovalsPage from './pages/Coordinator/ApprovePreApprovalsPage'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
@@ -141,7 +142,8 @@ const router = createBrowserRouter([
                 element: <RequireAuth allowedUsers={[UserEnum.Admin]} />,
                 children: [
                   {
-                    // Admin pages
+                    path: '/admin/register-page',
+                    element: <RegisterPage />
                   }
                 ]
               },
