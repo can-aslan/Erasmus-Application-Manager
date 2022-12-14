@@ -2,44 +2,66 @@ package com.beam.beamBackend.model;
 
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import com.beam.beamBackend.enums.EvalStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper=true)
-public class UniEvaluationForm extends EvaluationForm {
-    // @Id
-    // private UUID id; //evalId
+@Table(name = "uni_eval")
+@NoArgsConstructor
+@AllArgsConstructor
+public class UniEvaluationForm {
 
-    // @NotNull
-    // private long authorId;
-
-    // @NotNull
-    // private double rate;
-
-    // @NotBlank
-    // private String comment;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", nullable = false)
+    UUID id; //evalId
 
     @NotNull
-    private UUID uniId; //courseId
+    @Column(name = "author_id", nullable = false, unique = true)
+    Long authorId;
+
+    @NotNull
+    @Column(name = "rate", nullable = false)
+    Double rate;
+
+    // @NotBlank
+    @Column(name = "comment", nullable = false)
+    String comment;
+    
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "eval_status", nullable = false)
+    EvalStatus evalStatus;
+    
+    @NotNull
+    @Column(name = "uni_id", nullable = false)
+    private UUID uniId;
 
     public UniEvaluationForm(@JsonProperty("id") UUID id,
-                @JsonProperty("authorId") long authorId,
-                @JsonProperty("rate") double rate,
+                @JsonProperty("author_id") Long authorId,
+                @JsonProperty("rate") Double rate,
                 @JsonProperty("comment") String comment,
-                @JsonProperty("uniId") UUID uniId,
-                @JsonProperty("evalStatus") EvalStatus evalStatus) {
-        super(id, authorId, rate, comment, evalStatus);    
+                @JsonProperty("uni_id") UUID uniId,
+                @JsonProperty("eval_status") EvalStatus evalStatus) {  
         this.uniId = uniId;
+        this.id = id;
+        this.authorId = authorId;
+        this.rate = rate;
+        this.comment = comment;
+        this.evalStatus = evalStatus;
     }    
 }

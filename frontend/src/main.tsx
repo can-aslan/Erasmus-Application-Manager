@@ -11,6 +11,7 @@ import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
 import './index.css'
+import ApproveLearningAgreementPage from './pages/Coordinator/ApproveLearningAgreementPage'
 import CoordinatorApprovePreApprovalsPage from './pages/Coordinator/ApprovePreApprovalsPage'
 import ApproveWishlistsPage from './pages/Coordinator/ApproveWishlistsPage'
 import CourseTransferPage from './pages/Coordinator/CourseTransferPage'
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/course-evaluations',
-    element: <SeeCourseEvaluationsPage/>
+    element: <SeeCourseEvaluationsPage uniId='1'/>
   },
   {
     element: <PersistentLogin />,
@@ -99,7 +100,7 @@ const router = createBrowserRouter([
                   },
                   {
                     path: '/student/course-evaluations',
-                    element: <SeeCourseEvaluationsPage/>
+                    element: <SeeCourseEvaluationsPage uniId='1'/>
                   }
                 ]
               },
@@ -134,6 +135,10 @@ const router = createBrowserRouter([
                   {
                     path: '/coordinator/approve-pre-approvals',
                     element: <CoordinatorApprovePreApprovalsPage/>
+                  },
+                  {
+                    path: '/coordinator/approve-learning-agreements',
+                    element: <ApproveLearningAgreementPage/>
                   }
                 ]
               },

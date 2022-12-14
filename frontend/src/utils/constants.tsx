@@ -116,6 +116,11 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             label: 'Approve Pre-Approvals',
             to: '/coordinator/approve-pre-approvals',
             icon: <IconFileSearch />
+        },
+        {
+            label: 'Approve Learning Agreements',
+            to: '/coordinator/approve-learning-agreements',
+            
         }
     ],
     [UserEnum.Admin]: [

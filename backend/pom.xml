@@ -119,6 +119,20 @@
             <groupId>software.amazon.awssdk</groupId>
 			<artifactId>apache-client</artifactId>
         </dependency>
+
+		<!-- PDF Generation Dependencies-->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sample</groupId>
+			<artifactId>sample</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/itextpdf-5.5.13.3.jar</systemPath>
+</dependency>
 	</dependencies>
 
 	<build>
