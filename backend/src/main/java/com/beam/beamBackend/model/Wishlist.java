@@ -1,13 +1,10 @@
 package com.beam.beamBackend.model;
 
-import java.util.List;
-import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -17,19 +14,10 @@ import com.beam.beamBackend.enums.CourseWishlistStatus;
 
 @Entity
 @Data
-@Table(name = "course_wishlist")
+@Table(name = "wishlist")
 @NoArgsConstructor
-@Deprecated
-public class CourseWishlist {
+public class Wishlist {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "wishlist_id")
-    private UUID wishlistId;
-
-    @NotNull
-    @Column(name = "wishlist_items")
-    private List<UUID> wishlistItems;
-    
     @NotNull
     @Column(name = "student_id")
     private Long studentId;
@@ -39,15 +27,11 @@ public class CourseWishlist {
     @Column(name = "status")
     private CourseWishlistStatus status;
 
-    public CourseWishlist(
-        @JsonProperty("wishlistId") UUID wishlistId,
-        @JsonProperty("wishlistItems") List<UUID> wishlistItems,
+    public Wishlist(
         @JsonProperty("studentId") Long studentId,
         @JsonProperty("status") CourseWishlistStatus status
     ) {
-        this.wishlistId = (wishlistId == null) ? UUID.randomUUID() : wishlistId;
-        this.wishlistItems = wishlistItems;
         this.studentId = studentId;
-        this.status = status;
+        this.status = (status == null) ? CourseWishlistStatus.WAITING : status;
     }
 }
