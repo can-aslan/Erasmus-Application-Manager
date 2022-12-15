@@ -54,10 +54,6 @@ const router = createBrowserRouter([
     element: <ForgotPasswordPage />
   },
   {
-    path: '/course-evaluations',
-    element: <SeeCourseEvaluationsPage uniId='1'/>
-  },
-  {
     element: <PersistentLogin />,
     errorElement: <MissingPage />,
     children: [
@@ -106,10 +102,6 @@ const router = createBrowserRouter([
                     path: '/student/learning-agreement',
                     element: <LearningAgreementPage/>
                   },
-                  {
-                    path: '/student/course-evaluations',
-                    element: <SeeCourseEvaluationsPage uniId='1'/>
-                  }
                 ]
               },
               {

@@ -1,7 +1,13 @@
 import React from "react";
 
-export type Status = 'REJECTED' | 'PENDING' | 'APPROVED' | 'REJECTED'
-type Semester = 'Fall' | 'Spring'
+export type ApprovalStatus = 'WAITING' | 'PENDING' | 'APPROVED' | 'REJECTED'
+export type EvaluationStatus = 'EMPTY' | 'SUBMITTED' | 'SAVED'
+export type Semester = 'FALL' | 'SPRING' | 'YEAR'
+export type Continent = 'ASIA' | 'AFRICA' | 'NORTH_AMERICA' | 'SOUTH_AMERICA' | 'EUROPE' | 'AUSTRALIA' | 'ANTARCTICA'
+export type Sex = 'MALE' | 'FEMALE'
+export type StudyType = 'MINOR' | 'MAJOR' | 'NORMAL'
+export type Faculty = 'ENGINEERING_FAC'
+export type Department = 'CS' | 'EEE' | 'IE' | 'ME'
 
 export enum UserEnum {
     OutgoingStudent = 'OUTGOING_STUDENT',
@@ -33,6 +39,7 @@ export type User = {
     userType: UserEnum,
     accessToken: string,
     refreshToken: string,
+    bilkentId: string
 }
 
 export type MenuItem = {
@@ -56,14 +63,14 @@ export type StudentAssociatedWishlist = {
     wishlistUuid: string,
     studentName: string,
     studentId: string,
-    status: Status
+    status: ApprovalStatus
 }
 
 export type Course = {
     courseUUID: string,
     courseCode: string,
     courseName: string,
-    department: string, 
+    department: string,
     ECTSCredits: number,
     instructorId?: string,
     universityId?: string,
@@ -75,11 +82,11 @@ export type BilkentCourse = Course & {
 }
 
 export type HostCourse = Course & {
-    courseApproval?: Status
+    courseApproval?: ApprovalStatus
 }
 
 export type CourseWishlist = {
-    wishlistStatus: Status,
+    wishlistStatus: ApprovalStatus,
     wishlistId: string,
     wishlistItems: Array<CourseWishlistItem>, //
 }
@@ -163,7 +170,7 @@ export type UniversityDetailed = {
     universityWebsite: string,
     generalInfo: string,
     acceptedDepartmentsInBilkent: Array<string>
-    evals : Array<PastEvaluationItem>,
+    evals: Array<PastEvaluationItem>,
     bgImage?: string, // URL to image
     logoImage?: string, //URL to image
 }
@@ -185,7 +192,11 @@ export type PastEvaluation = {
 export type PastEvaluationItem = {
     authorId: string,
     rate: number,
-    comment: string
+    comment: string,
+}
+
+export type StudentAssociatedPastEvaluationItem = PastEvaluationItem & {
+    evalStatus: string
 }
 
 export type LearningAgreement = {
@@ -195,6 +206,45 @@ export type LearningAgreement = {
     status: string,
     rejectionFeedback: string,
 }
+
+export type Student = {
+    user: User;
+    department1: Department;
+    faculty1: Faculty;
+    department2: Department;
+    faculty2: Faculty;
+    telephoneNo: string;
+    studyType: StudyType;
+    nationality: string;
+    dateOfBirth: string;
+    sex: Sex;
+    homeUni: University;
+    hostUni: University;
+    academicYear: string;
+    semester: Semester;
+    coordinator: Staff;
+}
+export type Staff = {
+    id: string;
+    user: User;
+    department: Department;
+    faculty: Faculty;
+}
+
+export type University = {
+    id: string;
+    name: string;
+    city: string;
+    country: Country;
+}
+
+export type Country = {
+    id: string;
+    name: string;
+    isIncludedInErasmus: boolean;
+    continent: Continent;
+}
+
 
 // export type LearningAgreement = {
 //     formUuid: string,
@@ -226,7 +276,7 @@ export type LearningAgreement = {
 //     sex: string,
 //     academicYear: string,
 //     studyCycle: string,
-//     subjectArea: string,   
+//     subjectArea: string,
 // }
 
 // export type InstInfo = {

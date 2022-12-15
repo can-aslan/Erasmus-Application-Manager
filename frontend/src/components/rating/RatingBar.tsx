@@ -1,14 +1,15 @@
 import { MantineColor, Rating } from "@mantine/core";
 
 interface RatingBarProps{
+    editable: boolean;
     emptySymbol: React.ReactNode;
     fullSymbol: React.ReactNode;
     value: number
     setValue: (value: number) => void
 }
-const RatingBar = ({emptySymbol, fullSymbol, value, setValue}:RatingBarProps) => {
+const RatingBar = ({editable, emptySymbol, fullSymbol, value, setValue}:RatingBarProps) => {
     return ( 
-        <Rating onChange={setValue} value={value} fractions={2} emptySymbol={emptySymbol} fullSymbol={fullSymbol}/>
+        <Rating readOnly={!editable} onChange={setValue} value={value} fractions={2} emptySymbol={emptySymbol} fullSymbol={fullSymbol}/>
      );
 }
  
