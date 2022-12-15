@@ -1,11 +1,9 @@
-import { Accordion, Anchor, Badge, Card, CardSection, Center, Divider, Flex, Grid, Group, Header, Image, List, Rating, Space, Text, TextInput, Title } from "@mantine/core";
-import { AccordionControl } from "@mantine/core/lib/Accordion/AccordionControl/AccordionControl";
-import { IconGenderThird, IconSchool } from "@tabler/icons";
+import { Accordion, Anchor, Badge, Card, Flex, Grid, Image, List, Text, Title } from "@mantine/core";
+import { IconSchool } from "@tabler/icons";
 import { useParams } from "react-router-dom";
 import EvaluationCard from "../../components/evaluation/EvaluationCard";
-import RatingBar from "../../components/rating/RatingBar";
-import ToggleThemeIcon from "../../components/ToggleThemeIcon";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
+
+
 import { UniversityDetailed, UniversityProxy } from "../../types";
 
 const UniversityDetails = () => {

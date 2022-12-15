@@ -1,15 +1,20 @@
 import { Autocomplete, Button, Card, Center, Divider, Flex, Modal, Stack, Title } from '@mantine/core';
 import { IconDeviceFloppy, IconFile, IconPlus, IconSend } from '@tabler/icons';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { saveWishlist, submitWishlist } from '../../api/Student/CourseService';
 import StatusFeedback from '../../components/cards/StatusFeedback';
 import CourseTable from '../../components/tables/CourseTable';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useCourses } from '../../hooks/useCourses';
+import useHostCourses from '../../hooks/useHostCourses';
+import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
 import { BilkentCourse, Course, CourseWishlist, CourseWishlistItem, HostCourse } from "../../types";
 import { ResponseStudentSpecificCourseWishlist } from '../../types/responseTypes';
+import ErrorPage from '../Feedback/ErrorPage';
+import LoadingPage from '../Feedback/LoadingPage';
 
 type CourseTableCourses = {
     bilkentCourse: BilkentCourse
@@ -17,41 +22,42 @@ type CourseTableCourses = {
 }
 
 const CourseWishlistPage = () => {
-    // TODO: Fetch initial wishlist.
-    const [wishlist, setWishlist] = useState<CourseWishlist | null>(null)
-    const [wishlistItems, setWishlistItems] = useState(wishlist?.wishlistItems)
+    const axiosSecure = useAxiosSecure()
+    const { user } = useUser()
+
+    // Fetch bilkent courses
+    const {data: bilkentCourses, isLoading: isBilkentCoursesLoading, isError: isBilkentCoursesError} = useCourses(axiosSecure)
+
+    // Fetch host courses based on userId
+    const {data: hostCourses, isLoading: isHostCoursesLoading, isError: isHostCoursesError } = useHostCourses(axiosSecure, user.id)
+
+    // Fetch the initial state of course wishlist    
+    const {data: courseWishlist, isLoading: isCourseWishlistLoading, isError: isCourseWishlistError} = useStudentWishlist(axiosSecure, user.id)
+
+    if (isBilkentCoursesLoading || isHostCoursesLoading || isCourseWishlistLoading) {
+        return <LoadingPage />
+    }
+
+    if (isBilkentCoursesError || isHostCoursesError || isCourseWishlistError) {
+        return <ErrorPage message="We are having some problems accessing course data."/>
+    }
+    
+    // States are moved to here because the initial states depend on the properties being fetched
+    const [wishlist, setWishlist] = useState<CourseWishlist>(courseWishlist.data)
+    const [wishlistItems, setWishlistItems] = useState<CourseWishlistItem[]>(wishlist.wishlistItems)
     const [selectedBilkentCourse, setSelectedBilkentCourse] = useState('')
     const [selectedHostCourse, setSelectedHostCourse] = useState('')
     const [error, setError] = useState(false)
-    const axiosSecure = useAxiosSecure()
-    const { user } = useUser()
-    
-    // TODO: Fetch initial wishlist, fetch bilkent courses, fetch host courses
-    const bilkentCourses: Array<BilkentCourse> = [
-        {
-            bilkentCredits: 10,
-            ECTSCredits: 12,
-            courseCode: "CS 200",
-            courseName: "Hello ",
-            courseUUID: "uuid",
-            department: "CS",
-        }
-    ]
 
-    const hostCourses: Array<HostCourse> = [
-        {
-            ECTSCredits: 12,
-            courseCode: "CS 200",
-            courseName: "Hello ",
-            courseUUID: "uuid",
-            department: "CS",
-        }
-    ]
+    /*
+        Autocomplete component accepts an array of strings or objects with value property to display them on the dropdown. 
+        We chose the array of strings for this purpose and we are displaying course names.
+    */
+    const bilkentCoursesData = bilkentCourses.data.map((c) => c.courseName)
+    const hostCoursesData = hostCourses.data.map((h) => h.courseName)
 
-    const bilkentCoursesData = bilkentCourses.map((c) => c.courseName)
-
-    const hostCoursesData = hostCourses.map((h) => h.courseName)
-    
+    // Table will consist of pairs of Bilkent courses and host uni courses. This is because
+    // of the course transfer process that will happen later on. 
     const tableItems: Array<CourseTableCourses> | undefined = wishlistItems?.map((w) => {
         return {
             bilkentCourse: w.correspondingBilkentCourse,
@@ -59,6 +65,11 @@ const CourseWishlistPage = () => {
         }
     })
     
+    /*
+        The wishlist is not automatically saved on each addition. Instead, the user is expected to save their 
+        wishlist once they think, they have chosen enough courses. Once the user thinks that they don't want to
+        choose any more courses, they will use the submit button to send their wishlist for coordinator approval.
+    */
     const { mutate: save, isLoading: isSaveLoading } = useMutation({
         mutationKey: ['saveWishlist'],
         mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
@@ -78,6 +89,7 @@ const CourseWishlistPage = () => {
     }
     
     const handleSubmit = () => {
+        save()
         submit()
     }
     
@@ -94,8 +106,8 @@ const CourseWishlistPage = () => {
 
 
         setWishlistItems((prev) => {
-            const bilkentCourse: BilkentCourse = bilkentCourses.find(b => b.courseName === selectedBilkentCourse)!
-            const hostCourse: HostCourse = hostCourses.find(h => h.courseName === selectedHostCourse)!
+            const bilkentCourse: BilkentCourse = bilkentCourses?.data.find(b => b.courseName === selectedBilkentCourse)!
+            const hostCourse: HostCourse = hostCourses?.data.find(h => h.courseName === selectedHostCourse)!
             const newWishlistItem: CourseWishlistItem = {
                 correspondingBilkentCourse: bilkentCourse,
                 otherUniCourses: [hostCourse],
@@ -119,7 +131,7 @@ const CourseWishlistPage = () => {
             <Flex direction='column' align='center' gap={100}>
                 <StatusFeedback 
                     title='Wishlist Status'
-                    status={wishlist?.wishlistStatus || "PENDING"}
+                    status={wishlist?.wishlistStatus || "WAITING"}
                     />
                 <Flex gap={100}>
                     <Card miw={400} shadow='xl' radius='lg' p={36}>
