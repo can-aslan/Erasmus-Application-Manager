@@ -67,7 +67,8 @@ const LoginForm = () => {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
             // FIXME: Commented until database is connected
-            //loginMutation.mutate({bilkentID, pwd})
+            loginMutation.mutate({ bilkentID, pwd })
+
 
             setUser({
                 refreshToken: "refreshT",
@@ -82,7 +83,9 @@ const LoginForm = () => {
             navigate("/")
         }
     }
-
+    const goGuestPage = () => {
+        navigate("/guest");
+    }
     return (
         <form>
             <Stack spacing={16}>
@@ -104,6 +107,11 @@ const LoginForm = () => {
                     disabled={loginMutation.isLoading}
                 >
                     Sign In
+                </Button>
+                <Button
+                    onClick={goGuestPage}
+                >
+                    Continue as Guest
                 </Button>
                 <Group position="center">
                     <Link

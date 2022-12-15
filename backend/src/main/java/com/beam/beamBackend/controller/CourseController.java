@@ -12,26 +12,16 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.enums.Department;
-import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.model.BilkentCourse;
-import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.HostCourse;
-import com.beam.beamBackend.model.UniEvaluationForm;
 import com.beam.beamBackend.request.ApprovedCourse;
-import com.beam.beamBackend.response.RCourseEval;
-import com.beam.beamBackend.response.RUniEval;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.EvaluationService;
-
 import jakarta.validation.Valid;
 
 @AllArgsConstructor
@@ -40,6 +30,7 @@ import jakarta.validation.Valid;
 public class CourseController {
     private final CourseService courseService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "bilkent")
     public ResponseEntity<Object> addBilkentCourse(@Valid @RequestBody BilkentCourse bilkentCourse) {
         try {
@@ -51,6 +42,7 @@ public class CourseController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "host")
     public ResponseEntity<Object> addHostCourse(@Valid @RequestBody HostCourse hostCourse) {
         try {
@@ -62,6 +54,7 @@ public class CourseController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("host/{courseId}")
     public ResponseEntity<Object> getHostCourseById(@Valid @PathVariable("courseId") UUID courseId) {
         try {
@@ -72,6 +65,7 @@ public class CourseController {
         }        
     }
     
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("bilkent/{courseId}")
     public ResponseEntity<Object> getBilkentCourseById(@Valid @PathVariable("courseId") UUID courseId) {
         try {
@@ -82,6 +76,7 @@ public class CourseController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("host")
     public ResponseEntity<Object> getAllHostCourse() {
         try {
@@ -92,6 +87,7 @@ public class CourseController {
         }        
     }
     
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("bilkent")
     public ResponseEntity<Object> getAllBilkentCourse() {
         try {
@@ -102,6 +98,7 @@ public class CourseController {
         }        
     }
     
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("host/uni/{uniId}")
     public ResponseEntity<Object> getHostCourseByUniId(@Valid @PathVariable("uniId") UUID uniId) {
         try {
@@ -112,6 +109,7 @@ public class CourseController {
         }        
     }
     
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("bilkent/depatment/{department}")
     public ResponseEntity<Object> getBilkentCourseByDepartment(@Valid @PathVariable("department") Department department) {
         try {
@@ -122,6 +120,7 @@ public class CourseController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "approvedCourse")
     public ResponseEntity<Object> addHostCourse(@Valid @RequestBody ApprovedCourse approvedCourse) {
         try {
@@ -133,6 +132,7 @@ public class CourseController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("approvedCourse/{hostUniId}")
     public ResponseEntity<Object> getAllApprovedCoursesInUni(@Valid @PathVariable("hostUniId") UUID hostUniId) {
         try {
