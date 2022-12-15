@@ -66,7 +66,7 @@ public class WishlistService implements IWishlistService {
         return true;
     }
 
-    @Override // TODO
+    @Override
     public boolean removeWishlistItem(Long studentId, WishlistItem itemToRemove) throws Exception {
         // Checks if student ID has a wishlist in the system
         verifyStudentHasWishlist(studentId);
