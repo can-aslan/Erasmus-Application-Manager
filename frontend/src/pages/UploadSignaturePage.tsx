@@ -1,23 +1,79 @@
-import { Button, FileButton, Flex } from "@mantine/core";
+import { Button, Card, FileButton, Flex, Text } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { downloadSignature, submitSignature } from "../api/FileService";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useUser } from "../provider/UserProvider";
+import { downloadBlobFile } from '../utils/helpers';
 
 const UploadSignaturePage = () => {
-    const [signatureFile, setSignatureFile] = useState<File | null>()
+    const { user } = useUser()
+    const [signatureFile, setSignatureFile] = useState<File | null>(null)
+    const axiosSecure = useAxiosSecure()
+
+    const { mutate: submitSignatureMutate, isLoading: isSavingSignature, isError: isSavingError } = useMutation({
+        mutationKey: ['uploadSignature'],
+        mutationFn: (formData: FormData) => submitSignature(axiosSecure, formData, user.id),
+        onSuccess: () => toast.success("Successfully saved the signature!")
+    })
+
+    const { mutate: downloadSignatureMutate, isLoading: isDownloadingSignature, isError: isDownloadingError } = useMutation({
+        mutationKey: ['downloadSignature'],
+        mutationFn: () => downloadSignature(axiosSecure, user.id),
+        onSuccess: (data) => {
+            downloadBlobFile(data, "filename")
+        },
+        onError: () => toast.error("Error while trying to fetch the file from the database. Make sure you have uploaded your signature before trying to download.")
+    })
+
+    const handleSignatureSubmit = () => {
+        const formData = new FormData()
+        console.log(formData)
+        if (signatureFile) {
+            formData.append("signature", signatureFile)
+            console.log(formData)
+            submitSignatureMutate(formData)
+        }
+        else {
+            toast.error("You should upload a file before saving.")
+        }
+    }
 
     return (
-        <Flex
-            gap='xl'
-            direction='column'
+        <Card 
+            shadow='xl' 
+            radius='xl' 
+            p={36}
+            maw={450}
         >
-            <FileButton
-                onChange={setSignatureFile}
+            <Flex
+                gap={36}
+                direction='column'
+            >
+                <Flex gap='xs' direction='column'>
+                    <Text color='dimmed'>*Only accepts .png or .jpeg files</Text>
+                    <FileButton
+                        onChange={setSignatureFile}
+                        accept={"image/png,image/jpeg"}
+                    >
+                        {(props) => <Button {...props}>Upload Signature</Button>}
+                    </FileButton>
+                </Flex>
+                <Button
+                    onClick={handleSignatureSubmit}
+                    loading={isSavingSignature}
                 >
-                {(props) => <Button {...props}>Upload your signature</Button>}
-            </FileButton>
-            <Button>
-                Save Signature
-            </Button>
-        </Flex>
+                    Save Signature
+                </Button>
+                <Button
+                    onClick={() => downloadSignatureMutate()}
+                    loading={isDownloadingSignature}
+                >
+                    Download Signature
+                </Button>
+            </Flex>
+        </Card>
     );
 }
  
