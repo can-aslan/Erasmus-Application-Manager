@@ -34,8 +34,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import com.beam.beamBackend.model.User;
 import java.util.Optional;
 
-
-
 @Service
 @RequiredArgsConstructor
 public class FormService {
@@ -47,7 +45,7 @@ public class FormService {
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
 
-    public boolean uploadForm(MultipartFile file, UUID userUuid, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException {
+    public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
@@ -57,7 +55,7 @@ public class FormService {
             throw new FileSizeLimitExceededException(errMsg, file.getSize(), FILE_SIZE_LIMIT);
         }
 
-        Optional<User> user = accountRepository.findById(userUuid);
+        Optional<User> user = accountRepository.findById(userId);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with given ID could not be found.");
         }
@@ -74,11 +72,16 @@ public class FormService {
         nameable = new Postfix(nameable, ".pdf");
 
         try {
+            final String key = nameable.getUniqueName();
             PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(nameable.getUniqueName())
+                    .key(key)
                     .build();
             s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+
+            final UUID id = UUID.randomUUID();
+            Form form = new Form(id, userId, formType, key);
+            formRepository.save(form);
             return true;
         }
         catch (Exception e) {
@@ -86,7 +89,7 @@ public class FormService {
         }
     }
 
-    public boolean uploadForm(File file, UUID userUuid, FormEnum formType) throws FileSizeLimitExceededException {
+    public boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
@@ -99,7 +102,7 @@ public class FormService {
             throw new FileSizeLimitExceededException(errMsg, file.length(), FILE_SIZE_LIMIT);
         }
 
-        Optional<User> user = accountRepository.findById(userUuid);
+        Optional<User> user = accountRepository.findById(userId);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with given ID could not be found.");
         }
@@ -114,19 +117,25 @@ public class FormService {
         nameable = new Postfix(nameable, timestamp);
         nameable = new Postfix(nameable, ".pdf");
 
+        final String key = nameable.getUniqueName();
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key("key")
+                .key(key)
                 .build();
         s3.putObject(objectRequest, RequestBody.fromFile(file));
+
+        final UUID id = UUID.randomUUID();
+        Form form = new Form(id, userId, formType, key);
+        formRepository.save(form);
+
         return true;
     }
 
-    public byte[] downloadForm(UUID userUuid, FormEnum formType) throws IOException {
+    public byte[] downloadForm(UUID userId, FormEnum formType) throws IOException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        final String key = formRepository.findFormByIdAndFormType(userUuid, formType).getKey();
+        final String key = formRepository.findFormByIdAndFormType(userId, formType).getKey();
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
@@ -135,17 +144,19 @@ public class FormService {
         return s3.getObject(getObjectRequest).readAllBytes();
     }
 
-    public boolean deleteFile(UUID userUuid, FormEnum formType) {
+    public boolean deleteFile(UUID userId, FormEnum formType) {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        final String key = formRepository.findFormByIdAndFormType(userUuid, formType).getKey();
+        final String key = formRepository.findFormByIdAndFormType(userId, formType).getKey();
 
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
         s3.deleteObject(deleteObjectRequest);
+
+        formRepository.deleteById(userId); // TODO: Not sure if this works
         return true;
     }
 }
