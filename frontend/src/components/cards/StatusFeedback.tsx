@@ -1,10 +1,10 @@
 import { Card, Group, Stack, Text, Title } from "@mantine/core";
 import { IconBan, IconCircleCheck, IconClockPause } from "@tabler/icons";
-import { Status } from "../../types";
+import { ApprovalStatus } from "../../types";
 
 interface StatusFeedbackProps {
     title: string,
-    status: Status,
+    status: ApprovalStatus,
 }
 
 const StatusFeedback = ({ title, status }: StatusFeedbackProps) => {
