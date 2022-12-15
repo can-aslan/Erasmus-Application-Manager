@@ -72,7 +72,7 @@ public class SignatureService {
                     .build();
             s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            Signature signature = new Signature(userId, key);
+            Signature signature = new Signature(UUID.randomUUID(), userId, key);
             signatureRepository.save(signature);
             return true;
         }

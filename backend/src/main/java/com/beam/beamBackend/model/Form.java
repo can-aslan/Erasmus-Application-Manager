@@ -12,19 +12,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
 @Table(name = "form")
+@NoArgsConstructor
 public class Form {
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "form_uuid")
+    @Column(name = "id")
     private UUID id;
 
     @NotNull
-    @Column(name = "user_uuid")
+    @Column(name = "user_id")
     private UUID userId;
 
     @NotNull
@@ -35,12 +37,12 @@ public class Form {
     @Column(name = "filename")
     private String key;
 
-    public Form(@JsonProperty("uuid") UUID formUuid,
-                @JsonProperty("userUuid") UUID userUuid,
+    public Form(@JsonProperty("uuid") UUID id,
+                @JsonProperty("userUuid") UUID userId,
                 @JsonProperty("fileType") FormEnum fileType,
                 @JsonProperty("fileName") String key ) {
-        this.id = formUuid == null ? UUID.randomUUID() : formUuid;;
-        this.userId = userUuid;
+        this.id = id == null ? UUID.randomUUID() : id;
+        this.userId = userId;
         this.formType = fileType;
         this.key = key;
     }
