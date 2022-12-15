@@ -84,7 +84,7 @@ public class EvaluationService {
                 courseEval.setId(UUID.randomUUID());
                 courseEvalRepo.save(courseEval);
             } else if (courseEvalDB.get().getEvalStatus() == EvalStatus.SUBMITTED) {
-                throw new Exception("uni eval already exists for this author");
+                throw new Exception("course eval already exists for this author");
             } else {
                 courseEvalRepo.updateEval(courseEval.getComment(), courseEval.getRate(), courseEval.getEvalStatus(), courseEval.getAuthorId());
             }

@@ -58,7 +58,7 @@ public class EvaluationController {
         try {
             System.out.println(courseEval);
             UUID id = evalService.evaluateCourse(courseEval);
-            return Response.create("university evaluation is saved", HttpStatus.OK, id);
+            return Response.create("course evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
             return Response.create("evaluation failed", 499); // might change later
         }        
