@@ -2,9 +2,6 @@ package com.beam.beamBackend.controller;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.HashSet;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beam.beamBackend.model.Student;
-import com.beam.beamBackend.model.User;
-import com.beam.beamBackend.model.UserLogin;
-import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.request.StudentRequest;
-import com.beam.beamBackend.response.RLoginUser;
-import com.beam.beamBackend.response.RRefreshToken;
-import com.beam.beamBackend.response.RUserList;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.response.ResponseId;
-import com.beam.beamBackend.service.AccountService;
 import com.beam.beamBackend.service.StudentService;
 
 import jakarta.validation.Valid;

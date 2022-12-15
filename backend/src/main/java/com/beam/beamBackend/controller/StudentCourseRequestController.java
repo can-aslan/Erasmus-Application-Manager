@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 // import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentCourseRequestController {
     private final IStudentCourseRequestService studentCourseRequestService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
     {
@@ -42,6 +44,7 @@ public class StudentCourseRequestController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/fetch")
     public ResponseEntity<Object> getAllCourseRequests() {
         try {
@@ -59,6 +62,7 @@ public class StudentCourseRequestController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/fetch/{studentId}")
     public ResponseEntity<Object> getAllCourseRequestsOfStudent(@PathVariable("studentId") Long studentId) {
         try {
