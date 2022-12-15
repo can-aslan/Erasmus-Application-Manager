@@ -32,7 +32,6 @@ import LearningAgreementPage from './pages/OutgoingStudent/LearningAgreementPage
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
 import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
-import SeeCourseEvaluationsPage from './pages/SeeCourseEvaluationsPage'
 import UploadSignaturePage from './pages/UploadSignaturePage'
 import { UserEnum } from './types'
 
@@ -65,10 +64,6 @@ const router = createBrowserRouter([
   {
     path: '/universities/:universityId',
     element: <UniversityDetails />
-  },
-  {
-    path: '/course-evaluations',
-    element: <SeeCourseEvaluationsPage uniId='1'/>
   },
   {
     element: <PersistentLogin />,
