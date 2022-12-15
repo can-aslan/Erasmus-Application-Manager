@@ -11,14 +11,14 @@ const AppHeader = () => {
     if (user.userType === UserEnum.OutgoingStudent) {
         const progressBarSteps = PROGRESSBAR_STEP_OBJECTS[user.userType]
         return <Header
-            height={80}
+            height={100}
             p="lg"
         >
-            <Group position="apart">
+            <Flex align='' justify='space-between'>
                 <Title ml={20}>Beam</Title>
                 <GenericProgressBar active={2} user={user} progressBarSteps={progressBarSteps} />
                 <ToggleThemeIcon mr={50}/>
-            </Group>
+            </Flex>
 
         </Header>;
     }
@@ -27,7 +27,7 @@ const AppHeader = () => {
         p="lg"
     >
         <Group position="apart">
-            <Title ml={20}>Beam</Title>
+            <Title color='blue' ml={20}>Beam</Title>
             <ToggleThemeIcon mr={50} />
         </Group>
     </Header>;
