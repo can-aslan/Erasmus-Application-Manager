@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class CourseWishlistService implements ICourseWishlistService {
 
     private final ICourseWishlistRepository wishlistRepository;
