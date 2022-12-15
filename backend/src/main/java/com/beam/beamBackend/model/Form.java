@@ -5,7 +5,6 @@ import java.util.UUID;
 import com.beam.beamBackend.enums.FormEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

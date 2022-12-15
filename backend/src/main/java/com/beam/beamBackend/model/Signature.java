@@ -17,6 +17,7 @@ import lombok.Data;
 @Table(name = "signature")
 public class Signature {
 
+    @Id
     @NotNull
     @Column(name = "userUuid")
     private UUID userId;

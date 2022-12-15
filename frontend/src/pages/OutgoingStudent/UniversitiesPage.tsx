@@ -1,6 +1,7 @@
 import { Box } from "@mantine/core";
 import UniversitiesTable from "../../components/tables/UniversitiesTable";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { UniversityProxy } from "../../types";
 import { ResponseUniversities } from "../../types/responseTypes";
 
 
@@ -13,8 +14,7 @@ const UniversitiesPage = () => {
     //     isLoading: isUniversitiesLoading 
     // } = useUniversities(axiosSecure)
 
-    const universities: ResponseUniversities = {
-            data: [
+    const universities: UniversityProxy[] = [
                 {
                     city: "Amsterdam",
                     country: "Netherlands",
@@ -89,7 +89,7 @@ const UniversitiesPage = () => {
                 },
                 
             ]
-        }
+        
     
     const isUniversitiesError = false
     const isUniversitiesLoading = false
@@ -97,7 +97,7 @@ const UniversitiesPage = () => {
     return (
         <Box>
             <UniversitiesTable 
-                universities={universities?.data || []}
+                universities={universities || []}
                 isUniversitiesLoading={isUniversitiesLoading}
             />
         </Box>
