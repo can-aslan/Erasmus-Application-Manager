@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.beam.beamBackend.model.CourseWishlist;
 
 @Repository
+@Deprecated
 public interface ICourseWishlistRepository extends JpaRepository<CourseWishlist, UUID> {
     List<CourseWishlist> findAllByStudentId(Long studentId);
     CourseWishlist findCourseWishlistByStudentId(Long studentId);

@@ -4,10 +4,14 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.beam.beamBackend.enums.CourseRequestDestination;
+import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +38,10 @@ public class CourseRequest {
     @Column(name = "host_code")
     private String hostCode;
 
+    @NotNull
+    @Column(name = "host_ects")
+    private Double hostEcts;
+
     @NotBlank
     @Column(name = "name")
     private String name;
@@ -50,21 +58,37 @@ public class CourseRequest {
     @Column(name = "syllabus_link")
     private String syllabusLink;
 
-    public CourseRequest(
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "destination")
+    private CourseRequestDestination destination;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private CourseRequestStatus status;
+
+    public CourseRequest (
         @JsonProperty("requestId") UUID requestId,
         @JsonProperty("studentId") Long studentId,
         @JsonProperty("hostCode") String hostCode,
+        @JsonProperty("hostEcts") Double hostEcts,
         @JsonProperty("name") String name,
         @JsonProperty("bilkentCode") String bilkentCode,
         @JsonProperty("webpage") String webpage,
-        @JsonProperty("syllabusLink") String syllabusLink
+        @JsonProperty("syllabusLink") String syllabusLink,
+        @JsonProperty("destination") CourseRequestDestination destination,
+        @JsonProperty("status") CourseRequestStatus status
     ) {
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
         this.studentId = studentId;
+        this.hostEcts = hostEcts;
         this.hostCode = hostCode;
         this.name = name;
         this.bilkentCode = bilkentCode;
         this.webpage = webpage;
         this.syllabusLink = syllabusLink;
+        this.destination = (destination == null) ? CourseRequestDestination.COORDINATOR : destination;
+        this.status = (status == null) ? CourseRequestStatus.PENDING : status;
     }
 }

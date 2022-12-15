@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.beam.beamBackend.model.CourseWishlistItem;
 
 @Repository
+@Deprecated
 public interface ICourseWishlistItemRepository extends JpaRepository<CourseWishlistItem, UUID> {
     List<CourseWishlistItem> findAllByStudentId(Long studentId);
     boolean existsByStudentId(Long studentId);

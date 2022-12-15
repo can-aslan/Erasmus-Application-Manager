@@ -1,7 +1,6 @@
 package com.beam.beamBackend.security;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

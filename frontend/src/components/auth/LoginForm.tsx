@@ -69,17 +69,18 @@ const LoginForm = () => {
             // FIXME: Commented until database is connected
             loginMutation.mutate({ bilkentID, pwd })
 
-            // setUser({
-            //     refreshToken: "refreshT",
-            //     accessToken: "accessT",
-            //     email: "selim.guler@ug.bilkent.edu.tr",
-            //     id: "22002811",
-            //     name: "Selim Can",
-            //     surname: "Güler",
 
-            //     userType: UserEnum.OutgoingStudent,
-            // })
-            // navigate("/")
+            setUser({
+                refreshToken: "refreshT",
+                accessToken: "accessT",
+                email: "selim.guler@ug.bilkent.edu.tr",
+                id: "22002811",
+                name: "Selim Can",
+                surname: "Güler",
+                bilkentId: "22003216",
+                userType: UserEnum.OutgoingStudent,
+            })
+            navigate("/")
         }
     }
     const goGuestPage = () => {

@@ -2,8 +2,8 @@ package com.beam.beamBackend.repository;
 
 import java.util.UUID;
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +21,8 @@ public interface IAccountRepository extends JpaRepository<User, UUID> {
     List<User> findAllById(UUID id);
     //List<User> findAllByBilkentId(Long bilkentId);
     User findUserByBilkentId(Long bilkentId);
+    Optional<User> findUserById(UUID id);
+    Optional<User> findUserByEmail(String email);
     boolean existsByBilkentId(Long bilkentId);
     /*
         @Query("SELECT phoneNumber FROM CustomerEntity customer")
