@@ -8,6 +8,7 @@ export type Sex = 'MALE' | 'FEMALE'
 export type StudyType = 'MINOR' | 'MAJOR' | 'NORMAL'
 export type Faculty = 'ENGINEERING_FAC'
 export type Department = 'CS' | 'EEE' | 'IE' | 'ME'
+export type CourseRequestDestination = 'COORDINATOR' | 'INSTRUCTOR'
 
 export enum UserEnum {
     OutgoingStudent = 'OUTGOING_STUDENT',
@@ -118,9 +119,11 @@ export type CourseRequest = {
     bilkentCode: string,
     webpage: string,
     syllabusLink: string,
-    ectsCredits: string
-}
+    hostEcts: string,
+    destination?: CourseRequestDestination | null,
+    status?: ApprovalStatus | null
 
+}
 export type StudentAssociatedCourse = Course & {
     studentUuid: string,
     studentName: string,

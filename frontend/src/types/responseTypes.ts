@@ -24,7 +24,7 @@ export type ResponseUniSpecificCourses = Response<Array<UniAssociatedCourse>>
 
 export type ResponseStudentSpecificCourseWishlist = Response<StudentAssociatedWishlist>
 
-export type ResponsePreviousCourseRequests = Response<Array<PreviousCourseRequest>>
+export type ResponsePreviousCourseRequests = Response<Array<CourseRequest>>
 
 export type ResponseCourseRequest = Response<CourseRequest>
 
