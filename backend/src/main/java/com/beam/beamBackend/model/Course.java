@@ -21,8 +21,8 @@ import jakarta.persistence.GeneratedValue;
 
 @JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = BilkentCourse.class, name = "bilket_course"),
-    @JsonSubTypes.Type(value = OtherUniCourse.class, name = "host_course")
+    @JsonSubTypes.Type(value = BilkentCourse.class, name = "bilkent_course"),
+    @JsonSubTypes.Type(value = HostCourse.class, name = "host_course")
 })
 
 @Data

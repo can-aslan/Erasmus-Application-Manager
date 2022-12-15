@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.model.CourseEvaluationForm;
-import com.beam.beamBackend.model.University;
 
 @Transactional
 @Repository

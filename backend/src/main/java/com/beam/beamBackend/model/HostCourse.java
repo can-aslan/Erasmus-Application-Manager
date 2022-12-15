@@ -35,8 +35,8 @@ import com.beam.beamBackend.enums.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "host_course")
-public class OtherUniCourse extends Course {
-    
+public class HostCourse extends Course {
+    //maybe allow null?
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "course_approval", nullable = false)
@@ -54,7 +54,7 @@ public class OtherUniCourse extends Course {
     @Column(name = "university_id", nullable = false)
     private UUID universityId;
     
-    public OtherUniCourse(
+    public HostCourse(
         @JsonProperty("id") UUID id,
         @JsonProperty("courseCode") String courseCode,
         @JsonProperty("courseName") String courseName,
