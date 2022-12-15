@@ -1,61 +1,61 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
 
-import com.beam.beamBackend.enums.*;
+@JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = BilkentCourse.class, name = "bilkent_course"),
+    @JsonSubTypes.Type(value = HostCourse.class, name = "host_course")
+})
 
-@Entity
 @Data
 @NoArgsConstructor
-public class Course {
+// @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
+public abstract class Course {
     @Id
-    private UUID courseUUID;
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id", nullable = false)
+    private UUID courseId;
 
     @NotBlank
+    @Column(name = "course_code", nullable = false)
     private String courseCode;
 
     @NotBlank
-    private String coursename;
-
-    @NotNull
-    private Department department;
-
-    @NotNull
-    private Long courseID;
+    @Column(name = "course_name", nullable = false)
+    private String courseName;
     
     @NotNull
-    private Double ects;
-
-    @NotBlank
-    private String syllabus; // shouldn't it be a file? yes probably, or a link
-    
-    @NotNull
-    private Long universityID;
+    @Column(name = "ects", nullable = false)
+    private Double ects; 
 
     public Course(
-        @JsonProperty("courseUUID") UUID courseUUID,
+        @JsonProperty("id") UUID id,
         @JsonProperty("courseCode") String courseCode,
-        @JsonProperty("coursename") String coursename,
-        @JsonProperty("department") Department department,
-        @JsonProperty("courseID") Long courseID,
-        @JsonProperty("ects") Double ects,
-        @JsonProperty("syllabus") String syllabus,
-        @JsonProperty("universityID") Long universityID
-    ) {
-        this.courseUUID = (courseUUID == null) ? UUID.randomUUID() : courseUUID;
+        @JsonProperty("courseName") String courseName,
+        @JsonProperty("ects") Double ects) {
+
+        this.courseId = id;
         this.courseCode = courseCode;
-        this.coursename = coursename;
-        this.department = department;
-        this.courseID = courseID;
+        this.courseName = courseName;
         this.ects = ects;
-        this.syllabus = syllabus;
-        this.universityID = universityID;
     }
 }
