@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+
+import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.repository.IWishlistItemMappingRepository;
@@ -27,13 +29,13 @@ public class WishlistService implements IWishlistService {
 
     @Override
     public Wishlist getWishlistByStudentId(Long studentId) throws Exception {
-        verifyStudentHasWishlist(studentId)
-        
-        Wishlist wishlistOfStudent = wishlistRepository.findByStudentId(studentId).get();
-
         // Checks if student ID has a wishlist in the system
-        if (!wishlistOfStudent.isPresent()) { // same as verifyStudentHasWishlist(studentId)
-            throw new Exception("student with id " + studentId + " does not have a wishlist in the system");
+        verifyStudentHasWishlist(studentId);
+        
+        Optional<Wishlist> wishlistOfStudent = wishlistRepository.findByStudentId(studentId);
+
+        if (!wishlistOfStudent.isPresent()) { // same as verifyStudentHasWishlist(studentId), but a redundant check just in case
+            throw new Exception("student with id " + studentId + " could not retrieve wishlist");
         }
 
         return wishlistOfStudent.get();
@@ -44,37 +46,64 @@ public class WishlistService implements IWishlistService {
         // Checks if student ID has a wishlist in the system
         verifyStudentHasWishlist(studentId);
 
-        return false;
+        return wishlistRepository.updateWishlistItemStatus(studentId, CourseWishlistStatus.PENDING) > 0; // > 0 means at least one row is updated
     }
 
     @Override
     public boolean addWishlistItem(Long studentId, WishlistItem itemToAdd) throws Exception {
-        // TODO Auto-generated method stub
-        return false;
+        // Checks if student ID has a wishlist in the system
+        verifyStudentHasWishlist(studentId);
+        
+        // Maybe later, check if bilkent course already exists in wishlist item
+
+        // Wishlist studentWishlist = getWishlistByStudentId(studentId); // also checks if the student has a wishlist in the system, if we get no errors we know we have a valid wishlist object
+
+        if (itemToAdd.getStudentId() != studentId) {
+            throw new Exception("student with id " + studentId + " cannot add wishlist item, student ids do not match");
+        }
+
+        itemRepository.save(itemToAdd);
+        return true;
     }
 
-    @Override
+    @Override // TODO
     public boolean removeWishlistItem(Long studentId, WishlistItem itemToRemove) throws Exception {
-        // TODO Auto-generated method stub
+        // Checks if student ID has a wishlist in the system
+        verifyStudentHasWishlist(studentId);
+
+        // Wishlist studentWishlist = getWishlistByStudentId(studentId); // also checks if the student has a wishlist in the system, if we get no errors we know we have a valid wishlist object
+
+        if (itemToRemove.getStudentId() != studentId) {
+            throw new Exception("student with id " + studentId + " cannot remove wishlist item, student ids do not match");
+        }
+
+        // ASSUMPTION: onlt 1 bilkent course exists for 1 student id
+        // add findbycourseandstudentid to repository 
+
         return false;
     }
 
     @Override
     public boolean removeWishlistItem(Long studentId, UUID wishlistItemUUID) throws Exception {
-        // TODO Auto-generated method stub
-        return false;
+        // Checks if student ID has a wishlist in the system
+        verifyStudentHasWishlist(studentId);
+
+        if (!itemRepository.existsById(wishlistItemUUID)) {
+            throw new Exception("student with id " + studentId + " cannot remove wishlist item, wishlist item with UUID " + wishlistItemUUID + " does not exist");
+        }
+
+        itemRepository.deleteById(wishlistItemUUID);
+        return true;
     }
 
     @Override
     public List<WishlistItem> getAllWishlistItems() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        return itemRepository.findAll();
     }
 
     @Override
     public List<WishlistItem> getAllWishlistItemsOfStudent(Long studentId) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        return itemRepository.findAllByStudentId(studentId);
     }
 
     /**
