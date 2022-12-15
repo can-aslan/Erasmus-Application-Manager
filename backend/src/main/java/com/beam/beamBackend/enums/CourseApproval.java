@@ -1,7 +1,7 @@
 package com.beam.beamBackend.enums;
 
 public enum CourseApproval {
-    APPROVAL,
+    APPROVED,
     PENDING,
     REJECTED
 }
