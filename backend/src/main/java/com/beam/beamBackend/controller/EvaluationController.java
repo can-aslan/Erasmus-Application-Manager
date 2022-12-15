@@ -32,7 +32,7 @@ public class EvaluationController {
     private final EvaluationService evalService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "university")
-    public ResponseEntity<Object> evaluateUni( @RequestBody UniEvaluationForm uniEval) {
+    public ResponseEntity<Object> evaluateUni(@Valid @RequestBody UniEvaluationForm uniEval) {
         try {
             System.out.println(uniEval);
             System.out.println(uniEval.getRate());
@@ -58,7 +58,7 @@ public class EvaluationController {
         try {
             System.out.println(courseEval);
             UUID id = evalService.evaluateCourse(courseEval);
-            return Response.create("university evaluation is saved", HttpStatus.OK, id);
+            return Response.create("course evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
             return Response.create("evaluation failed", 499); // might change later
         }        
@@ -75,9 +75,9 @@ public class EvaluationController {
     }
 
     @GetMapping("student/{studentId}/university")
-    public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
+    public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId) {
         try {
-            UniEvaluationForm uniEval = evalService.getStudentUniEval(authorId, evalStatus);
+            UniEvaluationForm uniEval = evalService.getStudentUniEval(authorId);
             return Response.create("ok", HttpStatus.OK, uniEval);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
@@ -85,9 +85,9 @@ public class EvaluationController {
     }
 
     @GetMapping("student/{studentId}/course/{courseId}")
-    public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
+    public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId, @Valid @PathVariable("courseId") UUID courseId) {
         try {
-            CourseEvaluationForm courseEval = evalService.getStudentCourseEval(authorId, evalStatus);
+            CourseEvaluationForm courseEval = evalService.getStudentCourseEval(authorId, courseId);
             return Response.create("ok", HttpStatus.OK, courseEval);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
