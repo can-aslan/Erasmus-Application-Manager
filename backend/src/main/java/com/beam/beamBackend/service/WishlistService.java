@@ -27,10 +27,12 @@ public class WishlistService implements IWishlistService {
 
     @Override
     public Wishlist getWishlistByStudentId(Long studentId) throws Exception {
-        Optional<Wishlist> wishlistOfStudent = wishlistRepository.findByStudentId(studentId);
+        verifyStudentHasWishlist(studentId)
+        
+        Wishlist wishlistOfStudent = wishlistRepository.findByStudentId(studentId).get();
 
         // Checks if student ID has a wishlist in the system
-        if (!wishlistOfStudent.isPresent()) {
+        if (!wishlistOfStudent.isPresent()) { // same as verifyStudentHasWishlist(studentId)
             throw new Exception("student with id " + studentId + " does not have a wishlist in the system");
         }
 
@@ -40,9 +42,7 @@ public class WishlistService implements IWishlistService {
     @Override
     public boolean submitWishlist(Long studentId) throws Exception {
         // Checks if student ID has a wishlist in the system
-        if (!wishlistRepository.existsByStudentId(studentId)) {
-            throw new Exception("student with id " + studentId + " does not have a wishlist in the system");
-        }
+        verifyStudentHasWishlist(studentId);
 
         return false;
     }
@@ -76,8 +76,19 @@ public class WishlistService implements IWishlistService {
         // TODO Auto-generated method stub
         return null;
     }
- 
-    private boolean studentHasWishlist(Long studentId) {
-        return wishlistRepository.existsByStudentId(studentId);
+
+    /**
+     * Verifies that a given student ID has a wishlist
+     * saved in the repository. Throws an exception otherwise.
+     * @param studentId bilkent ID of student
+     * @return true if the student has a wishlist in the system, throws exception otherwise
+     * @throws Exception thrown when the student does not have a wishlist in the system
+     */
+    private boolean verifyStudentHasWishlist(Long studentId) throws Exception {
+        if (!wishlistRepository.existsByStudentId(studentId)) {
+            throw new Exception("student with id " + studentId + " does not have a wishlist in the system");
+        }
+        
+        return true;
     }
 }
