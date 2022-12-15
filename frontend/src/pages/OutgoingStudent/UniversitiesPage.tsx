@@ -91,7 +91,6 @@ const UniversitiesPage = () => {
             ]
         
     
-    const isUniversitiesError = false
     const isUniversitiesLoading = false
 
     return (
