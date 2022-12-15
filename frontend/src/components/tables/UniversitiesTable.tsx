@@ -154,7 +154,7 @@ const UniversitiesTable = ({ universities, isUniversitiesLoading }: Universities
                 onSortStatusChange={setSortStatus}
                 onRowClick={(record) => {
                     localStorage.setItem('universityProxy', JSON.stringify({...record}))
-                    navigate(`/student/universities/${record.id}`)
+                    navigate(`/universities/${record.id}`)
                 }}
             />
         </>

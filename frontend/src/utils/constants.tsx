@@ -61,7 +61,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Universities',
-            to: '/student/universities',
+            to: '/universities',
             icon: <IconSchool />
         },
         {
