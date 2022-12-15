@@ -18,7 +18,10 @@ import com.beam.beamBackend.model.HostCourse;
 public interface IHostCourseRepository extends JpaRepository<HostCourse, UUID> {
     List<HostCourse> findByUniversityId(UUID universityId);
     Optional<HostCourse> findByCourseId(UUID courseId);
+    List<HostCourse> findByCourseIdIn(List<UUID> courseIdList);
     boolean existsByCourseCode(String courseCode);
     // Optional<HostCourse> findByCourseId(UUID courseId);
 
+    // @Query(value = "SELECT * FROM team t1 INNER JOIN user_team t2 ON t1.id = t2.team_id WHERE t2.user_id = ?1 ")
+    // List<HostCourse> findAllByUserId(long userId);
 }

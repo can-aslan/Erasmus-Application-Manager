@@ -26,6 +26,7 @@ import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.UniEvaluationForm;
+import com.beam.beamBackend.request.ApprovedCourse;
 import com.beam.beamBackend.response.RCourseEval;
 import com.beam.beamBackend.response.RUniEval;
 import com.beam.beamBackend.response.Response;
@@ -118,6 +119,27 @@ public class CourseController {
             return Response.create("ok", HttpStatus.OK, bilkentCourses);
         } catch (Exception e) {
             return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+        }        
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "approvedCourse")
+    public ResponseEntity<Object> addHostCourse(@Valid @RequestBody ApprovedCourse approvedCourse) {
+        try {
+            System.out.println(approvedCourse);
+            BilkentCourse course = courseService.addApprovedCourse(approvedCourse);
+            return Response.create("course is saved", HttpStatus.OK, course);
+        } catch (Exception e) {
+            return Response.create("course add failed", 499);
+        }        
+    }
+
+    @GetMapping("approvedCourse/{hostUniId}")
+    public ResponseEntity<Object> getAllApprovedCoursesInUni(@Valid @PathVariable("hostUniId") UUID hostUniId) {
+        try {
+            List<Object> courses = courseService.getAllApprovedCoursesInUni(hostUniId);
+            return Response.create("course is saved", HttpStatus.OK, courses);
+        } catch (Exception e) {
+            return Response.create("course add failed", 499);
         }        
     }
 }

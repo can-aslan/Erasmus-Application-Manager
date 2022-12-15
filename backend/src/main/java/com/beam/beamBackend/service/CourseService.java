@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.HostCourse;
+import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
+import com.beam.beamBackend.request.ApprovedCourse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -143,5 +145,45 @@ public class CourseService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public BilkentCourse addApprovedCourse(ApprovedCourse approvedCourse) throws Exception {
+
+        try {
+            Optional<BilkentCourse> bilkentCourse =  bilkentCourseRepo.findByCourseId(approvedCourse.getBilkentCourseId());
+
+            if (!bilkentCourse.isPresent()) {
+                throw new Exception("course not found");
+            }
+
+            List<HostCourse> hostCourses =  hostCourseRepo.findByCourseIdIn(approvedCourse.getHostCourseId());
+
+            bilkentCourse.get().getApprovedCourses().addAll(hostCourses);
+
+            return bilkentCourseRepo.save(bilkentCourse.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
+    }
+
+    //not working at the moment :((((((
+    public List<Object> getAllApprovedCoursesInUni(UUID hostUniId) throws Exception {
+        try {
+            Optional<University> hostUni = uniRepo.findById(hostUniId);
+
+            if (!hostUni.isPresent()) {
+                throw new Exception("university not found");
+            }
+
+            System.out.println(((BilkentCourse) bilkentCourseRepo.findApprovedByUniId(hostUniId).get(0)).getApprovedCourses());
+
+            return bilkentCourseRepo.findApprovedByUniId(hostUniId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
     }
 }

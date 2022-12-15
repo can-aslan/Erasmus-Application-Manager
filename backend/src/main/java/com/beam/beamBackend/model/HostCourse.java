@@ -1,5 +1,6 @@
 package com.beam.beamBackend.model;
 
+import java.util.Set;
 import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -43,6 +45,9 @@ public class HostCourse extends Course {
     @NotNull
     @Column(name = "university_id", nullable = false)
     private UUID universityId;
+
+    @ManyToMany(mappedBy = "approvedCourses")
+    private Set<BilkentCourse> bilkentCourses;
     
     public HostCourse(
         @JsonProperty("id") UUID id,
