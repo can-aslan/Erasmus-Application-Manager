@@ -53,4 +53,3 @@ public class WishlistItemMapping {
         this.syllabus = syllabus;
     }
 }
-

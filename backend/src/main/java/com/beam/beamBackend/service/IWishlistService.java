@@ -10,7 +10,7 @@ public interface IWishlistService {
     List<Wishlist> getAllWishlists() throws Exception;
     Wishlist getWishlistByStudentId(Long studentId) throws Exception;
 
-    boolean submitWishlist(Wishlist wishlist) throws Exception;
+    // boolean submitWishlist(Wishlist wishlist) throws Exception;
     boolean submitWishlist(Long studentId) throws Exception;
 
     boolean addWishlistItem(Long studentId, WishlistItem itemToAdd) throws Exception;
