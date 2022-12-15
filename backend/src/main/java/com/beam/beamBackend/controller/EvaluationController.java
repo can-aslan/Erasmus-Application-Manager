@@ -1,11 +1,11 @@
 package com.beam.beamBackend.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +31,7 @@ import lombok.AllArgsConstructor;
 public class EvaluationController {
     private final EvaluationService evalService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "university")
     public ResponseEntity<Object> evaluateUni( @RequestBody UniEvaluationForm uniEval) {
         try {
@@ -43,6 +44,7 @@ public class EvaluationController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/university/{uniId}")
     public ResponseEntity<Object> getUniEvals(@Valid @PathVariable("uniId") UUID uniId) {
         try {
@@ -53,6 +55,7 @@ public class EvaluationController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "course")
     public ResponseEntity<Object> evaluateCourse(@Valid @RequestBody CourseEvaluationForm courseEval) {
         try {
@@ -64,6 +67,7 @@ public class EvaluationController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/course/{courseId}")
     public ResponseEntity<Object> getCourseEval(@Valid @PathVariable("courseId") UUID courseId) {
         try {
@@ -74,6 +78,7 @@ public class EvaluationController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("student/{studentId}/university")
     public ResponseEntity<Object> getSavedUniEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
         try {
@@ -84,6 +89,7 @@ public class EvaluationController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("student/{studentId}/course/{courseId}")
     public ResponseEntity<Object> getSavedCourseEval(@Valid @PathVariable("studentId") long authorId, @Valid @RequestParam("eval_status") EvalStatus evalStatus) {
         try {
