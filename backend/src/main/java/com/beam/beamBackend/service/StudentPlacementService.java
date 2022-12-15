@@ -12,8 +12,10 @@ import com.beam.beamBackend.enums.Faculty;
 import com.beam.beamBackend.enums.Semester;
 import com.beam.beamBackend.enums.Sex;
 import com.beam.beamBackend.enums.StudyType;
+import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
+import com.beam.beamBackend.request.UserRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,8 +62,8 @@ public class StudentPlacementService {
                 String email = lineSplitted[40];
                 String password;
                 
-                UserRequest newUser = UserRequest(null ,name, surname, email, bilkentId, null); 
-
+                UserRequest newUser = new UserRequest(null ,name, surname, email, bilkentId, UserType.OUTGOING_STUDENT); 
+                
 
                 //-------------------------------------Student creation starts here------------------
                 Faculty f = Faculty.valueOf(lineSplitted[4]);
