@@ -48,7 +48,7 @@ const RegisterInstructorTab = () => {
         mutationKey: ['registerUser'],
         mutationFn: (user: NewUser) => registerStaff(axiosSecure, user),
         onSuccess: () => toast.success(`Registered the user.`),
-        onError: () => toast.success("Student registration failed.")
+        onError: () => toast.error("Student registration failed.")
     })
     
     return (

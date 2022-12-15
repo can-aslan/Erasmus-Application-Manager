@@ -1,7 +1,6 @@
 package com.beam.beamBackend.model;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -52,5 +51,12 @@ public class CourseWishlistItem {
         this.otherUniCourses = otherUniCourses;
         this.correspondingBilkentCourse = correspondingBilkentCourse;
         this.semester = semester;
+    }
+
+    public boolean equalsWithoutUUID(CourseWishlistItem other) {
+        return this.studentId.equals(other.studentId)
+            && this.otherUniCourses.equals(other.otherUniCourses)
+            && this.correspondingBilkentCourse.equals(other.correspondingBilkentCourse)
+            && this.semester.equals(other.semester);
     }
 }

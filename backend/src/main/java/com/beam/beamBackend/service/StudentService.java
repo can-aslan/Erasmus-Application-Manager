@@ -1,34 +1,19 @@
 package com.beam.beamBackend.service;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
-import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
-import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.request.StudentRequest;
-import com.beam.beamBackend.response.RLoginUser;
-import com.beam.beamBackend.response.RRefreshToken;
-import com.beam.beamBackend.response.RUserList;
-import com.beam.beamBackend.response.ResponseId;
-import com.beam.beamBackend.security.JWTFilter;
-import com.beam.beamBackend.security.JWTUtils;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -37,6 +22,7 @@ public class StudentService {
     final private IStudentRepository studentRepo;
     final private IAccountRepository userRepo;
     private final IUniversityRepository uniRepository;
+    private final IStaffRepository staffRepository;
 
     public UUID addStudent(StudentRequest student) throws Exception {
         try {
@@ -57,9 +43,15 @@ public class StudentService {
             if (!hostUni.isPresent()) {
                 throw new Exception("host university not found");
             }
+            
+            Optional<Staff> coordinator = staffRepository.findByUserId(student.getCoordinatorId());
 
-            Student studentDB = Student.toStudent(student, user.get(), homeUni.get(), hostUni.get());
-            // studentDB.setId(UUID.randomUUID());
+            if (!coordinator.isPresent()) {
+                throw new Exception("coordinator not found");
+            }
+
+            Student studentDB = Student.toStudent(student, user.get(), homeUni.get(), hostUni.get(), coordinator.get());
+            studentDB.setId(UUID.randomUUID());
             System.out.println("helodb: " + studentDB);
 
             studentRepo.save(studentDB);
@@ -67,8 +59,7 @@ public class StudentService {
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        }
-        
+        }        
     }
 
     // public Student getStudentByBilkentId(Long bilkentId) throws Exception {
@@ -86,6 +77,7 @@ public class StudentService {
     //     }
     // }
 
+    // this is user id
     public Student getStudentById(UUID id) throws Exception {
         try {
             Optional<Student> s = studentRepo.findByUserId(id);
