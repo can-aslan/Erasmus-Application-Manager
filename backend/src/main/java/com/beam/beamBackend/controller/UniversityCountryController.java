@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +24,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/general")
 public class UniversityCountryController {
+
     private final UniversityCountryService uniCountryService;
 
-    
-
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/university")
     public ResponseEntity<Object> addUniversity(@Valid @RequestBody AddUni[] university) {
         try {
@@ -48,6 +45,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/country")
     public ResponseEntity<Object> addCountry(@RequestBody Country[] country) {
         try {
@@ -59,6 +57,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/university")
     public ResponseEntity<Object> getUniversities() {
         try {
@@ -69,6 +68,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/country")
     public ResponseEntity<Object> getCountries(@Valid @RequestParam(name = "isErasmus") Optional<Boolean> IsErasmus) {
         try {
@@ -86,6 +86,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/university/{uniId}")
     public ResponseEntity<Object> getUniversity(@Valid @PathVariable("uniId") UUID uniId) {
         try {
@@ -96,6 +97,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/country/{countryId}")
     public ResponseEntity<Object> getCountry(@Valid @PathVariable("countryId") UUID countryId) {
         try {
@@ -106,6 +108,7 @@ public class UniversityCountryController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/country/{countryId}/university")
     public ResponseEntity<Object> getAllUniFromCountry(@Valid @PathVariable("countryId") UUID countryId) {
         try {
