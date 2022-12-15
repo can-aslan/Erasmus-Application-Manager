@@ -19,7 +19,8 @@ import com.beam.beamBackend.model.University;
 @Repository
 public interface ICourseEvalRepository extends JpaRepository<CourseEvaluationForm, UUID> {
     boolean existsByAuthorId(long authorId);
-    public Optional<CourseEvaluationForm> findEvalByAuthorId(long authorId);
+    public List<CourseEvaluationForm> findEvalByAuthorId(long authorId);
+    public Optional<CourseEvaluationForm> findEvalByAuthorIdAndCourseId(long authorId, UUID courseId);
     public List<CourseEvaluationForm> findByCourseId(UUID courseId);
     public Optional<CourseEvaluationForm> findEvalByAuthorIdAndEvalStatus(long authorId, EvalStatus evalStatus);
 

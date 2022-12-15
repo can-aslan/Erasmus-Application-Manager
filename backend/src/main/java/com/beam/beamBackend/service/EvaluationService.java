@@ -77,7 +77,8 @@ public class EvaluationService {
                 throw new Exception("user not found");
             }
 
-            Optional<CourseEvaluationForm> courseEvalDB = courseEvalRepo.findEvalByAuthorId(courseEval.getAuthorId());
+            Optional<CourseEvaluationForm> courseEvalDB = 
+                        courseEvalRepo.findEvalByAuthorIdAndCourseId(courseEval.getAuthorId(), courseEval.getCourseId());
 
             if (!courseEvalDB.isPresent()) {
                 courseEval.setId(UUID.randomUUID());
@@ -114,14 +115,14 @@ public class EvaluationService {
         }
     }
 
-    public UniEvaluationForm getStudentUniEval(Long authorId, EvalStatus evalStatus) throws Exception {
+    public UniEvaluationForm getStudentUniEval(Long authorId) throws Exception {
         try {
             // throw exception if user is not found in the db
             if (!userRepo.existsByBilkentId(authorId)) {
                 throw new Exception("user not found");
             }
 
-            Optional<UniEvaluationForm> form = uniEvalRepo.findEvalByAuthorIdAndEvalStatus(authorId, evalStatus);
+            Optional<UniEvaluationForm> form = uniEvalRepo.findEvalByAuthorId(authorId);
 
             if (!form.isPresent()) {
                 return new UniEvaluationForm(null, authorId, 0.0, "", EvalStatus.EMPTY, null);
@@ -136,20 +137,38 @@ public class EvaluationService {
         }
     }
     
-    public CourseEvaluationForm getStudentCourseEval(Long authorId, EvalStatus evalStatus) throws Exception {
+    public CourseEvaluationForm getStudentCourseEval(Long authorId, UUID courseId) throws Exception {
         try {
             // throw exception if user is not found in the db
             if (!userRepo.existsByBilkentId(authorId)) {
                 throw new Exception("user not found");
             }
 
-            Optional<CourseEvaluationForm> form = courseEvalRepo.findEvalByAuthorIdAndEvalStatus(authorId, evalStatus);
+            Optional<CourseEvaluationForm> form = courseEvalRepo.findEvalByAuthorIdAndCourseId(authorId, courseId);
 
             if (!form.isPresent()) {
-                return new CourseEvaluationForm(null, authorId, 0.0, "", EvalStatus.EMPTY, null);
+                return new CourseEvaluationForm(null, authorId, 0.0, "", EvalStatus.EMPTY, courseId);
             }
 
             return form.get();
+
+        } catch (Exception e) {
+            System.out.println("course eval exception");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<CourseEvaluationForm> getStudentCourseEval(Long authorId) throws Exception {
+        try {
+            // throw exception if user is not found in the db
+            if (!userRepo.existsByBilkentId(authorId)) {
+                throw new Exception("user not found");
+            }
+
+            List<CourseEvaluationForm> form = courseEvalRepo.findEvalByAuthorId(authorId);
+
+            return form;
 
         } catch (Exception e) {
             System.out.println("course eval exception");
