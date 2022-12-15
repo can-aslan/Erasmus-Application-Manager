@@ -25,7 +25,7 @@ export type ResponseBilkentCourse = Response<BilkentCourse>
 export type ResponseHostUniCourses = Response<Array<HostCourse>>
 
 
-export type ResponsePreviousCourseRequests = Response<Array<PreviousCourseRequest>>
+export type ResponsePreviousCourseRequests = Response<Array<CourseRequest>>
 
 export type ResponseCourseRequest = Response<CourseRequest>
 

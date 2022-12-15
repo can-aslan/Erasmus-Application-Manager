@@ -51,8 +51,8 @@ export const submitWishlist = async (axios: AxiosInstance, studentId: string, wi
     return response.data
 }
     
-export const getPreviouslyRequestedCourses = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponsePreviousCourseRequests>(`/api/student/previousCourseRequests/${studentId}`)
+export const getPreviouslyRequestedCourses = async (axios: AxiosInstance) => {
+    const response = await axios.get<ResponsePreviousCourseRequests>(`/course/student/fetch`)
     return response.data
 }
 
