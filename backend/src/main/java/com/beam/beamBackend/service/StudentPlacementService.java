@@ -3,6 +3,7 @@ package com.beam.beamBackend.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class StudentPlacementService {
     private Hashtable<University, Integer> quotas;
+    ArrayList<Student> regiteredStudents = new ArrayList<>();
 
     public void placeStudents() {
         
@@ -34,7 +36,6 @@ public class StudentPlacementService {
 
 
     public void readFromCsv(){
-        ArrayList<Student> regiteredStudents = new ArrayList<>();
 
         String line = "";  
         String splitBy = ",";  
@@ -49,14 +50,20 @@ public class StudentPlacementService {
                     isHeader = false;
                     continue;
                 }
-                
+
                 Student newStudent = new Student();
                 String[] lineSplitted = line.split(splitBy);    // use comma as separator  
 
-                newStudent.getUser().setName(lineSplitted[1]);
-                newStudent.getUser().setSurname(lineSplitted[2]);
-                newStudent.getUser().setBilkentId(Long.parseLong(lineSplitted[3]));
+                String name = lineSplitted[1];
+                String surname = lineSplitted[2];
+                Long bilkentId = Long.parseLong(lineSplitted[3]);
+                String email = lineSplitted[40];
+                String password;
+                
+                UserRequest newUser = UserRequest(null ,name, surname, email, bilkentId, null); 
 
+
+                //-------------------------------------Student creation starts here------------------
                 Faculty f = Faculty.valueOf(lineSplitted[4]);
                 newStudent.setFaculty(f);
 
