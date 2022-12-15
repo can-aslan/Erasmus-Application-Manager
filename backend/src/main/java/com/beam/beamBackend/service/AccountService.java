@@ -156,7 +156,7 @@ public class AccountService {
         }
     }
 
-    public UUID addUserWithUserRequest(UserRequest userRequest) throws Exception {
+    public User addUserWithUserRequest(UserRequest userRequest) throws Exception {
         try {
             // Convert the User request to User
             User user = User.toUser(userRequest, null);
@@ -169,7 +169,7 @@ public class AccountService {
                     .toString();
             user.setPassword(encodePassword(password));
             accountRepository.save(user);
-            return user.getId();
+            return user;
         } catch (Exception e) {
             throw e;
         }
