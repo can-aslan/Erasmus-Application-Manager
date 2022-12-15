@@ -2,7 +2,6 @@ package com.beam.beamBackend.model;
 
 import java.util.UUID;
 
-import com.beam.beamBackend.enums.FormEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -14,15 +13,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Entity
-@Table(name = "form")
+@Table(name = "signature")
 @NoArgsConstructor
-public class Form {
+public class Signature {
+
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private UUID id;
 
     @NotNull
@@ -30,21 +29,14 @@ public class Form {
     private UUID userId;
 
     @NotNull
-    @Column(name = "form_type")
-    private FormEnum formType;
-
-    @NotNull
     @Column(name = "filename")
     private String key;
 
-    public Form(@JsonProperty("uuid") UUID id,
-                @JsonProperty("userUuid") UUID userId,
-                @JsonProperty("fileType") FormEnum fileType,
-                @JsonProperty("fileName") String key ) {
-        this.id = id == null ? UUID.randomUUID() : id;
+    public Signature(@JsonProperty("id") UUID id,
+                @JsonProperty("userId") UUID userId,
+                @JsonProperty("key") String key) {
+        this.id = id == null ? UUID.randomUUID() : id; 
         this.userId = userId;
-        this.formType = fileType;
         this.key = key;
     }
-    
 }
