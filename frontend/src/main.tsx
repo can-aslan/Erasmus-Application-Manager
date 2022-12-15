@@ -53,6 +53,14 @@ const router = createBrowserRouter([
     element: <GuestPage/>
   },
   {
+    path: '/universities',
+    element: <UniversitiesPage />
+  },
+  {
+    path: '/universities/:universityId',
+    element: <UniversityDetails />
+  },
+  {
     path: '/course-evaluations',
     element: <SeeCourseEvaluationsPage uniId='1'/>
   },
@@ -91,14 +99,6 @@ const router = createBrowserRouter([
                   {
                     path: '/student/course-wishlist',
                     element: <CourseWishlistPage />
-                  },
-                  {
-                    path: '/student/universities',
-                    element: <UniversitiesPage />
-                  },
-                  {
-                    path: '/student/universities/:universityId',
-                    element: <UniversityDetails />
                   },
                   {
                     path: '/student/learning-agreement',

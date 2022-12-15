@@ -49,7 +49,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.OutgoingStudent]: [
         {
             label: 'Universities',
-            to: '/student/universities',
+            to: '/universities',
             icon: <IconSchool />
         },
         {
