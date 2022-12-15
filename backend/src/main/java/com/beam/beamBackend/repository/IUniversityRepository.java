@@ -16,4 +16,5 @@ public interface IUniversityRepository extends JpaRepository<University, UUID> {
     Optional<University> findUniById(UUID id);
     List<University> findUniByCountryId(UUID countryId);
     boolean existsByName(String name);
+    University findUniByName(String name);
 }

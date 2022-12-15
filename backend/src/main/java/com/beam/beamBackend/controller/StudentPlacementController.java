@@ -20,7 +20,8 @@ public class StudentPlacementController {
     private final StudentPlacementService studentPlacementService;
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "place")
-    public ResponseEntity<Object> placeStudents(){
+    public ResponseEntity<Object> placeStudents() throws Exception{
+        System.out.println("Am I Here-----------------------------------------------------");
         studentPlacementService.placeStudents();
         return Response.create("Students are placed!", HttpStatus.OK);
     }
