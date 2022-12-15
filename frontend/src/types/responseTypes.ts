@@ -1,5 +1,5 @@
 
-import { BilkentCourse, Course, CourseRequest, LearningAgreement, PastEvaluation, PreApprovalForm, PreviousCourseRequest, StudentAssociatedCourse, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
+import { BilkentCourse, Course, CourseRequest, LearningAgreement, PastEvaluation, PastEvaluationItem, PreApprovalForm, PreviousCourseRequest, Student, StudentAssociatedCourse, StudentAssociatedPastEvaluationItem, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
 
 interface Response<T> {
     data: T,
@@ -36,6 +36,8 @@ export type ResponseUniversities = Response<Array<UniversityProxy>>
 
 export type ResponseUniversity = Response<UniversityDetailed>
 
-export type ResponseEvaluation = Response< PastEvaluation>
+export type ResponseStudentPastEvaluation = Response<StudentAssociatedPastEvaluationItem>
 
-export type ResponseAllLearningAgreements = Response< Array<LearningAgreement>>
+export type ResponseAllLearningAgreements = Response<Array<LearningAgreement>>
+
+export type ResponseStudent = Response<Student>
