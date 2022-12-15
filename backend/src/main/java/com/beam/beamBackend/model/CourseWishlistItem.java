@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "course_wishlist_item")
 @NoArgsConstructor
+@Deprecated
 public class CourseWishlistItem {
     @Id
     @GeneratedValue(generator = "UUID")
