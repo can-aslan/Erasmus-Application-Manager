@@ -79,8 +79,8 @@ public class WishlistService implements IWishlistService {
 
         // ASSUMPTION: onlt 1 bilkent course exists for 1 student id
         // add findbycourseandstudentid to repository 
-
-        return false;
+        itemRepository.deleteByStudentIdAndBilkentCourse(studentId, itemToRemove.getBilkentCourse());
+        return true;
     }
 
     @Override
