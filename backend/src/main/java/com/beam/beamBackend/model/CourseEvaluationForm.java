@@ -31,7 +31,7 @@ public class CourseEvaluationForm{
     UUID id; //evalId
 
     @NotNull
-    @Column(name = "author_id", nullable = false, unique = true)
+    @Column(name = "author_id", nullable = false)
     Long authorId;
 
     @NotNull

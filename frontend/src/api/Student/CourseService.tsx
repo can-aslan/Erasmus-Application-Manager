@@ -58,4 +58,4 @@ export const makeCourseRequest = async (axios: AxiosInstance, course: CourseRequ
         }
     ))
     return response.data
-}
+} 

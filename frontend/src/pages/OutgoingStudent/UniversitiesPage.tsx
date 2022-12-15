@@ -87,10 +87,10 @@ const UniversitiesPage = () => {
                     },
                     studentGrant: 600,
                 },
-                
-            ]
-        
-    
+            ],
+            message: ""
+        }
+
     const isUniversitiesError = false
     const isUniversitiesLoading = false
 

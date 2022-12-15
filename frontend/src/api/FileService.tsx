@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios"
+import { Axios, AxiosInstance } from "axios"
 import { ResponsePreApprovalForm } from "../types/responseTypes"
 
 export const getFile = async (axios: AxiosInstance, studentId: string) => {
@@ -29,3 +29,16 @@ export const generateAndSubmitPreApproval = async (axios: AxiosInstance, student
     return response.data
 }
 
+export const submitSignature = async (axios: AxiosInstance, formData: FormData, userId: string) => {
+    const response = await axios.post(`/signature/user/${userId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+    return response.data
+}
+
+export const downloadSignature = async (axios: AxiosInstance, userId: string) => {
+    const response = await axios.get(`signature/user/${userId}`)
+    return response.data
+}
