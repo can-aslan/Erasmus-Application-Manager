@@ -37,14 +37,39 @@ import java.io.IOException;
 public class StudentPlacementService {
     private Hashtable<University, Integer> quotas;
     ArrayList<Student> regiteredStudents = new ArrayList<>();
+    ArrayList<Student> waitingList = new ArrayList<>();
+
     private final IUniversityRepository universityRepository;
     private final AccountService accountService;
     private final StudentService studentService;
     private final IStudentRepository studentRepository;
-    public void placeStudents() throws Exception {
+    public void placeStudents(Department department) throws Exception {
+        ArrayList<String> preferences = new ArrayList<>();
         readFromStudentCsv();
-        //readFromUniCsv();
+        getAllUniversitiesQuota(department);
+        for (int i = 0; i < regiteredStudents.size(); i++){
+            //preferences = studentRepository.findById(regiteredStudents.get(i).getId()).get().getPreferences();
+            for (int j = 0; j < preferences.size(); j++){
+                if (preferences.get(j) != null){
+                    University currentUni = universityRepository.findUniByName(preferences.get(j));
+                    if(quotas.get(currentUni) > 0){
+                        regiteredStudents.get(i).setHostUni(currentUni);
+                        quotas.put(currentUni,quotas.get(currentUni) - 1 );
+                    }
+                }
+            }
+        }
 
+        // Waiting list creation 
+        // If a registeredstudent's hostUn property is null that means they are in the waiting list
+        for (int i = 0; i < regiteredStudents.size(); i++){
+            Student currentStudent = regiteredStudents.get(i);
+            if (currentStudent.getHostUni() == null){
+                waitingList.add(currentStudent);
+            }
+        }
+        
+        //readFromUniCsv();
     }
 
 
@@ -64,6 +89,7 @@ public class StudentPlacementService {
                 // Skip the first line of the table while registering students
                 if (isHeader){
                     isHeader = false;
+                    System.out.println("header Skipped");
                     continue;
                 }
 
@@ -76,8 +102,11 @@ public class StudentPlacementService {
                 System.out.println("--------------------2--------------------");
 
                 UserRequest newUserRequest = new UserRequest(null ,name, surname, email, bilkentId, UserType.OUTGOING_STUDENT); 
+                System.out.println("--------------------2.1--------------------");
                 User newUser = accountService.addUserWithUserRequest(newUserRequest);
+                System.out.println("--------------------2.2--------------------");
                 StudentRequest sReq = new StudentRequest(newUser.getId(), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                System.out.println("--------------------2.3--------------------");
                 Student.toStudent(sReq, newUser, universityRepository.findUniByName("Bilkent Univerity"), null, null);
 
                 //-------------------------------------Student creation starts here------------------
@@ -96,9 +125,6 @@ public class StudentPlacementService {
 
                 // TODO add degree property to Student where degree is an enum
 
-                // Transcript grade property is passed (4/4)
-                //  Transcript grade property (100/100) is passed 
-                // Transcript grade contribution property is passed
                 // TODO erasmusPoint propery to Student
 
                 Semester s = Semester.valueOf(lineSplitted[20]);
@@ -151,7 +177,17 @@ public class StudentPlacementService {
         System.out.println(regiteredStudents);
     }
 
-    public void readFromUniCsv() throws IOException{
+
+    /**
+     * This method brings quota of all universities from relatedservices and put University and quota and university
+     * pairs into the quotas hashmap
+     * @param department department whose universites' quotas will be brought
+     */
+    public void getAllUniversitiesQuota(Department department){
+    }
+
+    
+    /*public void readFromUniCsv() throws IOException{
         try {
             String line = "";  
             String splitBy = ",";  
@@ -175,7 +211,7 @@ public class StudentPlacementService {
             e.printStackTrace();  
             throw e;
         }
-    }
+    }*/
 
         
     

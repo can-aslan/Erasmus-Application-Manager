@@ -168,7 +168,9 @@ public class AccountService {
                     StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
             user.setPassword(encodePassword(password));
+            System.out.println("In account 5");
             accountRepository.save(user);
+            System.out.println("In account 6");
             return user;
         } catch (Exception e) {
             throw e;
