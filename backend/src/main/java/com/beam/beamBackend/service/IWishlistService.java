@@ -22,4 +22,5 @@ public interface IWishlistService {
     
     List<WishlistItem> getAllWishlistItems() throws Exception;
     List<WishlistItem> getAllWishlistItemsOfStudent(Long studentId) throws Exception;
+    UUID getWishlistItemUUID(Long studentId, String bilkentCourse) throws Exception;
 }

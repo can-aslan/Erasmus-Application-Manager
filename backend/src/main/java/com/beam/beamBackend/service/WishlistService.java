@@ -133,6 +133,17 @@ public class WishlistService implements IWishlistService {
         return itemRepository.findAllByStudentId(studentId);
     }
 
+    @Override
+    public UUID getWishlistItemUUID(Long studentId, String bilkentCourse) throws Exception  {
+        Optional<WishlistItem> result = itemRepository.findByStudentIdAndBilkentCourse(studentId, bilkentCourse);
+
+        if (!result.isPresent()) {
+            throw new NoSuchFieldException("no wishlist item exists with student id " + studentId + " and bilkent course " + bilkentCourse);
+        }
+
+        return result.get().getWishlistItemId();
+    }
+
     /**
      * Verifies that a given student ID has a wishlist
      * saved in the repository. Throws an exception otherwise.

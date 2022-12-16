@@ -40,28 +40,16 @@ public class WishlistItemMapping {
     @Column(name = "host_course")
     private String hostCourse;
 
-    @NotBlank
-    @Column(name = "webpage")
-    private String webpage;
-
-    @NotBlank
-    @Column(name = "syllabus")
-    private String syllabus;
-
     @ManyToOne
     @JoinColumn(name = "wishlist_item_wishlist_item_id")
     private WishlistItem wishlistItem;
 
     public WishlistItemMapping(
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
-        @JsonProperty("hostCourse") String hostCourse,
-        @JsonProperty("webpage") String webpage,
-        @JsonProperty("syllabus") String syllabus
+        @JsonProperty("hostCourse") String hostCourse
     ) {
         this.mappingItemId = UUID.randomUUID(); // maybe remove later?
         this.wishlistItemId = wishlistItemId;
         this.hostCourse = hostCourse;
-        this.webpage = webpage;
-        this.syllabus = syllabus;
     }
 }

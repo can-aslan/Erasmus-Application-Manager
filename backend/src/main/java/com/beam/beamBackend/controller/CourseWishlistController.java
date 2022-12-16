@@ -129,9 +129,16 @@ public class CourseWishlistController {
         try {
             boolean responseResult = courseWishlistService.addWishlistItem(studentId, courseWishlistItem);
             
+            UUID addedWishlistItemUUID = null;
+
+            // If the wishlist item is added successfully
+            if (responseResult) {
+                addedWishlistItemUUID = courseWishlistService.getWishlistItemUUID(studentId, courseWishlistItem.getBilkentCourse());
+            }
+
             return 
             responseResult ?
-                Response.create("adding a course wishlist item successful", HttpStatus.OK, responseResult)
+                Response.create("adding a course wishlist item successful", HttpStatus.OK, addedWishlistItemUUID)
                 :
                 Response.create("adding a course wishlist item unsuccessful", HttpStatus.BAD_REQUEST);
         }
