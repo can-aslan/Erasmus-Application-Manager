@@ -55,6 +55,7 @@ public class StudentPlacementService {
                     if(quotas.get(currentUni) > 0){
                         regiteredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1 );
+                        break;
                     }
                 }
             }
