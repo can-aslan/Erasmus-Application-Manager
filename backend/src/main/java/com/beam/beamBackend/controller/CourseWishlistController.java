@@ -15,7 +15,6 @@ import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.IWishlistService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -31,6 +30,24 @@ public class CourseWishlistController {
     {
         try {
             List<Wishlist> responseResult = courseWishlistService.getAllWishlists();
+            
+            return 
+            responseResult != null ?
+                Response.create("course wishlists fetch successful", HttpStatus.OK, responseResult)
+                :
+                Response.create("course wishlists fetch unsuccessful", HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Response.create("course wishlists fetch failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "/fetch/coordinator/{coordinatorId}")
+    public ResponseEntity<Object> getAllWishlistsOfCoordinator(@PathVariable("coordinatorId") UUID coordinatorId)
+    {
+        try {
+            List<Wishlist> responseResult = courseWishlistService.getAllWishlistsOfCoordinator(coordinatorId);
             
             return 
             responseResult != null ?

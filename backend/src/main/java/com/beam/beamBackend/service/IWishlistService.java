@@ -8,6 +8,8 @@ import com.beam.beamBackend.model.WishlistItem;
 
 public interface IWishlistService {
     List<Wishlist> getAllWishlists() throws Exception;
+    List<Wishlist> getAllWishlistsOfCoordinator(UUID coordinatorId) throws Exception;
+
     Wishlist getWishlistByStudentId(Long studentId) throws Exception;
 
     // boolean submitWishlist(Wishlist wishlist) throws Exception;

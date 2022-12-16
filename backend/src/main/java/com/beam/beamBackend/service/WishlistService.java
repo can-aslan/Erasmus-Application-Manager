@@ -1,5 +1,6 @@
 package com.beam.beamBackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,8 +8,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.enums.CourseWishlistStatus;
+import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
+import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IWishlistItemMappingRepository;
 import com.beam.beamBackend.repository.IWishlistItemRepository;
 import com.beam.beamBackend.repository.IWishlistRepository;
@@ -21,10 +24,28 @@ public class WishlistService implements IWishlistService {
     private final IWishlistRepository wishlistRepository;
     private final IWishlistItemRepository itemRepository;
     private final IWishlistItemMappingRepository mappingRepository;
+    private final IStudentRepository studentRepository;
 
     @Override
     public List<Wishlist> getAllWishlists() throws Exception {
         return wishlistRepository.findAll();
+    }
+
+    @Override
+    public List<Wishlist> getAllWishlistsOfCoordinator(UUID coordinatorId) throws Exception {
+        List<Student> studentsOfCoordinator = studentRepository.findAllByCoordinatorUserId(coordinatorId);
+        List<Wishlist> result = new ArrayList<Wishlist>();
+
+        for (Student s : studentsOfCoordinator) {
+            try {
+                result.add(getWishlistByStudentId(s.getUser().getBilkentId()));
+            }
+            catch (Exception e) {
+                throw new Exception("coordinator " + coordinatorId + "'s student with id " + s.getUser().getBilkentId() + " could not retrieve wishlist");
+            }
+        }
+
+        return result;
     }
 
     @Override
