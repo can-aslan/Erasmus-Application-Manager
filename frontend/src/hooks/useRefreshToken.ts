@@ -3,7 +3,7 @@ import { useUser } from "../provider/UserProvider";
 
 const useRefreshToken = () => {
     const { setUser, user } = useUser()
-
+    
     const refresh = async () => {
         console.log(user)
         console.log(`Bearer ${user.refreshToken}`)

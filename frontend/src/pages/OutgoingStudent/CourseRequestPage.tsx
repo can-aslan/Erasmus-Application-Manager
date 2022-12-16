@@ -21,25 +21,14 @@ const CourseRequestPage = () => {
     // TODO: Use courses instead of allCoursesBilkent
     // const { data: courses, isLoading: isCoursesLoading, isError: isCoursesError } = useCourses(axiosSecure)
     const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
-    const electiveTypes = ["General Elective","Technical Elective","Arts Core Elective", "Social Sciences Elective"]
+    const electiveTypes = ["General Elective", "Technical Elective", "Arts Core Elective", "Social Sciences Elective"]
     const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
         mutationKey: ['courseRequest'],
         mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course)
     })
-    const { data:dataPrevious, isError:isPreviousError, isLoading:isPreviousLoading } = useQuery({
+    const { data: dataPrevious, isError: isPreviousError, isLoading: isPreviousLoading } = useQuery({
         queryFn: () => getPreviouslyRequestedCourses(axiosSecure)
     })
-    if (isPreviousLoading || isCourseRequestLoading) {
-        return (
-            <LoadingPage />
-        )
-    }
-
-    if (isPreviousError || !dataPrevious) {
-        return (
-            <ErrorPage />
-        )
-    }
     const form = useForm({
         initialValues: {
             hostCourseCode: '',
@@ -56,6 +45,18 @@ const CourseRequestPage = () => {
             ectsCredits: (value) => value.length > 0 ? null : "ECTS Credits cannot be empty.",
         }
     })
+    if (isPreviousLoading || isCourseRequestLoading) {
+        return (
+            <LoadingPage />
+        )
+    }
+
+    if (isPreviousError || !dataPrevious) {
+        return (
+            <ErrorPage />
+        )
+    }
+
     const handleRequestCourse = () => {
         const validate = form.validate();
         if (searchedBilkentCourseInfo === '') {
@@ -87,7 +88,7 @@ const CourseRequestPage = () => {
     //     { courseCode: "Zurt", courseName: "Zurt Dersi", bilkentCode: "CS - 201", bilkentCredits: "3", ectsCredits: "6", requestStatus: 1 },
     //     { courseCode: "Zort", courseName: "Zort Dersi", bilkentCode: "CS - 315", bilkentCredits: "3", ectsCredits: "6", requestStatus: 2 },
     // ]
-    const previouslyRequestedCoursesList:Array<CourseRequest> = dataPrevious.data;
+    const previouslyRequestedCoursesList: Array<CourseRequest> = dataPrevious.data;
     const previouslyRequestedRows = previouslyRequestedCoursesList.map((course) => (
         <tr key={course.hostCode} >
             <td>{course.hostCode}</td>
@@ -171,7 +172,7 @@ const CourseRequestPage = () => {
                                 <th>Course Code At Host University</th>
                                 <th>Course Name At Host University</th>
                                 <th>ECTS Credits</th>
-                                <th>Bilkent Credits</th>
+                                <th>Bilkent Equivalent</th>
                                 <th>Request Status</th>
                             </tr>
                         </thead>
