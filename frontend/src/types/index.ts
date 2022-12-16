@@ -72,7 +72,9 @@ export type Course = {
     courseCode: string,
     courseName: string,
     department: string,
-    ECTSCredits: number,
+    ects: number,
+    syllabus?:string,
+    webPage?: string
     instructorId?: string,
     universityId?: string,
 }

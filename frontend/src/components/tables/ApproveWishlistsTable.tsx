@@ -54,10 +54,10 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
     // Below are mock data, they will be changed.
     //------------------------------------------ Mock Data Starts ----------------------------------------------------------------
     const wishlistList: Course[] = [
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "xxx"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "abc"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "abd"},
-        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ECTSCredits: 6.5, bilkentCredits: 6.5, wishlistUuid: "aby"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "xxx"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "abc"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "abd"},
+        { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "aby"},
     ];
     const waitingWishlist: StudentAssociatedWishlist[] = [
         { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},
@@ -72,7 +72,7 @@ const ApproveWishlistsTable = ({wishlists}: ApproveWishlistTableProps) => {
         <tr key={element.courseCode}>
             <td>{element.courseCode}</td>
             <td>{element.courseName}</td>
-            <td>{element.ECTSCredits}</td>
+            <td>{element.ects}</td>
             <td>{""}
                 <Center>
                     <Button 

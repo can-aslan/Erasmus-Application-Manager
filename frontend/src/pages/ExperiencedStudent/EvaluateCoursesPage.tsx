@@ -1,55 +1,73 @@
 import { Card, Center, Flex, Select } from "@mantine/core";
 import { IconBook } from "@tabler/icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { MouseEvent, useState } from "react";
+import { getUniCourses } from "../../api/Student/CourseService";
+import { getStudentPastCourseEval } from "../../api/Student/EvaluationService";
+import { getStudent } from "../../api/StudentService";
 import Evaluation from "../../components/evaluation/Evaluation";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useCourses } from "../../hooks/useCourses";
-import { Course } from "../../types";
+import { useUser } from "../../provider/UserProvider";
+import { Course, HostCourse } from "../../types";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
 
 const EvaluateCoursesPage = () => {
+    const axiosSecure = useAxiosSecure()
+    const { user } = useUser()
+
+    const { data: dataStudent, isError: isStudentError, isLoading: isStudentLoading } = useQuery({
+        queryFn: () => getStudent(axiosSecure, user?.bilkentId!),
+        queryKey: ["get_student"]
+    })
+    const { data: dataCourses, isError: isCoursesError, isLoading: isCoursesLoading } = useQuery({
+        queryFn: () => getUniCourses(axiosSecure, dataStudent?.data.hostUni.id!),
+        queryKey: ["get_uni_courses"]
+    })
+
+    const { mutate: mutateGetPastCourseEval, data: dataEval, isLoading: isEvalLoading } = useMutation({
+        mutationKey: ['get_past_eval'],
+        mutationFn: () => getStudentPastCourseEval(axiosSecure, user?.bilkentId!, selectedCourseId),
+        onSuccess: () => {},
+        onError: () => {}
+    })
+
+
+    const courses = dataCourses?.data;
+    const evaluation = dataEval?.data;
     const [searchedCourse, setSearchedCourse] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-    const [currentEvaluation, setCurrentEvaluation] = useState("");
-    const [givenRating, setGivenRating] = useState(0);
-    const description = `You can evaluate ${selectedCourse} in terms of difficulty, assignments, instructors, exams, course content and material etc.`;
-    //TODO: studentin eski evallerini de almak lazım, ona göre editable falan değişecek çünkü,
-    // aşağıdakinden farklı bi query atmak gerekiyo bence o yüzden
-    // Commented untill connected to database
-    // // Fetch courses from the database
-    // const { data: courses, isError: isCoursesError, isLoading: isCoursesLoading } = useCourses();
-    // // Generate courses for the AutoComplete. AutoComplete requires the use of a field called value.
+    const [selectedCourseName, setSelectedCourse] = useState<string | null>(null);
+    const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+    const [currentEvaluation, setCurrentEvaluation] = useState(evaluation?.comment);
+    const [givenRating, setGivenRating] = useState(evaluation?.rate);
+    const description = `You can evaluate ${selectedCourseName} in terms of difficulty, assignments, instructors, exams, course content and material etc.`;
 
-    // if (isCoursesLoading) {
-    //     return (
-    //         <LoadingPage />
-    //     )
-    // }
+    if (isCoursesLoading || isEvalLoading || isStudentLoading) {
+        return (
+            <LoadingPage />
+        )
+    }
 
-    // if (isCoursesError) {
-    //     return (
-    //         <ErrorPage />
-    //     )
-    // }
+    if (isCoursesError || isStudentError) {
+        return (
+            <ErrorPage />
+        )
+    }
+
     // Generate courses for the Select. Select requires the use of a field called value and label.
-    // Array<Course> değil de yeni bi tip??
-    // const availableCourses: Array<Course> = courses.data.map((c) => {
-    //     return {
-    //         ...c,
-    //         value: c.courseName
-    //         label: c.courseName
-    //     }
-    // });
-    // Mock data
-    const availableCourses = [
-        { value: "CS-201", label: "CS-201"},
-        { value: "CS-315", label: "CS-315"},
-        { value: "CS-319", label: "CS-319"},
-        { value: "CS-202", label: "CS-202"},
-        { value: "CS-101", label: "CS-101"},
-    ];
-    //TODO: selected course değişince ona bağlı olarak gözüken rating vs değişecek
+    const availableCourses: Array<HostCourse> = courses!.map((c) => {
+        return {
+            ...c,
+            value: c.courseName,
+            label: c.courseName
+        }
+    });
+    
+    const availableCourseNames: Array<string> = availableCourses.map((course) => {
+        return course.courseName;
+    });
     return (
         <>
             <Select
@@ -59,20 +77,25 @@ const EvaluateCoursesPage = () => {
                 label={"Choose a course to evaluate"}
                 nothingFound="No course found"
                 onSearchChange={setSearchedCourse}
-                onChange={setSelectedCourse}
+                onChange={(value)=>{
+                    setSelectedCourse(value);
+                    const id = availableCourses.find(course=>course.courseName === value)?.courseUUID!;
+                    setSelectedCourseId(id);
+                    mutateGetPastCourseEval();
+                }}
                 searchValue={searchedCourse}
-                data={availableCourses} />
-            {selectedCourse != null && 
-            <Evaluation givenRating={givenRating} 
-            evaluationName={selectedCourse!} 
-            description={description} 
-            currentEvaluation={currentEvaluation} 
-            setGivenRating={setGivenRating} 
-            setCurrentEvaluation={setCurrentEvaluation} 
-            emptySymbol={<IconBook />} 
-            fullSymbol={<IconBook color="#1971c2" />} 
-            editable={true} 
-            saveEval={()=>{}} submitEval={()=>{}}></Evaluation>}
+                data={availableCourseNames} />
+            {selectedCourseName != null &&
+                <Evaluation givenRating={givenRating ?? 0}
+                    evaluationName={selectedCourseName!}
+                    description={description}
+                    currentEvaluation={currentEvaluation ?? ''}
+                    setGivenRating={setGivenRating}
+                    setCurrentEvaluation={setCurrentEvaluation}
+                    emptySymbol={<IconBook />}
+                    fullSymbol={<IconBook color="#1971c2" />}
+                    editable={true}
+                    saveEval={() => { }} submitEval={() => { }}></Evaluation>}
         </>
     );
 }

@@ -60,7 +60,7 @@ const CourseTransferPage = () => {
     const mockBilkentCourses: Array<BilkentCourse> = [
         {
             bilkentCredits: 12,
-            ECTSCredits: 16,
+            ects: 16,
             courseCode: "CS 319",
             courseName: "Erasmus Application Management Creation",
             courseUUID: "course1",
@@ -68,7 +68,7 @@ const CourseTransferPage = () => {
         },
         {
             bilkentCredits: 12,
-            ECTSCredits: 16,
+            ects: 16,
             courseCode: "CS 315",
             courseName: "Python Quizes",
             courseUUID: "course2",
@@ -76,7 +76,7 @@ const CourseTransferPage = () => {
         },
         {
             bilkentCredits: 12,
-            ECTSCredits: 16,
+            ects: 16,
             courseCode: "CS 202",
             courseName: "Red-Black Tree Something Something",
             courseUUID: "course3",
@@ -88,21 +88,21 @@ const CourseTransferPage = () => {
         {
             courseCode: "CENG333",
             courseName: "Computer Science but with Fortran",
-            ECTSCredits: 22222,
+            ects: 22222,
             courseUUID: "unique course id",
             department: 'CS',
         },
         {
             courseCode: "POLS-66545",
             courseName: "Deep Learning for POLS Students",
-            ECTSCredits: 22,
+            ects: 22,
             courseUUID: "unique course id 2",
             department: 'CS',
         },
         {
             courseCode: "CS-242",
             courseName: "Modern Web Development with HTML4 and CSS2",
-            ECTSCredits: 2222,
+            ects: 2222,
             courseUUID: "unique course id 3",
             department: 'CS',
         },
