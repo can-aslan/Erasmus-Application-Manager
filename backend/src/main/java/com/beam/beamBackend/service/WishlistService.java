@@ -73,11 +73,15 @@ public class WishlistService implements IWishlistService {
     @Override
     public boolean addWishlistItem(Long studentId, WishlistItem itemToAdd) throws Exception {
         // Checks if student ID has a wishlist in the system
-        verifyStudentHasWishlist(studentId);
-        
-        // Maybe later, check if bilkent course already exists in wishlist item
+        try {
+            verifyStudentHasWishlist(studentId);
+        }
+        catch (NoSuchFieldException e) {
+            // If the code reaches here, it means the student has no wishlist, therefore one must be created
+            wishlistRepository.save(new Wishlist(studentId, CourseWishlistStatus.WAITING));
+        }
 
-        // Wishlist studentWishlist = getWishlistByStudentId(studentId); // also checks if the student has a wishlist in the system, if we get no errors we know we have a valid wishlist object
+        // Maybe later, check if bilkent course already exists in wishlist item repository
 
         if (itemToAdd.getStudentId() != studentId) {
             throw new Exception("student with id " + studentId + " cannot add wishlist item, student ids do not match");
@@ -136,7 +140,7 @@ public class WishlistService implements IWishlistService {
      */
     private boolean verifyStudentHasWishlist(Long studentId) throws Exception {
         if (!wishlistRepository.existsByStudentId(studentId)) {
-            throw new Exception("student with id " + studentId + " does not have a wishlist in the system");
+            throw new NoSuchFieldException("student with id " + studentId + " does not have a wishlist in the system");
         }
         
         return true;
