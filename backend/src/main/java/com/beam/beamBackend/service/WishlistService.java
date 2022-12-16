@@ -66,7 +66,7 @@ public class WishlistService implements IWishlistService {
         return true;
     }
 
-    @Override // TODO
+    @Override
     public boolean removeWishlistItem(Long studentId, WishlistItem itemToRemove) throws Exception {
         // Checks if student ID has a wishlist in the system
         verifyStudentHasWishlist(studentId);
@@ -79,8 +79,8 @@ public class WishlistService implements IWishlistService {
 
         // ASSUMPTION: onlt 1 bilkent course exists for 1 student id
         // add findbycourseandstudentid to repository 
-
-        return false;
+        itemRepository.deleteByStudentIdAndBilkentCourse(studentId, itemToRemove.getBilkentCourse());
+        return true;
     }
 
     @Override

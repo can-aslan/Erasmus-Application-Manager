@@ -9,4 +9,5 @@ import com.beam.beamBackend.model.WishlistItem;
 @Repository
 public interface IWishlistItemRepository extends JpaRepository<WishlistItem, UUID> {
     List<WishlistItem> findAllByStudentId(Long studentId);
+    boolean deleteByStudentIdAndBilkentCourse(Long studentId, String bilkentCourse);
 }
