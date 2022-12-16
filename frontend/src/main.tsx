@@ -22,6 +22,7 @@ import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import Unauthorized from './pages/Feedback/UnauthorizedPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import GuestPage from './pages/Guest/GuestPage'
 import ApproveCourseRequestPage from './pages/Instructor/ApproveCourseRequestPage'
 import LoginPage from './pages/LoginPage'
 import TranscriptUploadPage from './pages/OISEPStaff/TranscriptUploadPage'
@@ -31,7 +32,6 @@ import LearningAgreementPage from './pages/OutgoingStudent/LearningAgreementPage
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
 import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
-import SeeCourseEvaluationsPage from './pages/SeeCourseEvaluationsPage'
 import UploadSignaturePage from './pages/UploadSignaturePage'
 import { UserEnum } from './types'
 
@@ -52,6 +52,18 @@ const router = createBrowserRouter([
   {
     path: '/forgot-password',
     element: <ForgotPasswordPage />
+  },
+  {
+    path: '/guest',
+    element: <GuestPage/>
+  },
+  {
+    path: '/universities',
+    element: <UniversitiesPage />
+  },
+  {
+    path: '/universities/:universityId',
+    element: <UniversityDetails />
   },
   {
     element: <PersistentLogin />,
@@ -89,14 +101,6 @@ const router = createBrowserRouter([
                   {
                     path: '/student/course-wishlist',
                     element: <CourseWishlistPage />
-                  },
-                  {
-                    path: '/student/universities',
-                    element: <UniversitiesPage />
-                  },
-                  {
-                    path: '/student/universities/:universityId',
-                    element: <UniversityDetails />
                   },
                   {
                     path: '/student/learning-agreement',

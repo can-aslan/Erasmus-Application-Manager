@@ -1,6 +1,6 @@
-import { Card, Center, Flex, Select } from "@mantine/core";
+ import { Card, Center, Flex, Select } from "@mantine/core";
 import { IconBook } from "@tabler/icons";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import Evaluation from "../../components/evaluation/Evaluation";
 import { useCourses } from "../../hooks/useCourses";
 import { Course } from "../../types";
@@ -62,7 +62,17 @@ const EvaluateCoursesPage = () => {
                 onChange={setSelectedCourse}
                 searchValue={searchedCourse}
                 data={availableCourses} />
-            {selectedCourse != null && <Evaluation givenRating={givenRating} evaluationName={selectedCourse!} description={description} currentEvaluation={currentEvaluation} setGivenRating={setGivenRating} setCurrentEvaluation={setCurrentEvaluation} emptySymbol={<IconBook/>} fullSymbol={<IconBook color="#1971c2"/>} editable={true}></Evaluation>}
+            {/* {selectedCourse != null && 
+            <Evaluation givenRating={givenRating} 
+            evaluationName={selectedCourse!} 
+            description={description} 
+            currentEvaluation={currentEvaluation} 
+            setGivenRating={setGivenRating} 
+            setCurrentEvaluation={setCurrentEvaluation} 
+            emptySymbol={<IconBook />} 
+            fullSymbol={<IconBook color="#1971c2" />} 
+            editable={true} 
+            saveEval={()=>{}} submitEval={()=>{}}></Evaluation>} */}
         </>
     );
 }

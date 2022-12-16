@@ -15,48 +15,22 @@ import LoadingPage from "../Feedback/LoadingPage";
 
 
 const EvaluateUniversityPage = () => {
-    
     const axiosSecure = useAxiosSecure()
     const { user } = useUser()
     const { data: dataEval, isError: isEvalError, isLoading: isEvalLoading } = useQuery({
-        queryFn: () => getStudentPastUniEval(axiosSecure, user?.bilkentId!)
+        queryFn: () => getStudentPastUniEval(axiosSecure, user?.bilkentId!),
+        queryKey: ["get_past_eval"]
     })
 
     const { data: dataStudent, isError: isStudentError, isLoading: isStudentLoading } = useQuery({
-        queryFn: () => getStudent(axiosSecure, user?.bilkentId!)
+        queryFn: () => getStudent(axiosSecure, user?.bilkentId!),
+        queryKey: ["get_student"]
     })
-    
-    if (isEvalLoading || isStudentLoading) {
-        return (
-            <LoadingPage />
-        )
-    }
-
-    if (isEvalError || !dataEval || isStudentError || !dataStudent) {
-        return (
-            <ErrorPage />
-        )
-    }
+    const evaluation = dataEval?.data;
+    const [currentEvaluation, setCurrentEvaluation] = useState(evaluation?.comment);
+    const [givenRating, setGivenRating] = useState(evaluation?.rate);
     const uniName = dataStudent?.data.hostUni.name;
     const description = `You can evaluate ${uniName} in terms of food, dormitories, social opportunities, people, campus facilities etc.`;
-    const evaluation = dataEval.data;
-    const [currentEvaluation, setCurrentEvaluation] = useState(evaluation.comment);
-    const [givenRating, setGivenRating] = useState(evaluation.rate);
-
-    const newSaveEval: StudentAssociatedPastEvaluationItem = {
-        authorId: "user?.bilkentId!",
-        comment: currentEvaluation,
-        rate: givenRating,
-        evalStatus: "SAVED"
-    }
-
-    const newSubmitEval: StudentAssociatedPastEvaluationItem = {
-        authorId: "user?.bilkentId!",
-        comment: currentEvaluation,
-        rate: givenRating,
-        evalStatus: "SUBMITTED"
-    }
-
     const { mutate: mutateSaveEvalUni, data: userSaveData, isLoading: isSaveUniLoading } = useMutation({
         mutationKey: ['saveUniEval'],
         mutationFn: (newEval: StudentAssociatedPastEvaluationItem) => evaluateUni(axiosSecure, newEval),
@@ -70,6 +44,36 @@ const EvaluateUniversityPage = () => {
         onSuccess: () => toast.success(`Evaluation submitted.`),
         onError: () => toast.error("Evaluation submit failed.")
     })
+    
+    if (isEvalLoading || isStudentLoading) {
+        return (
+            <LoadingPage />
+        )
+    }
+
+    if (isEvalError || isStudentError) {
+        return (
+            <ErrorPage />
+        )
+    }
+
+    const newSaveEval: StudentAssociatedPastEvaluationItem = {
+        uni_id: dataStudent?.data.hostUni.id,
+        author_id: user?.bilkentId!,
+        comment: currentEvaluation || "",
+        rate: givenRating || 0,
+        eval_status: "SAVED"
+    }
+
+    const newSubmitEval: StudentAssociatedPastEvaluationItem = {
+        uni_id: dataStudent?.data.hostUni.id,
+        author_id: user?.bilkentId!,
+        comment: currentEvaluation || "",
+        rate: givenRating || 0,
+        eval_status: "SUBMITTED"
+    }
+
+
 
     const saveEval = () => {
         mutateSaveEvalUni(newSaveEval);
@@ -77,21 +81,20 @@ const EvaluateUniversityPage = () => {
     const submitEval = () => {
         mutateSubmitEvalUni(newSubmitEval);
     }
-    
+
     return (
         <Evaluation
             saveEval={saveEval}
             submitEval={submitEval}
-            editable={!(evaluation.evalStatus === "SUBMITTED")}
+            editable={(evaluation?.eval_status !== "SUBMITTED")}
             emptySymbol={<IconSchool />}
             fullSymbol={<IconSchool color={"#1971c2"} />}
-            givenRating={evaluation.rate}
-            evaluationName={uniName}
-            currentEvaluation={evaluation.comment}
+            givenRating={givenRating ?? 0}
+            evaluationName={uniName ?? ""}
+            currentEvaluation={currentEvaluation ?? ""}
             setGivenRating={setGivenRating}
             setCurrentEvaluation={setCurrentEvaluation}
             description={description}></Evaluation>
-
     );
 }
 

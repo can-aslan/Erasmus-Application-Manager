@@ -8,8 +8,8 @@ interface EvaluationProps {
     evaluationName: string
     description: string;
     currentEvaluation: string;
-    setGivenRating: React.Dispatch<React.SetStateAction<number>>;
-    setCurrentEvaluation: React.Dispatch<React.SetStateAction<string>>;
+    setGivenRating: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setCurrentEvaluation: React.Dispatch<React.SetStateAction<string |undefined>>;
     emptySymbol: React.ReactNode;
     fullSymbol: React.ReactNode;
     editable: boolean;

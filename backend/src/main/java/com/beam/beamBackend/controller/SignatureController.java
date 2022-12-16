@@ -26,6 +26,7 @@ import lombok.AllArgsConstructor;
 public class SignatureController {
 
     private SignatureService signatureService;
+    
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "user/{userId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> uploadSignature(@RequestParam("signature") MultipartFile signature, 

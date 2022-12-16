@@ -3,19 +3,22 @@ import { useUser } from "../provider/UserProvider";
 
 const useRefreshToken = () => {
     const { setUser, user } = useUser()
-
+    
     const refresh = async () => {
         console.log(user)
         console.log(`Bearer ${user.refreshToken}`)
-        const response = await axiosSecure.get('/api/v1/auth/refresh', {
+        const response = await axiosSecure.get('/auth/refresh', {
             withCredentials: true,
             headers: {
                 Authorization: `Bearer ${user.refreshToken}`
             }
         })
 
-        setUser(response.data)
-        return response.data.accessToken
+        setUser({
+            ...user,
+            accessToken: response.data.data.accessToken,
+        })
+        return response.data.data.accessToken
     }
 
     return refresh

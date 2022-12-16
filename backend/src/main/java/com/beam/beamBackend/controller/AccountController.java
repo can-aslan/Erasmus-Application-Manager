@@ -49,6 +49,7 @@ public class AccountController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
@@ -59,6 +60,7 @@ public class AccountController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_chunk")
     public ResponseEntity<Object> register(@RequestBody User[] userInfo) {
         try {
@@ -93,6 +95,7 @@ public class AccountController {
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/test")
     public ResponseEntity<Object> testAuth() {
         try {
