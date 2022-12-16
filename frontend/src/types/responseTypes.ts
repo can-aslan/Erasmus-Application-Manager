@@ -1,7 +1,7 @@
 
 import { BilkentCourse, CourseRequest, CourseWishlist, HostCourse, LearningAgreement, PreApprovalForm, PreviousCourseRequest, Student, StudentAssociatedCourse, StudentAssociatedPastEvaluationItem, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
 
-interface Response<T> {
+export interface Response<T> {
     data: T,
     message: string,
 }

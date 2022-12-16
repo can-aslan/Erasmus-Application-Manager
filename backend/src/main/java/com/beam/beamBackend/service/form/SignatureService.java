@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,10 +23,13 @@ import com.beam.beamBackend.service.form.decorator.Prefix;
 import com.beam.beamBackend.service.form.decorator.UniquelyNameable;
 
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
@@ -54,6 +58,11 @@ public class SignatureService {
             return false; // TODO: Throw usernotfoundexception
         }
 
+        Optional<Signature> signature = signatureRepository.findSignatureByUserId(userId);
+        if (signature.isPresent()) {
+            return false;
+        }
+
         User u = user.get();
         long bilkentId = u.getBilkentId();
         String bilkentIdStr = Long.toString(bilkentId);
@@ -69,11 +78,12 @@ public class SignatureService {
             PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
+                    .contentType(MediaType.IMAGE_PNG_VALUE)
                     .build();
             s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            Signature signature = new Signature(UUID.randomUUID(), userId, key);
-            signatureRepository.save(signature);
+            Signature signatureObj = new Signature(UUID.randomUUID(), userId, key);
+            signatureRepository.save(signatureObj);
             return true;
         }
         catch (Exception e) {
@@ -85,18 +95,21 @@ public class SignatureService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        Optional<Signature> signature = signatureRepository.findById(userId);
+        Optional<Signature> signature = signatureRepository.findSignatureByUserId(userId);
+        System.out.println("here: ");
 
         if (!signature.isPresent()) {
             return null;
         }
 
         final String key = signature.get().getKey();
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build();
-        return s3.getObject(getObjectRequest).readAllBytes();
+        System.out.println("Key: " + key);
+        ResponseBytes<GetObjectResponse> s3Object = s3.getObject(
+            GetObjectRequest.builder().bucket(bucketName).key(key).build(),
+            ResponseTransformer.toBytes());
+        final byte[] bytes = s3Object.asByteArray();
+
+        return bytes;
     }
 
     public ByteArrayInputStream getSignatureFile(UUID userId) throws IOException {
