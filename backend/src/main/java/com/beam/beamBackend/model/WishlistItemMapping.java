@@ -48,7 +48,7 @@ public class WishlistItemMapping {
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
         @JsonProperty("hostCourse") String hostCourse
     ) {
-        this.mappingItemId = UUID.randomUUID(); // maybe remove later?
+        this.mappingItemId = UUID.randomUUID();
         this.wishlistItemId = wishlistItemId;
         this.hostCourse = hostCourse;
     }

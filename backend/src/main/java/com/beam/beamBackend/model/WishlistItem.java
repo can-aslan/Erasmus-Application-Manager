@@ -42,10 +42,6 @@ public class WishlistItem {
     @Column(name = "bilkent_course")
     private String bilkentCourse;
 
-    @NotNull
-    @Column(name = "mapping_count")
-    private Integer mappingCount;
-
     @ManyToOne
     @JoinColumn(name = "wishlist_student_id", referencedColumnName = "student_id")
     private Wishlist ownerWishlist;
@@ -56,12 +52,10 @@ public class WishlistItem {
     public WishlistItem(
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
         @JsonProperty("studentId") Long studentId,
-        @JsonProperty("bilkentCourse") String bilkentCourse,
-        @JsonProperty("mappingCount") Integer mappingCount
+        @JsonProperty("bilkentCourse") String bilkentCourse
     ) {
         this.wishlistItemId = (wishlistItemId == null) ? UUID.randomUUID() : wishlistItemId;
         this.studentId = studentId;
         this.bilkentCourse = bilkentCourse;
-        this.mappingCount = mappingCount;
     }
 }
