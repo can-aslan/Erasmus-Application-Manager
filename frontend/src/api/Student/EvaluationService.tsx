@@ -19,3 +19,11 @@ export const evaluateUni = async (axios: AxiosInstance, evalForm: StudentAssocia
     }))
     return response.data
 }
+
+export const evaluateCourse = async (axios: AxiosInstance, evalForm: StudentAssociatedPastEvaluationItem) => {
+    const response = await axios.post<StudentAssociatedPastEvaluationItem>('/eval/course', 
+    JSON.stringify({
+        ...evalForm,
+    }))
+    return response.data
+}
