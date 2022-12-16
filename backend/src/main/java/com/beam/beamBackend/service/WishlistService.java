@@ -87,7 +87,9 @@ public class WishlistService implements IWishlistService {
             throw new Exception("student with id " + studentId + " cannot add wishlist item, student ids do not match");
         }
 
-        itemRepository.save(itemToAdd);
+        WishlistItem newItemToAdd = itemToAdd;
+        newItemToAdd.setOwnerWishlist(getWishlistByStudentId(studentId));
+        itemRepository.save(newItemToAdd);
         return true;
     }
 

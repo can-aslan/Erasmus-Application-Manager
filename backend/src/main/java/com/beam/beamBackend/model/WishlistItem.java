@@ -2,7 +2,11 @@ package com.beam.beamBackend.model;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +27,7 @@ import com.beam.beamBackend.model.WishlistItemMapping;
 @Data
 @Table(name = "wishlist_item")
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "wishlistItemId")
 public class WishlistItem {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -42,8 +47,8 @@ public class WishlistItem {
     private Integer mappingCount;
 
     @ManyToOne
-    @JoinColumn(name = "wishlist_student_id")
-    private Wishlist wishlist;
+    @JoinColumn(name = "wishlist_student_id", referencedColumnName = "student_id")
+    private Wishlist ownerWishlist;
 
     @OneToMany(mappedBy = "wishlistItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistItemMapping> mappings;

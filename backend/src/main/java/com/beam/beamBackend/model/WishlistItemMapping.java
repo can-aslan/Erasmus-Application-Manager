@@ -1,7 +1,11 @@
 package com.beam.beamBackend.model;
 
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +25,7 @@ import com.beam.beamBackend.model.WishlistItem;
 @Table(name = "wishlist_item_mapping")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "mappingItemId")
 public class WishlistItemMapping {
     @Id
     @GeneratedValue(generator = "UUID")

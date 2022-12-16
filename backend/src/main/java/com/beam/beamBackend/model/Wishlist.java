@@ -1,7 +1,9 @@
 package com.beam.beamBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import com.beam.beamBackend.enums.CourseWishlistStatus;
 @Data
 @Table(name = "wishlist")
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "studentId")
 public class Wishlist {
     @Id
     @NotNull
@@ -32,7 +35,7 @@ public class Wishlist {
     @Column(name = "status")
     private CourseWishlistStatus status;
 
-    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ownerWishlist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistItem> items;
 
     public Wishlist(
