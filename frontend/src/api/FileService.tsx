@@ -39,6 +39,8 @@ export const submitSignature = async (axios: AxiosInstance, formData: FormData, 
 }
 
 export const downloadSignature = async (axios: AxiosInstance, userId: string) => {
-    const response = await axios.get<Response<Uint8Array[]>>(`signature/user/${userId}`)
+    const response = await axios.get(`/signature/user/${userId}`, {
+        responseType: "blob",
+    })
     return response.data
 }

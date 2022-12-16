@@ -32,7 +32,33 @@ const CourseWishlistPage = () => {
     const {data: hostCourses, isLoading: isHostCoursesLoading, isError: isHostCoursesError } = useHostCourses(axiosSecure, user.id)
 
     // Fetch the initial state of course wishlist    
-    const {data: courseWishlist, isLoading: isCourseWishlistLoading, isError: isCourseWishlistError} = useStudentWishlist(axiosSecure, user.id)
+    const {data: courseWishlist, isLoading: isCourseWishlistLoading, isError: isCourseWishlistError} = useStudentWishlist(axiosSecure, user.bilkentId)
+
+    // States are moved to here because the initial states depend on the properties being fetched
+    const [wishlist, setWishlist] = useState<CourseWishlist | undefined>(courseWishlist?.data)
+    const [wishlistItems, setWishlistItems] = useState<CourseWishlistItem[] | undefined>(courseWishlist?.data?.wishlistItems)
+    const [selectedBilkentCourse, setSelectedBilkentCourse] = useState('')
+    const [selectedHostCourse, setSelectedHostCourse] = useState('')
+    const [error, setError] = useState(false)
+    
+    /*
+        The wishlist is not automatically saved on each addition. Instead, the user is expected to save their 
+        wishlist once they think, they have chosen enough courses. Once the user thinks that they don't want to
+        choose any more courses, they will use the submit button to send their wishlist for coordinator approval.
+    */
+        const { mutate: save, isLoading: isSaveLoading } = useMutation({
+            mutationKey: ['saveWishlist'],
+            mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
+            onSuccess: () => toast.success("Successfully saved the wishlist!"),
+            onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
+        })
+        
+        const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
+            mutationKey: ['submitWishlist'],
+            mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
+            onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
+            onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
+        })
 
     if (isBilkentCoursesLoading || isHostCoursesLoading || isCourseWishlistLoading) {
         return <LoadingPage />
@@ -42,12 +68,6 @@ const CourseWishlistPage = () => {
         return <ErrorPage message="We are having some problems accessing course data."/>
     }
     
-    // States are moved to here because the initial states depend on the properties being fetched
-    const [wishlist, setWishlist] = useState<CourseWishlist>(courseWishlist.data)
-    const [wishlistItems, setWishlistItems] = useState<CourseWishlistItem[]>(wishlist.wishlistItems)
-    const [selectedBilkentCourse, setSelectedBilkentCourse] = useState('')
-    const [selectedHostCourse, setSelectedHostCourse] = useState('')
-    const [error, setError] = useState(false)
 
     /*
         Autocomplete component accepts an array of strings or objects with value property to display them on the dropdown. 
@@ -65,24 +85,6 @@ const CourseWishlistPage = () => {
         }
     })
     
-    /*
-        The wishlist is not automatically saved on each addition. Instead, the user is expected to save their 
-        wishlist once they think, they have chosen enough courses. Once the user thinks that they don't want to
-        choose any more courses, they will use the submit button to send their wishlist for coordinator approval.
-    */
-    const { mutate: save, isLoading: isSaveLoading } = useMutation({
-        mutationKey: ['saveWishlist'],
-        mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
-        onSuccess: () => toast.success("Successfully saved the wishlist!"),
-        onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
-    })
-    
-    const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
-        mutationKey: ['submitWishlist'],
-        mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
-        onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
-        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
-    })
     
     const handleSave = () => {
         save()
