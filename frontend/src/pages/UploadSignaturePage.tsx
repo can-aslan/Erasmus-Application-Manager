@@ -21,8 +21,9 @@ const UploadSignaturePage = () => {
     const { mutate: downloadSignatureMutate, isLoading: isDownloadingSignature, isError: isDownloadingError } = useMutation({
         mutationKey: ['downloadSignature'],
         mutationFn: () => downloadSignature(axiosSecure, user.id),
-        onSuccess: (data) => {
-            downloadBlobFile(data, "filename")
+        onSuccess: (data) => { 
+            console.log(data)
+            downloadBlobFile(data.data, "filename")
         },
         onError: () => toast.error("Error while trying to fetch the file from the database. Make sure you have uploaded your signature before trying to download.")
     })
