@@ -58,19 +58,19 @@ const EvaluateUniversityPage = () => {
     }
 
     const newSaveEval: StudentAssociatedPastEvaluationItem = {
-        uniId: dataStudent?.data.hostUni.id,
-        authorId: user?.bilkentId!,
+        uni_id: dataStudent?.data.hostUni.id,
+        author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
         rate: givenRating || 0,
-        evalStatus: "SAVED"
+        eval_status: "SAVED"
     }
 
     const newSubmitEval: StudentAssociatedPastEvaluationItem = {
-        uniId: dataStudent?.data.hostUni.id,
-        authorId: user?.bilkentId!,
+        uni_id: dataStudent?.data.hostUni.id,
+        author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
         rate: givenRating || 0,
-        evalStatus: "SUBMITTED"
+        eval_status: "SUBMITTED"
     }
 
 
@@ -86,7 +86,7 @@ const EvaluateUniversityPage = () => {
         <Evaluation
             saveEval={saveEval}
             submitEval={submitEval}
-            editable={(evaluation?.evalStatus !== "SUBMITTED")}
+            editable={(evaluation?.eval_status !== "SUBMITTED")}
             emptySymbol={<IconSchool />}
             fullSymbol={<IconSchool color={"#1971c2"} />}
             givenRating={givenRating ?? 0}
