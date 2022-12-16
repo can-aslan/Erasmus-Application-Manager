@@ -70,7 +70,7 @@ public class CourseWishlistController {
     {
         try {
             Wishlist responseResult = courseWishlistService.getWishlistByStudentId(studentId);
-            
+            System.out.println(responseResult);
             return 
             responseResult != null ?
                 Response.create("course wishlists fetch successful", HttpStatus.OK, responseResult)

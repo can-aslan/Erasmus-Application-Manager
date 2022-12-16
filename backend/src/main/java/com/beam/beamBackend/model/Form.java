@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -29,21 +31,22 @@ public class Form {
     @Column(name = "user_id")
     private UUID userId;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = "form_type")
     private FormEnum formType;
 
     @NotNull
-    @Column(name = "filename")
+    @Column(name = "key")
     private String key;
 
-    public Form(@JsonProperty("uuid") UUID id,
-                @JsonProperty("userUuid") UUID userId,
-                @JsonProperty("fileType") FormEnum fileType,
-                @JsonProperty("fileName") String key ) {
+    public Form(UUID id,
+        UUID userId,
+        FormEnum formType,
+        String key) {
         this.id = id == null ? UUID.randomUUID() : id;
         this.userId = userId;
-        this.formType = fileType;
+        this.formType = formType;
         this.key = key;
     }
     

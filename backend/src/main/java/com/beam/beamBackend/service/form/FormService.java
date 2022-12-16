@@ -25,10 +25,13 @@ import com.beam.beamBackend.service.form.decorator.Prefix;
 import com.beam.beamBackend.service.form.decorator.UniquelyNameable;
 
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import com.beam.beamBackend.model.User;
@@ -45,10 +48,16 @@ public class FormService {
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
 
-    public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException {
+    public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
+        
+        // TODO: Check userId
+        Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
+        if (form.isPresent()) {
+            throw new Exception("A form with given form type is already saved in the system.");
+        }
 
         if (file.getSize() > FILE_SIZE_LIMIT) {
             String errMsg = "Exceeded the file size limit of " + FILE_SIZE_LIMIT;
@@ -80,8 +89,8 @@ public class FormService {
             s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
             final UUID id = UUID.randomUUID();
-            Form form = new Form(id, userId, formType, key);
-            formRepository.save(form);
+            Form newForm = new Form(id, userId, formType, key);
+            formRepository.save(newForm);
             return true;
         }
         catch (Exception e) {
@@ -93,6 +102,8 @@ public class FormService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
+
+        // TODO: Check userId
 
         if (file == null || file.length() == 0) {
             throw new NullPointerException("File field cannot be empty");
@@ -131,32 +142,54 @@ public class FormService {
         return true;
     }
 
-    public byte[] downloadForm(UUID userId, FormEnum formType) throws IOException {
+    public byte[] downloadForm(UUID userId, FormEnum formType) throws IOException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        final String key = formRepository.findFormByIdAndFormType(userId, formType).getKey();
+        // TODO: Check userId
 
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build();
-        return s3.getObject(getObjectRequest).readAllBytes();
+        Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
+        if (!form.isPresent()) {
+            throw new Exception("There is no file that you can download. Make sure to upload a file before downloading.");
+        }
+
+        /* 
+            Fetches the key based on the user ID assuming the fact that there are only one unique
+            files for each file type for each user. The file is read and returned as bytes.
+        */
+        final String key = form.get().getKey();
+        ResponseBytes<GetObjectResponse> s3Object = s3.getObject(
+            GetObjectRequest.builder().bucket(bucketName).key(key).build(),
+            ResponseTransformer.toBytes());
+        final byte[] formByteArray = s3Object.asByteArray();
+
+        return formByteArray;
     }
 
     public boolean deleteFile(UUID userId, FormEnum formType) {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
-        
-        final String key = formRepository.findFormByIdAndFormType(userId, formType).getKey();
 
+        // TODO: Check userId
+        Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
+        if (!form.isPresent()) {
+            return false; // TODO: Throw custom error
+        }
+        
+        /* 
+            Fetches the key based on the user ID assuming the fact that there are only one unique
+            files for each file type for each user. The file is deleted, the deletion status is returned.
+            Removal is done in 2 steps. Firstly, the actual file instance on Amazon S3 is deleted. Then,
+            the row of the form where the key value is stored is deleted.
+        */
+        final String key = form.get().getKey();
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
         s3.deleteObject(deleteObjectRequest);
-
-        formRepository.deleteById(userId); // TODO: Not sure if this works
+        // Remove key from the database
+        formRepository.deleteByUserId(userId);
         return true;
     }
 }
