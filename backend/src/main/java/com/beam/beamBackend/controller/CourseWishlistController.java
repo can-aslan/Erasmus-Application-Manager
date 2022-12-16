@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class CourseWishlistController {
     
     private final IWishlistService courseWishlistService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping(path = "/fetch")
     public ResponseEntity<Object> getAllWishlists()
     {
@@ -43,6 +45,7 @@ public class CourseWishlistController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping(path = "/fetch/coordinator/{coordinatorId}")
     public ResponseEntity<Object> getAllWishlistsOfCoordinator(@PathVariable("coordinatorId") UUID coordinatorId)
     {
@@ -61,6 +64,7 @@ public class CourseWishlistController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping(path = "/fetch/{studentId}")
     public ResponseEntity<Object> getAllWishlistOfStudent(@PathVariable("studentId") Long studentId)
     {
@@ -99,6 +103,7 @@ public class CourseWishlistController {
     }
     */
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/submit/{studentId}")
     public ResponseEntity<Object> submitWishlist(@PathVariable("studentId") Long studentId)
     {
@@ -117,6 +122,7 @@ public class CourseWishlistController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/add/{studentId}")
     public ResponseEntity<Object> addWishlistItem(@PathVariable("studentId") Long studentId, @Valid @RequestBody WishlistItem courseWishlistItem)
     {
@@ -135,6 +141,7 @@ public class CourseWishlistController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @DeleteMapping(path = "/delete/{studentId}/{wishlistItemUUID}")
     public ResponseEntity<Object> deleteWishlistItem(@PathVariable("studentId") Long studentId, @PathVariable("wishlistItemUUID") UUID wishlistItemUUID)
     {

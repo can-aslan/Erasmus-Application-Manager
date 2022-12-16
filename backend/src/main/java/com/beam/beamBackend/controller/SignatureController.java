@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +48,11 @@ public class SignatureController {
     public ResponseEntity<Object> downloadSignature(@PathVariable("userId") UUID userId) {
         try {
             byte[] signatureByteStream = signatureService.downloadSignature(userId);
-            return Response.create("Signature submission successful", HttpStatus.OK, signatureByteStream); // might change later
+            ByteArrayResource resource = new ByteArrayResource(signatureByteStream);
+
+            return ResponseEntity
+                    .ok()
+                    .body(resource);
         } catch (IOException e) {
             return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST); // might change later
         }
@@ -56,8 +62,8 @@ public class SignatureController {
     @RequestMapping(path = "user/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteSignature(@PathVariable("userId") UUID userId) {
         try {
-            byte[] signatureByteStream = signatureService.downloadSignature(userId);
-            return Response.create("Signature submission successful", HttpStatus.OK, signatureByteStream); // might change later
+            signatureService.deleteSignature(userId);
+            return Response.create("Signature submission successful", HttpStatus.OK); // might change later
         } catch (Exception e) {
             return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST); // might change later
         }
