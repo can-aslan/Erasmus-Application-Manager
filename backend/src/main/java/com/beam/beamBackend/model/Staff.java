@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import com.beam.beamBackend.request.StaffRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
@@ -51,5 +52,10 @@ public class Staff {
 
     public static Staff toStaff(StaffRequest sReq, User u) {
         return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
+    }
+
+    @JsonIgnore
+    public UUID getId() {
+        return id;
     }
 }
