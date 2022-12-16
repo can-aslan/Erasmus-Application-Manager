@@ -14,9 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.beam.beamBackend.enums.FormEnum;
+import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.Form;
+import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.ICourseWishlistRepository;
 import com.beam.beamBackend.repository.IFormRepository;
+import com.beam.beamBackend.repository.IPreApprovalRepository;
 import com.beam.beamBackend.service.form.decorator.Clear;
 import com.beam.beamBackend.service.form.decorator.FileWrapper;
 import com.beam.beamBackend.service.form.decorator.MultipartFileWrapper;
@@ -46,6 +50,8 @@ public class FormService {
     private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
+    private final ICourseWishlistRepository courseWishlistRepository;
+    private final IPreApprovalRepository preApprovalRepository;
 
     public boolean uploadForm(MultipartFile file, UUID userUuid, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException {
         S3Client s3 = S3ClientSingleton.getInstance();
@@ -148,4 +154,27 @@ public class FormService {
         s3.deleteObject(deleteObjectRequest);
         return true;
     }
+
+    /**
+     * Creates a PreApproval instance for the student if they do not have one
+     * Modifies the PreApproval instance information if they have one
+     * Creation and modification are done according to the current wishlist of the student
+     * If the student do not have a wishlist, a preApproval cannot be created
+     * @param userUuid user id of the student whose pre approval is supposed to be created
+     */
+    public void createPreAppFromWishlist(UUID userUuid){
+        Optional<PreApprovalForm> preApp = preApprovalRepository.findByStudentId(userUuid);
+        Optional<CourseWishlist> wishlist = courseWishlistRepository.findByStudentId(userUuid);
+
+        if (!wishlist.isPresent()){
+            throw new Exception("Student does not have a wishlist!");
+        }
+
+        if (preApp.isPresent()){
+            preApp.get().setWishlistId(wishlist.get().getWishlistId());
+        }else {
+            //preApp = preApprovalRepository.insertPreApp()
+        }
+    }
+
 }
