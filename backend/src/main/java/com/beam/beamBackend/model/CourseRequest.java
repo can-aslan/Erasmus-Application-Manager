@@ -66,7 +66,7 @@ public class CourseRequest {
     @Column(name = "status")
     private CourseRequestStatus status;
 
-    public CourseRequest (
+    public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
         @JsonProperty("studentId") Long studentId,
         @JsonProperty("hostCode") String hostCode,

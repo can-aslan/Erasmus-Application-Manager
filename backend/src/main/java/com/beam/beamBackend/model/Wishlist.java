@@ -1,15 +1,20 @@
 package com.beam.beamBackend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
+
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 
 @Entity
@@ -26,6 +31,9 @@ public class Wishlist {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CourseWishlistStatus status;
+
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WishlistItem> items;
 
     public Wishlist(
         @JsonProperty("studentId") Long studentId,
