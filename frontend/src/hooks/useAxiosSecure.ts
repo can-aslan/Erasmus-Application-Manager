@@ -25,6 +25,9 @@ const useAxiosSecure = (contentType?: string) => {
                 if (error?.response?.status === 403 && !prevRequest?.sent) {
                     prevRequest.sent = true
                     const newAccessToken = await refresh()
+                    // console.log("old: " + user.accessToken)
+                    // console.log("new: " + newAccessToken)
+                    // user.accessToken = newAccessToken
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
                     return axiosSecure(prevRequest)
                 }

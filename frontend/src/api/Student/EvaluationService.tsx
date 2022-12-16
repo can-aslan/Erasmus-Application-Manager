@@ -3,11 +3,14 @@ import { StudentAssociatedPastEvaluationItem } from "../../types"
 import { ResponseStudentPastEvaluation } from "../../types/responseTypes"
 
 export const getStudentPastUniEval = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponseStudentPastEvaluation>(`student/${studentId}/university`)
+    const response = await axios.get<ResponseStudentPastEvaluation>(`eval/student/${studentId}/university`)
     return response.data
 }
 
 export const evaluateUni = async (axios: AxiosInstance, evalForm: StudentAssociatedPastEvaluationItem) => {
-    const response = await axios.post<StudentAssociatedPastEvaluationItem>('/eval/university', evalForm)
+    const response = await axios.post<StudentAssociatedPastEvaluationItem>('/eval/university', 
+    JSON.stringify({
+        ...evalForm,
+    }))
     return response.data
 }

@@ -1,7 +1,8 @@
-import { Accordion, Anchor, Badge, Card, Flex, Grid, Image, List, Text, Title } from "@mantine/core";
+import { Accordion, Anchor, Badge, Card, Center, Flex, Grid, Group, Header, Image, List, Space, Text, Title } from "@mantine/core";
 import { IconSchool } from "@tabler/icons";
 import { useParams } from "react-router-dom";
 import EvaluationCard from "../../components/evaluation/EvaluationCard";
+import ToggleThemeIcon from "../../components/ToggleThemeIcon";
 
 
 import { UniversityDetailed, UniversityProxy } from "../../types";
