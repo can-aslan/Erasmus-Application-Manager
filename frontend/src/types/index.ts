@@ -193,6 +193,7 @@ export type PastEvaluation = {
     eval_list: Array<PastEvaluationItem>
 }
 export type PastEvaluationItem = {
+    uniId?: string,
     authorId: string,
     rate: number,
     comment: string,
