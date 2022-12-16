@@ -1,4 +1,4 @@
-import { Card, Center, Flex, Select } from "@mantine/core";
+ import { Card, Center, Flex, Select } from "@mantine/core";
 import { IconBook } from "@tabler/icons";
 import { MouseEvent, useState } from "react";
 import Evaluation from "../../components/evaluation/Evaluation";
@@ -62,7 +62,7 @@ const EvaluateCoursesPage = () => {
                 onChange={setSelectedCourse}
                 searchValue={searchedCourse}
                 data={availableCourses} />
-            {selectedCourse != null && 
+            {/* {selectedCourse != null && 
             <Evaluation givenRating={givenRating} 
             evaluationName={selectedCourse!} 
             description={description} 
@@ -72,7 +72,7 @@ const EvaluateCoursesPage = () => {
             emptySymbol={<IconBook />} 
             fullSymbol={<IconBook color="#1971c2" />} 
             editable={true} 
-            saveEval={()=>{}} submitEval={()=>{}}></Evaluation>}
+            saveEval={()=>{}} submitEval={()=>{}}></Evaluation>} */}
         </>
     );
 }
