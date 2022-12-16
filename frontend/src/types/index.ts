@@ -193,14 +193,14 @@ export type PastEvaluation = {
     eval_list: Array<PastEvaluationItem>
 }
 export type PastEvaluationItem = {
-    uniId?: string,
-    authorId: string,
+    uni_id?: string,
+    author_id: string,
     rate: number,
     comment: string,
 }
 
 export type StudentAssociatedPastEvaluationItem = PastEvaluationItem & {
-    evalStatus: string
+    eval_status: string
 }
 
 export type LearningAgreement = {

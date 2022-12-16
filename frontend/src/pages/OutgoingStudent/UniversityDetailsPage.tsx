@@ -38,17 +38,17 @@ const UniversityDetails = () => {
         logoImage: '',
         evals: [
             {
-                authorId: 'abc',
+                author_id: 'abc',
                 comment: "perfect uni",
                 rate: 5,
             },
             {
-                authorId: 'abcd',
+                author_id: 'abcd',
                 comment: "mediocre uni",
                 rate: 3,
             },
             {
-                authorId: 'abcdf',
+                author_id: 'abcdf',
                 comment: "somewhat nice unihdfsdfsdfsdfsdfasfqweqdfcxadqasda sdqwedqdsadas dasd asda wedw ",
                 rate: 4,
             },
@@ -146,7 +146,7 @@ const UniversityDetails = () => {
                                             <Grid.Col
                                                 md={6}
                                                 lg={3}
-                                                key={e.authorId}
+                                                key={e.author_id}
                                             >
                                                 <EvaluationCard
                                                     evaluation={e}
