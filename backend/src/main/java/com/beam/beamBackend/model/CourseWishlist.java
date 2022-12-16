@@ -19,6 +19,7 @@ import com.beam.beamBackend.enums.CourseWishlistStatus;
 @Data
 @Table(name = "course_wishlist")
 @NoArgsConstructor
+@Deprecated
 public class CourseWishlist {
     @Id
     @GeneratedValue(generator = "UUID")

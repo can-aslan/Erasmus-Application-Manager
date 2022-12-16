@@ -9,9 +9,12 @@ import {
     IconList,
     IconRegistered,
     IconSchool,
+    IconSignature,
     IconUpload
 } from "@tabler/icons";
 import { NavbarLink, ProgressBarStep, UserEnum } from "../types";
+
+
 
 export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> = {
     [UserEnum.OutgoingStudent]: [
@@ -45,11 +48,20 @@ export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> 
     [UserEnum.OISEPStaff]: []
 }
 
+const DEFAULT_NAVBAR_LINK_OBJECTS: Array<NavbarLink> = [
+    {
+        label: 'Upload Signature',
+        to: 'upload-signature',
+        icon: <IconSignature />
+    },
+]
+
 export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.OutgoingStudent]: [
+        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Universities',
-            to: '/student/universities',
+            to: '/universities',
             icon: <IconSchool />
         },
         {
@@ -91,6 +103,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.FACMember]: [
+        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Approve Pre-Approvals',
             to: '/fac-member/approve-pre-approvals',
@@ -103,6 +116,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         },
     ],
     [UserEnum.Coordinator]: [
+        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Student Wishlists',
             to: '/coordinator/student-wishlists',
@@ -133,6 +147,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.Instructor]: [
+        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Approve Course Request',
             to: '/instructor/approve-course-request'
@@ -152,6 +167,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.OISEPStaff]: [
+        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Upload Transcript',
             to: '/oisep-staff/transcript-upload',

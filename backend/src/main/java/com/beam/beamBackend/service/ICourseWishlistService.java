@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
 
+@Deprecated
 public interface ICourseWishlistService {
     List<CourseWishlist> getAllWishlists() throws Exception;
     boolean submitWishlist(CourseWishlist wishlist) throws Exception;

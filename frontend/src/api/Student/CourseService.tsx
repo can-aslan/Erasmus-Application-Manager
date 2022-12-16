@@ -1,26 +1,31 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
 
-import { Course, CourseRequest, CourseWishlistItem, } from "../../types"
-import { ResponseCourse, ResponseCourseList, ResponseCourseRequest, ResponsePreviousCourseRequests, ResponseStudentSpecificCourseWishlist, ResponseUniSpecificCourses } from "../../types/responseTypes"
+import { Course, CourseRequest, CourseWishlistItem, HostCourse, } from "../../types"
+import { ResponseBilkentCourse, ResponseBilkentCourseList, ResponseCourseRequest, ResponseHostUniCourses, ResponsePreviousCourseRequests, ResponseStudentCourseWishlist, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
-export const getCourses = async (axios: AxiosInstance) => {
-    const response = await axios.get<ResponseCourseList>(`/student/courses`)
+export const getBilkentCourses = async (axios: AxiosInstance) => {
+    const response = await axios.get<ResponseBilkentCourseList>(`/course/bilkent`)
     return response.data
 }
 
 export const getCourse = async (axios: AxiosInstance, courseId: string) => {
-    const response = await axios.get<ResponseCourse>(`/student/courses/${courseId}`)
+    const response = await axios.get<ResponseBilkentCourse>(`/student/courses/${courseId}`)
     return response.data
 }
 
 export const getUniCourses = async (axios: AxiosInstance, uniId: string) => {
-    const response = await axios.get<ResponseUniSpecificCourses>(`/uni/${uniId}/courses`)
+    const response = await axios.get<ResponseHostUniCourses>(`/course/host/uni/${uniId}`)
+    return response.data
+}
+
+export const getUniCoursesByUserId = async (axios: AxiosInstance, userId: string) => {
+    const response = await axios.get<ResponseHostUniCourses>(`/course/host/user/${userId}`)
     return response.data
 }
 
 export const getCourseWishlist = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponseStudentSpecificCourseWishlist>(`/student/courseWishlist/${studentId}`)
+    const response = await axios.get<ResponseStudentCourseWishlist>(`/student/courseWishlist/${studentId}`)
     return response.data
 }
 
@@ -46,8 +51,8 @@ export const submitWishlist = async (axios: AxiosInstance, studentId: string, wi
     return response.data
 }
     
-export const getPreviouslyRequestedCourses = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponsePreviousCourseRequests>(`/api/student/previousCourseRequests/${studentId}`)
+export const getPreviouslyRequestedCourses = async (axios: AxiosInstance) => {
+    const response = await axios.get<ResponsePreviousCourseRequests>(`/course/student/fetch`)
     return response.data
 }
 
@@ -58,4 +63,4 @@ export const makeCourseRequest = async (axios: AxiosInstance, course: CourseRequ
         }
     ))
     return response.data
-}
+} 

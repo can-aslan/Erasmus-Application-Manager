@@ -7,23 +7,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
 @Table(name = "form")
+@NoArgsConstructor
 public class Form {
     @Id
-    @Column(name = "form_uuid")
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "id")
     private UUID id;
 
     @NotNull
-    @Column(name = "user_uuid")
-    private UUID userUuid;
+    @Column(name = "user_id")
+    private UUID userId;
 
     @NotNull
     @Column(name = "form_type")
@@ -33,12 +37,12 @@ public class Form {
     @Column(name = "filename")
     private String key;
 
-    public Form(@JsonProperty("uuid") UUID formUuid,
-                @JsonProperty("userUuid") UUID userUuid,
+    public Form(@JsonProperty("uuid") UUID id,
+                @JsonProperty("userUuid") UUID userId,
                 @JsonProperty("fileType") FormEnum fileType,
                 @JsonProperty("fileName") String key ) {
-        this.id = formUuid == null ? UUID.randomUUID() : formUuid;;
-        this.userUuid = userUuid;
+        this.id = id == null ? UUID.randomUUID() : id;
+        this.userId = userId;
         this.formType = fileType;
         this.key = key;
     }

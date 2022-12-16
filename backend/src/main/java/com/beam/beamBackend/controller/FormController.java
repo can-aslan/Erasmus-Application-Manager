@@ -32,12 +32,12 @@ public class FormController {
     private final FileGenerator fileGenerator = new FileGenerator(); // Switch to singleton maybe?
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/{studentUuid}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
+    @RequestMapping(path = "form/{studentId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> uploadForm(@RequestParam("file") MultipartFile file,
-                                                    @RequestParam("fileType") FormEnum fileType,
-                                                    @PathVariable(value="studentUuid") UUID studentUuid) {
+                                                    @RequestParam("fileType") FormEnum formType,
+                                                    @PathVariable(value="studentId") UUID studentId) {
         try {
-            boolean upload = formService.uploadForm(file, studentUuid, fileType);
+            boolean upload = formService.uploadForm(file, studentId, formType);
             if (!upload) {
                 return Response.create("Something went terribly wrong on AWS servers. We are trying to fix the issue.", HttpStatus.BAD_REQUEST);
             }
@@ -54,10 +54,10 @@ public class FormController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentUuid") UUID studentUuid,
+    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentUuid") UUID studentId,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            formService.deleteFile(studentUuid, formType);
+            formService.deleteFile(studentId, formType);
             return Response.create("Successfully deleted the file", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -67,10 +67,10 @@ public class FormController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentUuid") UUID studentUuid,
+    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentUuid") UUID studentId,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            byte[] file = formService.downloadForm(studentUuid, formType);
+            byte[] file = formService.downloadForm(studentId, formType);
             return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -79,12 +79,12 @@ public class FormController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/generate/submit/student/{studentUuid}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentUuid") UUID studentUuid,
+    @RequestMapping(path = "form/generate/submit/student/{studentId}/{formType}", method = RequestMethod.POST)
+    public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            File approvalForm = fileGenerator.generatePreApprovalForm(studentUuid);
-            formService.uploadForm(approvalForm, studentUuid, formType);
+            File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
+            formService.uploadForm(approvalForm, studentId, formType);
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -93,11 +93,11 @@ public class FormController {
     }
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/generate/download/{studentUuid}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentUuid") UUID studentUuid,
+    @RequestMapping(path = "form/generate/download/{studentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
-            File approvalForm = fileGenerator.generatePreApprovalForm(studentUuid);
+            File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] file = fis.readAllBytes();
             fis.close();

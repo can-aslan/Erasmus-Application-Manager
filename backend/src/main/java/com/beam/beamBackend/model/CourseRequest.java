@@ -58,12 +58,10 @@ public class CourseRequest {
     @Column(name = "syllabus_link")
     private String syllabusLink;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "destination")
     private CourseRequestDestination destination;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CourseRequestStatus status;
@@ -82,6 +80,7 @@ public class CourseRequest {
     ) {
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
         this.studentId = studentId;
+        this.hostEcts = hostEcts;
         this.hostCode = hostCode;
         this.name = name;
         this.bilkentCode = bilkentCode;
