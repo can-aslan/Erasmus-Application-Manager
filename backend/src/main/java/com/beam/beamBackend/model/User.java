@@ -72,8 +72,8 @@ public class User {
     }
 
     // do not send password to client
-    @JsonIgnore
-    public String getPassword() {
-        return password;
-    }
+    // @JsonIgnore
+    // public String getPassword() {
+    //     return password;
+    // }
 }

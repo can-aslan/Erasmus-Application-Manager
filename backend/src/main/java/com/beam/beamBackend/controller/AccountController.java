@@ -23,6 +23,7 @@ import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
+import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.AccountService;
 import jakarta.validation.Valid;
@@ -71,8 +72,9 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register_staff")
     public ResponseEntity<Object> registerStaff(@Valid @RequestBody RegisterStaff userInfo) {
         try {
-            // UUID ids = accountService.addUser(userInfo);
-            return Response.create("account is created", HttpStatus.OK, "ids");
+            System.out.println(userInfo);
+            RRegisterStaff savedStaff = accountService.addStaff(userInfo);
+            return Response.create("account is created", HttpStatus.OK, savedStaff);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
         }        

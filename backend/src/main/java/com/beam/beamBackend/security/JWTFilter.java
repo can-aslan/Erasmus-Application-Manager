@@ -80,9 +80,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails user = JWTUserService.loadUserByUsername(username);
-                System.out.println("current refresh: " + currentEndpoint.equals("/api/v1/auth/refresh"));
+
                 if (isCurrentRefresh && JWTUtils.validateRefreshToken(token) || JWTUtils.validateAccessToken(token, user)) {
-                    System.out.println("here is here");
+                    System.out.println("here is here: " + user.getPassword());
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);

@@ -21,9 +21,12 @@ import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.request.ChangePassword;
+import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.StaffRequest;
+import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
+import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
 
@@ -43,14 +46,13 @@ public class AccountService {
 
     private final InstructorCourseService instructorCourseService;
 
-    @Autowired
     private final JWTUserService jwtUserService;
 
     @Autowired
     private final JWTUtils jwtUtils;
 
-    @Autowired
-    private AuthenticationManager authManager;
+    // @Autowired
+    // private AuthenticationManager authManager;
 
     public RLoginUser login(UserLogin user) throws Exception {
         try {
@@ -143,10 +145,11 @@ public class AccountService {
 
     public User addUser(User user) throws Exception {
         try {
+            System.out.println("user that will be saved: " + user);
             boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
             
             if (userExist) {
-                throw new Exception();
+                throw new Exception("user already exists");
             } else {
                 // generate uuid and hash password if user does not exist in the system
                 user.setId(UUID.randomUUID());
@@ -159,47 +162,45 @@ public class AccountService {
                 return newUser;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
 
-    public UUID addStaff(RegisterStaff staff) throws Exception {
+    public RRegisterStaff addStaff(RegisterStaff staff) throws Exception {
         try {
-            User newUser = addUser(staff);
-
-            if (newUser.getUserType() == UserType.COORDINATOR
-                    || newUser.getUserType() == UserType.FAC_MEMBER
-                    || newUser.getUserType() == UserType.OISEP
-                    || newUser.getUserType() == UserType.INSTRUCTOR) {
-                Staff staffDb = Staff.toStaff(new StaffRequest(null, staff.getDepartment(), staff.getFaculty()), newUser);
-                // staffDb.setId(UUID.randomUUID());
-                System.out.println("helodb: " + staffDb);
-
-				staffRepository.save(staffDb);
-            } else {
-                throw new Exception("user type is not valid");
-            }           
+            User newUser = addUser(new User(UUID.randomUUID(), staff.getName(), staff.getSurname(), staff.getEmail(), staff.getBilkentId(), "staff.getPassword()", staff.getUserType()));        
             
+            // check if staff has necessary info
+            if (newUser.getUserType() == UserType.COORDINATOR || newUser.getUserType() == UserType.INSTRUCTOR) {
+                if (staff.getDepartment() == null) {
+                    throw new Exception( " should have a department");
+                }
+                
+                if (staff.getFaculty() == null) {
+                    throw new Exception(newUser.getUserType() + " should have a faculty");
+                }
+            } else if (newUser.getUserType() == UserType.FAC_MEMBER) {
+                if (staff.getFaculty() == null) {
+                    throw new Exception(newUser.getUserType() + " should have a faculty");
+                }
+            }
+
+            // save staff to database
+            Staff staffDb = Staff.toStaff(new StaffRequest(newUser.getId(), staff.getDepartment(), staff.getFaculty()), newUser);
+            Staff savedStaff = staffRepository.save(staffDb);
+            RInstructorCourseAdd responseInstructorSavedCourses = null;
             
+            // if staff is user add isntructor course if there is any
             if (newUser.getUserType() == UserType.INSTRUCTOR) {
-                instructorCourseService.addCourseToInstructor(new InstructorCourse(null, newUser.getId(), newUser.))
+                if (staff.getBilkentCourseCodes() != null) {
+                    responseInstructorSavedCourses = instructorCourseService.addCourseToInstructor(new InstructorCourseAdd(newUser.getId(), staff.getBilkentCourseCodes()));                    
+                } else {
+                    System.out.println("instructor has no course");
+                }
             }
-            // boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
-            
-            // if (userExist) {
-            //     throw new Exception();
-            // } else {
-            //     // generate uuid and hash password if user does not exist in the system
-            //     user.setId(UUID.randomUUID());
-            //     // user.setPassword(user.getPassword());
-            //     user.setPassword(encodePassword(user.getPassword()));
 
-            //     System.out.println("user_id: " + user.getId());
-            //     accountRepository.save(user);
-
-            //     System.out.println("user_id after register: " + accountRepository.findUserByEmail(user.getEmail()).get().getId());
-                return user.getId();
-            }
+            return new RRegisterStaff(savedStaff, responseInstructorSavedCourses);
         } catch (Exception e) {
             throw e;
         }
