@@ -55,10 +55,8 @@ public class AccountService {
 
     public RLoginUser login(UserLogin user) throws Exception {
         try {
-            System.out.println("id: "+ user.getBilkentId());
             User dbUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
 
-            System.out.println("user: " + dbUser);
             if (dbUser == null) {
                 throw new Exception("user is not found");
             }
@@ -145,7 +143,7 @@ public class AccountService {
     public User addUser(User user) throws Exception {
         try {
             System.out.println("user that will be saved: " + user);
-            boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
+            boolean userExist = accountRepository.existsByBilkentIdOrEmail(user.getBilkentId(), user.getEmail());
             
             if (userExist) {
                 throw new Exception("user already exists");
@@ -168,8 +166,13 @@ public class AccountService {
 
     public RRegisterStaff addStaff(RegisterStaff staff) throws Exception {
         try {
-            User newUser = addUser(new User(UUID.randomUUID(), staff.getName(), staff.getSurname(), staff.getEmail(), staff.getBilkentId(), "staff.getPassword()", staff.getUserType()));        
+            String generatedPassword = StudentPlacementService.generatePsw();
             
+            User newUser = addUser(new User(UUID.randomUUID(), staff.getName(), staff.getSurname(), staff.getEmail(), staff.getBilkentId(), generatedPassword, staff.getUserType()));        
+            
+            // set unhashed password to user so that frontend can show it
+            newUser.setPassword(generatedPassword);
+
             // check if staff has necessary info
             if (newUser.getUserType() == UserType.COORDINATOR || newUser.getUserType() == UserType.INSTRUCTOR) {
                 if (staff.getDepartment() == null) {
@@ -188,7 +191,7 @@ public class AccountService {
             Staff savedStaff = staffRepository.save(staffDb);
             RInstructorCourseAdd responseInstructorSavedCourses = null;
             
-            // if staff is user add isntructor course if there is any
+            // if staff is user, add instructor course
             if (newUser.getUserType() == UserType.INSTRUCTOR) {
                 if (staff.getBilkentCourseCodes() != null) {
                     responseInstructorSavedCourses = instructorCourseService.addCourseToInstructor(new InstructorCourseAdd(newUser.getId(), staff.getBilkentCourseCodes()));                    
