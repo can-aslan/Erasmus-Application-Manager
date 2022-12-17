@@ -23,4 +23,5 @@ public interface IStaffRepository extends JpaRepository<Staff, UUID> {
     List<Staff> findByDepartmentAndUserUserType(Department department, UserType userType);
     List<Staff> findByUserUserType(UserType userType);
     List<Staff> findAll();
+    boolean existsByUserIdAndUserUserType(UUID instructor, UserType userType);
 }

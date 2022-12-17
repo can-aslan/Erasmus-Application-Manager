@@ -34,7 +34,7 @@ public class StaffService {
             }
 
             Staff staffDb = Staff.toStaff(staff, user.get());
-            staffDb.setId(UUID.randomUUID());
+            // staffDb.setId(UUID.randomUUID());
             System.out.println("helodb: " + staffDb);
 
             staffRepository.save(staffDb);

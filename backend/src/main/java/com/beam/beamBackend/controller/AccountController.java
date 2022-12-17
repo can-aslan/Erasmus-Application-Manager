@@ -33,11 +33,6 @@ import lombok.AllArgsConstructor;
 public class AccountController {
     private final AccountService accountService;
 
-    // @Autowired
-    // public AccountController(AccountService accountService) {
-    //     this.accountService = accountService;
-    // }
-
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
     public ResponseEntity<Object> login(@Valid @RequestBody UserLogin userInfo) {
