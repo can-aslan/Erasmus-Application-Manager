@@ -87,14 +87,14 @@ public class FileGenerator {
 
         for (int i = 0; i < wishlistItems.size(); i++){
             bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
-            bilkentCredit.add(wishlistItems.get(i).getBilkentCredits().toString());
+            bilkentCredit.add(wishlistItems.get(i).getBilkentCredits());
             double ectsTotal = 0;
             for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
-                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostCourse());
+                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostName());
                 ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
             }
             // Only gets the course code of the first host university course 
-            courseCode.add(wishlistItems.get(i).getMappings().get(0).getCourseCode());
+            courseCode.add(wishlistItems.get(i).getMappings().get(0).getHostCourse());
             // It is assumed that ects in the WishlistItem model since there should be one ects value even there are more than one host course
             ects.add(ectsTotal);
             directlyEquivalent.add("");

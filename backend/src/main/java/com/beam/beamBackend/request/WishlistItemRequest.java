@@ -16,5 +16,14 @@ public class WishlistItemRequest {
     private String bilkentCourse;
 
     @NotNull
+    private Double ects;
+
+    @NotNull
+    private Double bilkentCredits;
+
+    @NotBlank
+    private String bilkentName;
+
+    @NotNull
     private List<WishlistItemMapping> mappings;
 }

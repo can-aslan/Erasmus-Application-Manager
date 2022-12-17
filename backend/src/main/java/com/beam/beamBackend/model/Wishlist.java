@@ -35,7 +35,7 @@ public class Wishlist {
     @Column(name = "status")
     private CourseWishlistStatus status;
 
-    @OneToMany(mappedBy = "ownerWishlist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ownerWishlist", cascade = CascadeType.ALL) //, orphanRemoval = true)
     private List<WishlistItem> items;
 
     public Wishlist(
