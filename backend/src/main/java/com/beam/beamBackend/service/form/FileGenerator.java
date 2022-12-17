@@ -435,13 +435,7 @@ public class FileGenerator {
             cell.addElement(p1);
             coursesTable.addCell(cell);
         }
-
-
-
         document.add(coursesTable);
-
-
-
     }
 
     

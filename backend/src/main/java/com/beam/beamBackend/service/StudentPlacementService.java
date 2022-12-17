@@ -3,6 +3,7 @@ package com.beam.beamBackend.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,11 +18,13 @@ import com.beam.beamBackend.enums.Sex;
 import com.beam.beamBackend.enums.StudyType;
 import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.Preferences;
+import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IPreferencesRepository;
+import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.StudentRequest;
@@ -51,13 +54,16 @@ public class StudentPlacementService {
     private final IStudentRepository studentRepository;
     private final IPreferencesRepository preferencesRepository;
     private final IAccountRepository accountRepository;
+    private final IStaffRepository staffRepository;
     public ArrayList<Student> placeStudents(String department) throws Exception {
         
-
+        // Get List of coordinators
+        List<Staff> coordinators = staffRepository.findByDepartmentAndUserUserType(Department.valueOf(department), UserType.COORDINATOR);
+        int assignedCoordinators = 0;
         readFromStudentCsv(department);
         getAllUniversitiesQuota(department);
         
-        //ASSING COORDINATOR TO STUDENTS
+        //Assign coordinator to students
         for (int i = 0; i < regiteredStudents.size(); i++){
             ArrayList<String> preferenceList = new ArrayList<>();
             Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
@@ -73,6 +79,9 @@ public class StudentPlacementService {
                     if(quotas.get(currentUni) > 0){
                         regiteredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1 );
+                        //Assign coordinator to students
+                        Staff currentCoordinator = coordinators.get( assignedCoordinators % coordinators.size());
+                        regiteredStudents.get(i).setCoordinator(currentCoordinator);
                         break;  
                     }
                 }
@@ -275,10 +284,5 @@ public class StudentPlacementService {
             e.printStackTrace();  
             throw e;
         }
-    }
-
-        
-    
-
-    
+    }   
 }
