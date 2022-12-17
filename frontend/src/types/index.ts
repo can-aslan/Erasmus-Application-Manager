@@ -69,7 +69,6 @@ export type StudentAssociatedWishlist = {
 
 export type Course = {
     courseCode: string,
-    courseName: string,
     ects: number,
     courseId?: string | null,
     department?: string,
@@ -80,11 +79,13 @@ export type Course = {
 }
 
 export type BilkentCourse = Course & {
+    bilkentName: string,
     bilkentCredits: number,
     elective?: boolean
 }
 
 export type HostCourse = Course & {
+    hostName: string,
     courseApproval?: ApprovalStatus
 }
 
@@ -102,16 +103,16 @@ export type CourseWishlistItem = {
 export type NewCourseWish = {
     bilkentCourse: string,
     mappings: Array<CourseWishlistItemMapping>,
-    ects?: number,
-    bilkentCredits?: number,
-    courseName?: string,
+    ects: number,
+    bilkentCredits: number,
+    bilkentName?: string,
 }
 
 export type CourseWishlistItemMapping = {
     mappingItemId: string,
     hostCourse: string, // course code
-    ects?: number,
-    courseName?: string,
+    ects: number,
+    hostName: string, // course name
     wishlistItem?: string,
 }
 
@@ -124,11 +125,11 @@ export type ExistingCourseWishlist = {
 export interface WishlistItemsInterface {
     wishlistItemId: string,
     studentId: string,
-    bilkentCourse: string, // Course code
-    ownerWishlist: string,
     ects: number,
     bilkentCredits: number,
-    courseName: string,
+    bilkentName: string, //
+    bilkentCourse: string, // Course code
+    ownerWishlist: string,
     mappings: Array<CourseWishlistItemMapping>
 }
 

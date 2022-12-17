@@ -3,6 +3,7 @@ package com.beam.beamBackend.model;
 import java.util.UUID;
 
 import com.beam.beamBackend.enums.Department;
+import com.beam.beamBackend.enums.PreApprovalStatus;
 import com.beam.beamBackend.enums.Semester;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -50,4 +51,9 @@ public class PreApprovalForm {
     @NotNull
     @Column(name = "date", nullable = false)
     private String date;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(name = "approval_status", nullable = false)
+    private PreApprovalStatus preApprovalStatus;
 }

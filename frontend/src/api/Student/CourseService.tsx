@@ -34,14 +34,8 @@ export const saveWishlist = async (axios: AxiosInstance, bilkentId: string, newW
     return response.data
 }
 
-export const submitWishlist = async (axios: AxiosInstance, bilkentId: string, wishlistItems: CourseWishlistItem[] | undefined) => {
-    const response = await axios.post(`/student/${bilkentId}/courseWishlist/submit`,
-        JSON.stringify({
-            data: {
-                wishlistItems
-            }
-        })    
-    )
+export const submitWishlist = async (axios: AxiosInstance, bilkentId: string) => {
+    const response = await axios.post(`/wishlist/submit/${bilkentId}`)
     return response.data
 }
     

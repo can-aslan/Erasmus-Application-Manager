@@ -1,13 +1,21 @@
 package com.beam.beamBackend.service.form;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,8 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.enums.FormEnum;
+import com.beam.beamBackend.enums.PreApprovalStatus;
 import com.beam.beamBackend.model.Form;
 import com.beam.beamBackend.model.PreApprovalForm;
+import com.beam.beamBackend.model.Signature;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IFormRepository;
@@ -51,13 +61,16 @@ public class FormService {
     final long ONE_KB = 1024;
     final long ONE_MB = ONE_KB * ONE_KB; 
     final long FILE_SIZE_LIMIT = ONE_MB;
-
     private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
+
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
     private final IWishlistRepository wishlistRepository;
     private final IPreApprovalRepository preApprovalRepository;
     private final IStudentRepository studentRepository;
+    private final FileGenerator fileGenerator;
+
+    private final SignatureService signatureService;
 
     public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
@@ -114,7 +127,11 @@ public class FormService {
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
 
-        // TODO: Check userId
+
+        Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
+        if (form.isPresent()) {
+            deleteFile(userId, formType);
+        }
 
         if (file == null || file.length() == 0) {
             throw new NullPointerException("File field cannot be empty");
@@ -147,8 +164,8 @@ public class FormService {
         s3.putObject(objectRequest, RequestBody.fromFile(file));
 
         final UUID id = UUID.randomUUID();
-        Form form = new Form(id, userId, formType, key);
-        formRepository.save(form);
+        Form formObj = new Form(id, userId, formType, key);
+        formRepository.save(formObj);
 
         return true;
     }
@@ -205,6 +222,57 @@ public class FormService {
         return true;
     }
 
+    public ByteArrayResource generateAndDownloadPreApproval(UUID studentId) throws Exception {
+        try {
+            PreApprovalForm preApprovalForm = createPreAppFromWishlist(studentId);
+            File approvalForm = fileGenerator.generatePreApprovalForm(preApprovalForm, null);
+            FileInputStream fis = new FileInputStream(approvalForm);
+            byte[] form = fis.readAllBytes();
+            ByteArrayResource resource = new ByteArrayResource(form);
+            fis.close();
+
+            return resource;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception {
+        PreApprovalForm form = createPreAppFromWishlist(studentId);
+        File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
+        uploadForm(approvalForm, studentId, formType);
+    }
+
+    public void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception {
+        PreApprovalForm currentForm = getPreApprovalForm(studentBilkentId);
+        User coordinator = accountRepository.findUserByBilkentId(coordinatorBilkentId);
+        User student = accountRepository.findUserByBilkentId(studentBilkentId);
+        Optional<Signature> signature = signatureService.getSignatureByBilkentId(coordinatorBilkentId);
+
+        if (!signature.isPresent()) {
+            throw new Exception("Signature not find for coordinator");
+        }
+
+        Signature signatureObj = signature.get();
+        final String key = signatureObj.getKey();
+
+        // Write signature to a temp file
+        byte[] signatureByteArray = signatureService.downloadSignature(coordinator.getId());
+
+        // File tempFile = File.createTempFile("sign", ".png", null);
+        // FileOutputStream fos = new FileOutputStream(tempFile);
+        // fos.write(signatureByteArray);
+
+        // Convert signature to buffered image and pass it to generate preapproval form
+        // BufferedImage signatureImg = ImageIO.read(tempFile);
+
+        File approvalForm = fileGenerator.generatePreApprovalForm(currentForm, signatureByteArray);
+
+        // tempFile.delete();
+
+        uploadForm(approvalForm, student.getId(), FormEnum.PRE_APPROVAL);
+    }
+
     /**
      * Creates a PreApproval instance for the student if they do not have one
      * Modifies the PreApproval instance information if they have one
@@ -232,9 +300,9 @@ public class FormService {
             
             // Create instant date object here
             String date = "a";
-            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date));
+            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date, PreApprovalStatus.PENDING));
         
-        }catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
             throw e;
         }
@@ -260,5 +328,4 @@ public class FormService {
             }
         }
     }
-
 }
