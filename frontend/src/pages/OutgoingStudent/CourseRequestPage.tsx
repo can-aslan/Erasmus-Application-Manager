@@ -1,7 +1,7 @@
 import { Anchor, Box, Button, Center, Divider, FileButton, Flex, Group, Select, Stack, Switch, Table, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getPreviouslyRequestedCourses, makeCourseRequest } from "../../api/Student/CourseService";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -11,24 +11,30 @@ import { Course, CourseRequest, PreviousCourseRequest } from "../../types";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
+const ELECTIVE_TYPES = ["General Elective", "Technical Elective", "Arts Core Elective", "Social Sciences Elective"]
+
 const CourseRequestPage = () => {
     const [searchedBilkentCourseInfo, setBilkentOnSearchChange] = useState('');
     const [isBilkentCourseEmpty, setIsBilkentCourseEmpty] = useState(false);
-    const axiosSecure = useAxiosSecure();
     const [isElective, setIsElective] = useState(false);
+    const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient();
     const { user } = useUser();
 
-    // TODO: Use courses instead of allCoursesBilkent
-    // const { data: courses, isLoading: isCoursesLoading, isError: isCoursesError } = useCourses(axiosSecure)
-    const allCoursesBilkent = ["CS473 - Algorithms I", "CS342 - Operating Systems"];
-    const electiveTypes = ["General Elective", "Technical Elective", "Arts Core Elective", "Social Sciences Elective"]
+
+    const { data: courses, isLoading: isCoursesLoading, isError: isCoursesError } = useCourses(axiosSecure)
+    const { data: dataPrevious, isError: isPreviousError, isLoading: isPreviousLoading } = useQuery({
+        queryFn: () => getPreviouslyRequestedCourses(axiosSecure),
+        queryKey: ['previousCourseRequests']
+    })
     const { mutate: mutateCourseRequest, isError: isCourseRequestError, isLoading: isCourseRequestLoading } = useMutation({
         mutationKey: ['courseRequest'],
-        mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course)
+        mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['previousCourseRequests'])
+        }
     })
-    const { data: dataPrevious, isError: isPreviousError, isLoading: isPreviousLoading } = useQuery({
-        queryFn: () => getPreviouslyRequestedCourses(axiosSecure)
-    })
+
     const form = useForm({
         initialValues: {
             hostCourseCode: '',
@@ -45,18 +51,20 @@ const CourseRequestPage = () => {
             ectsCredits: (value) => value.length > 0 ? null : "ECTS Credits cannot be empty.",
         }
     })
-    if (isPreviousLoading || isCourseRequestLoading) {
+    if (isPreviousLoading || isCoursesLoading) {
         return (
             <LoadingPage />
         )
     }
-
-    if (isPreviousError || !dataPrevious) {
+        
+    if (isPreviousError || isCoursesError || !dataPrevious) {
         return (
             <ErrorPage />
         )
     }
-
+        
+    const allCoursesBilkent = courses.data.map(c => c.courseName);
+    
     const handleRequestCourse = () => {
         const validate = form.validate();
         if (searchedBilkentCourseInfo === '') {
@@ -98,7 +106,9 @@ const CourseRequestPage = () => {
             <td style={{ maxWidth: "200" }}>{""}
                 <Group>
                     {course.status == 'APPROVED' ? <IconCheck color={"#2f9e44"} /> : course.status == 'PENDING' ? <IconSearch color={"#1971c2"} /> : <IconX color={"#e03131"} />}
-                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}> {course.status == 'APPROVED' ? "Approved" : course.status == 'PENDING' ? "Pending Approval" : "Rejected"}</Text>
+                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}> 
+                        {course.status == 'APPROVED' ? "Approved" : course.status == 'PENDING' ? "Pending Approval" : "Rejected"}
+                    </Text>
                 </Group>
             </td>
         </tr>
@@ -151,8 +161,13 @@ const CourseRequestPage = () => {
                                 nothingFound="No elective in Bilkent Found"
                                 onSearchChange={setBilkentOnSearchChange}
                                 searchValue={searchedBilkentCourseInfo}
-                                data={isElective ? electiveTypes : allCoursesBilkent} />
-                            <Button onClick={handleRequestCourse}>Request Course</Button>
+                                data={isElective ? ELECTIVE_TYPES : allCoursesBilkent} />
+                            <Button 
+                                onClick={handleRequestCourse}
+                                loading={isCourseRequestLoading}
+                            >
+                                    Request Course
+                            </Button>
                         </Stack>
                     </form>
                 </Stack>

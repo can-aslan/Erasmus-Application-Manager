@@ -213,9 +213,9 @@ public class FormService {
      * @param userUuid user id of the student whose pre approval is supposed to be created
      * @throws Exception
      */
-    public PreApprovalForm createPreAppFromWishlist(Long bilkentId) throws Exception{
+    public PreApprovalForm createPreAppFromWishlist(UUID studentId) throws Exception{
         try{
-            Optional<Student> student = studentRepository.findByUserBilkentId(bilkentId);
+            Optional<Student> student = studentRepository.findByUserId(studentId);
             if (!student.isPresent()){
                 throw new Exception("Student with given user id does not exist!");
             }
