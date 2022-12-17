@@ -60,11 +60,6 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.OutgoingStudent]: [
         ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
-            label: 'Universities',
-            to: '/universities',
-            icon: <IconSchool />
-        },
-        {
             label: 'Course Wishlist',
             to: '/student/course-wishlist',
             icon: <IconList />
