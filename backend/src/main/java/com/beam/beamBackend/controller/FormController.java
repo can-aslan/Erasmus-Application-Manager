@@ -88,6 +88,7 @@ public class FormController {
     public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
+            // TODO: Fetch preapproval data using preapproval service, pass the mode lto generatePreApprovalForm function
             File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
             formService.uploadForm(approvalForm, studentId, formType);
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
@@ -102,11 +103,14 @@ public class FormController {
     public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
+            // TODO: Fetch preapproval data using preapproval service, pass the mode lto generatePreApprovalForm function
             File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] file = fis.readAllBytes();
             fis.close();
-            return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
+            return ResponseEntity
+                    .ok()
+                    .body(file);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
