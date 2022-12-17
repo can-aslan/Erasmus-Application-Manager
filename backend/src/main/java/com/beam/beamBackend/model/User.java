@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.request.UserRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -72,8 +73,13 @@ public class User {
     }
 
     // do not send password to client
-    // @JsonIgnore
-    // public String getPassword() {
-    //     return password;
-    // }
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    public static User toUser(UserRequest userRequest, String password) {
+        return new User(userRequest.getId(), userRequest.getName(), userRequest.getSurname(), 
+                userRequest.getEmail(), userRequest.getBilkentId(), null, null);
+    }
 }

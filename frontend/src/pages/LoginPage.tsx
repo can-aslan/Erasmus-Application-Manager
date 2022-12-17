@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Header, Stack, Title } from "@mantine/core";
+import { Box, Card, Center, Flex, Header, Stack, Title } from "@mantine/core";
 import { NavLink } from "react-router-dom";
 import ToggleThemeIcon from "../components/ToggleThemeIcon";
 import LoginForm from "../components/auth/LoginForm";
@@ -19,17 +19,21 @@ const LoginPage = () => {
         <>
             <GuestHeader/>
             <Center sx={{height: '87vh'}}>
-                <Box 
-                    sx={{minWidth: 300}} 
+                <Card 
+                    withBorder
+                    radius='xl'
+                    shadow='xl'
+                    p={48}
+                    sx={{minWidth: 350}} 
                     mx="auto"
                 >
                     <Stack 
-                        spacing='xl'
+                        spacing={'xl'}
                     >
                         <Title color='blue' size='36px'>Welcome to Beam</Title>
                         <LoginForm />
                     </Stack>
-                </Box>
+                </Card>
             </Center>   
         </>
     );

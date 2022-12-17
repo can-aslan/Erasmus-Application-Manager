@@ -3,6 +3,7 @@ package com.beam.beamBackend.service;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.StaffRequest;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
+import com.beam.beamBackend.request.UserRequest;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RRegisterStaff;
@@ -201,6 +203,28 @@ public class AccountService {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public User addUserWithUserRequest(UserRequest userRequest) throws Exception {
+        try {
+            // Convert the User request to User
+            User user = User.toUser(userRequest, null);
+            UUID id = UUID.randomUUID();
+            user.setId(id);
+            
+            // Generate a random password
+            String password = new Random().ints(10, 33, 122).collect(StringBuilder::new,
+                    StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString();
+            user.setPassword(encodePassword(password));
+            System.out.println("In account 5");
+            accountRepository.save(user);
+            System.out.println("In account 6");
+            return user;
+        } catch (Exception e) {
+            throw e;
+        }
+        
     }
 
     public HashSet<User> addUserChunk(User[] users) throws Exception {

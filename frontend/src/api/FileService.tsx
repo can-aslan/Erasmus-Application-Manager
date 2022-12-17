@@ -1,4 +1,5 @@
 import { Axios, AxiosInstance } from "axios"
+import { Form } from "../types"
 import { Response, ResponsePreApprovalForm } from "../types/responseTypes"
 
 export const getFile = async (axios: AxiosInstance, studentId: string) => {
@@ -8,7 +9,6 @@ export const getFile = async (axios: AxiosInstance, studentId: string) => {
 
 // formData should contain the File object in the "file" property and FileType in the "fileType" property
 export const submitFile = async (axios: AxiosInstance, formData: FormData, studentId: string) => {
-    console.log(formData)
     const response = await axios.post(`/fileService/form/${studentId}`, formData, {
         headers: {
             "Content-Type": "multipart/form-data"
@@ -42,5 +42,17 @@ export const downloadSignature = async (axios: AxiosInstance, userId: string) =>
     const response = await axios.get(`/signature/user/${userId}`, {
         responseType: "blob",
     })
+    return response.data
+}
+
+export const downloadForm = async (axios: AxiosInstance, userId: string, formType: Form) => {
+    const response = await axios.get(`fileService/form/${userId}/${formType}`, {
+        responseType: "blob",
+    })
+    return response.data
+}
+
+export const deleteForm = async (axios: AxiosInstance, userId: string, formType: Form) => {
+    const response = await axios.delete(`fileService/form/${userId}/${formType}`)
     return response.data
 }
