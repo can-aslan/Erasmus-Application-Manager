@@ -180,9 +180,7 @@ public class AccountService {
                     throw new Exception(newUser.getUserType() + " should have a faculty");
                 }
             } else if (newUser.getUserType() == UserType.FAC_MEMBER && staff.getFaculty() == null) {
-                if (staff.getFaculty() == null) {
-                    throw new Exception(newUser.getUserType() + " should have a faculty");
-                }
+                throw new Exception(newUser.getUserType() + " should have a faculty");                
             }
 
             // save staff to database
