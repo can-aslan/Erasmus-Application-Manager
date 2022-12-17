@@ -54,13 +54,12 @@ public class StudentPlacementService {
     public ArrayList<Student> placeStudents(String department) throws Exception {
         
 
-        return readFromStudentCsv(department);
-        /*getAllUniversitiesQuota(department);
+        readFromStudentCsv(department);
+        getAllUniversitiesQuota(department);
         
 
         for (int i = 0; i < regiteredStudents.size(); i++){
             ArrayList<String> preferenceList = new ArrayList<>();
-            //preferences = studentRepository.findById(regiteredStudents.get(i).getId()).get().getPreferences();
             Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
             preferenceList.add(preferences.get().getPref1());
             preferenceList.add(preferences.get().getPref2());
@@ -74,7 +73,7 @@ public class StudentPlacementService {
                     if(quotas.get(currentUni) > 0){
                         regiteredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1 );
-                        break;
+                        break;  
                     }
                 }
             }
@@ -87,9 +86,9 @@ public class StudentPlacementService {
             if (currentStudent.getHostUni() == null){
                 waitingList.add(currentStudent);
             }
-        }*/
+        }
         
-        //readFromUniCsv();
+        return regiteredStudents;
     }
 
 
@@ -252,7 +251,7 @@ public class StudentPlacementService {
     }
 
     
-    /*public void readFromUniCsv() throws IOException{
+    public void readFromUniCsv(String fepartment) throws IOException{
         try {
             String line = "";  
             String splitBy = ",";  
@@ -276,7 +275,7 @@ public class StudentPlacementService {
             e.printStackTrace();  
             throw e;
         }
-    }*/
+    }
 
         
     
