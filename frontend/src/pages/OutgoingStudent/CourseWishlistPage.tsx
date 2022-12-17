@@ -96,7 +96,7 @@ const CourseWishlistPage = () => {
     }
     
     const handleRemoveWish = (e: React.MouseEvent, bilkentCourseId: string): void => {
-        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseUUID !== bilkentCourseId))
+        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseId !== bilkentCourseId))
     }
 
     const handleAddWish = () => {

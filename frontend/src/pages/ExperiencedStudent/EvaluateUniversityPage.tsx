@@ -9,7 +9,7 @@ import Evaluation from "../../components/evaluation/Evaluation";
 import RatingBar from "../../components/rating/RatingBar";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useUser } from "../../provider/UserProvider";
-import { StudentAssociatedPastEvaluationItem } from "../../types";
+import { StudentAssociatedUniPastEvaluationItem } from "../../types";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
@@ -17,47 +17,55 @@ import LoadingPage from "../Feedback/LoadingPage";
 const EvaluateUniversityPage = () => {
     const axiosSecure = useAxiosSecure()
     const { user } = useUser()
-    const { data: dataEval, isError: isEvalError, isLoading: isEvalLoading } = useQuery({
+    const { data: dataStudent, isError: isStudentUError, isLoading: isStudentULoading } = useQuery({
+        queryFn: () => getStudent(axiosSecure, user?.bilkentId!),
+        queryKey: ["getStudent"]
+    })
+    const { data: dataEval, isError: isEvalUError, isLoading: isEvalULoading} = useQuery({
         queryFn: () => getStudentPastUniEval(axiosSecure, user?.bilkentId!),
-        queryKey: ["get_past_eval"]
+        queryKey: ["getPastUniEval"],
+        onSuccess: (dataEval) => {
+            setGivenRating(dataEval.data.rate);
+            setCurrentEvaluation(dataEval.data.comment);
+        },
     })
 
-    const { data: dataStudent, isError: isStudentError, isLoading: isStudentLoading } = useQuery({
-        queryFn: () => getStudent(axiosSecure, user?.bilkentId!),
-        queryKey: ["get_student"]
-    })
-    const evaluation = dataEval?.data;
-    const [currentEvaluation, setCurrentEvaluation] = useState(evaluation?.comment);
-    const [givenRating, setGivenRating] = useState(evaluation?.rate);
-    const uniName = dataStudent?.data.hostUni.name;
-    const description = `You can evaluate ${uniName} in terms of food, dormitories, social opportunities, people, campus facilities etc.`;
+
+
+    const [currentEvaluation, setCurrentEvaluation] = useState("Waiting for response...");
+    const [givenRating, setGivenRating] = useState(0);
+
     const { mutate: mutateSaveEvalUni, data: userSaveData, isLoading: isSaveUniLoading } = useMutation({
         mutationKey: ['saveUniEval'],
-        mutationFn: (newEval: StudentAssociatedPastEvaluationItem) => evaluateUni(axiosSecure, newEval),
+        mutationFn: (newEval: StudentAssociatedUniPastEvaluationItem) => evaluateUni(axiosSecure, newEval),
         onSuccess: () => toast.success(`Evaluation saved.`),
         onError: () => toast.error("Evaluation save failed.")
     })
 
     const { mutate: mutateSubmitEvalUni, data: userSubmitData, isLoading: isSubmitUniLoading } = useMutation({
         mutationKey: ['submitUniEval'],
-        mutationFn: (newEval: StudentAssociatedPastEvaluationItem) => evaluateUni(axiosSecure, newEval),
+        mutationFn: (newEval: StudentAssociatedUniPastEvaluationItem) => evaluateUni(axiosSecure, newEval),
         onSuccess: () => toast.success(`Evaluation submitted.`),
         onError: () => toast.error("Evaluation submit failed.")
     })
-    
-    if (isEvalLoading || isStudentLoading) {
+
+    if (isEvalULoading || isStudentULoading) {
         return (
             <LoadingPage />
         )
     }
 
-    if (isEvalError || isStudentError) {
+    if (isEvalUError || isStudentUError) {
         return (
             <ErrorPage />
         )
     }
 
-    const newSaveEval: StudentAssociatedPastEvaluationItem = {
+    const evaluation = dataEval.data;
+    const uniName = dataStudent.data.hostUni.name;
+    const description = `You can evaluate ${uniName} in terms of food, dormitories, social opportunities, people, campus facilities etc.`;
+
+    const newSaveEval: StudentAssociatedUniPastEvaluationItem = {
         uni_id: dataStudent?.data.hostUni.id,
         author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
@@ -65,8 +73,8 @@ const EvaluateUniversityPage = () => {
         eval_status: "SAVED"
     }
 
-    const newSubmitEval: StudentAssociatedPastEvaluationItem = {
-        uni_id: dataStudent?.data.hostUni.id,
+    const newSubmitEval: StudentAssociatedUniPastEvaluationItem = {
+        uni_id: dataStudent.data.hostUni.id,
         author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
         rate: givenRating || 0,
@@ -91,7 +99,7 @@ const EvaluateUniversityPage = () => {
             fullSymbol={<IconSchool color={"#1971c2"} />}
             givenRating={givenRating ?? 0}
             evaluationName={uniName ?? ""}
-            currentEvaluation={currentEvaluation ?? ""}
+            currentEvaluation={currentEvaluation ?? "test"}
             setGivenRating={setGivenRating}
             setCurrentEvaluation={setCurrentEvaluation}
             description={description}></Evaluation>
