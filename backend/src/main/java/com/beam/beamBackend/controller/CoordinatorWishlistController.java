@@ -31,12 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/v1/wishlist")
+@RequestMapping("api/v1/coordinator")
 public class CoordinatorWishlistController {
     private final CoordinatorWishlistService coordinatorWishlistService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/coordinator/{coordinatorUserId}")
+    @GetMapping("/{coordinatorUserId}")
     public ResponseEntity<Object> getCoordinatorsWishlists(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId){
         try{
             ArrayList<Wishlist> wishlists = coordinatorWishlistService.getCoordinatorsWishlists(coordinatorUserId);
@@ -47,7 +47,7 @@ public class CoordinatorWishlistController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/coordinator/{coordinatorUserId}/student/{studentBilkentId}")
+    @GetMapping("/{coordinatorUserId}/student/{studentBilkentId}")
     public ResponseEntity<Object> getWishlist(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentBilkentId") Long studentBilkentId){
         try{
             Optional<Wishlist> wishedCourses = coordinatorWishlistService.getWishlist(coordinatorUserId, studentBilkentId);
@@ -58,7 +58,7 @@ public class CoordinatorWishlistController {
     }
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @PostMapping( path = "coordinator/{coordinatorUserId}/student/{studentBilkentId}/status/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping( path = "/{coordinatorUserId}/student/{studentBilkentId}/status/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> determineWishlistStatus(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentBilkentId") Long studentBilkentId, @Valid @PathVariable("status") CourseWishlistStatus status){
         try{
             coordinatorWishlistService.determineWishlistStatus(coordinatorUserId, studentBilkentId, status);
