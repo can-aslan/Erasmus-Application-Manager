@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
+import com.beam.beamBackend.model.WishlistItemMapping;
+import com.beam.beamBackend.request.WishlistItemRequest;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.IWishlistService;
 import jakarta.validation.Valid;
@@ -124,14 +126,34 @@ public class CourseWishlistController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/add/{studentId}")
-    public ResponseEntity<Object> addWishlistItem(@PathVariable("studentId") Long studentId, @Valid @RequestBody WishlistItem courseWishlistItem)
+    public ResponseEntity<Object> addWishlistItem(@PathVariable("studentId") Long studentId, @Valid @RequestBody WishlistItemRequest wishlistItemRequest)
     {
         try {
-            boolean responseResult = courseWishlistService.addWishlistItem(studentId, courseWishlistItem);
+            // Check if the student has a wishlist, if not open a new wishlist
+            courseWishlistService.createEmptyWishlistIfNew(studentId);
             
+            // Convert WishlistItemRequest to WishlistItem
+            WishlistItem item = WishlistItem.toWishlistItem(wishlistItemRequest, UUID.randomUUID(), studentId, courseWishlistService.getWishlistByStudentId(studentId));
+
+            // Execute addWishlistItem operation
+            boolean responseResult = courseWishlistService.addWishlistItem(studentId, item);
+            
+            UUID addedWishlistItemUUID = null;
+
+            // If the wishlist item is added successfully
+            if (responseResult) {
+                // Get the added wishlist item's UUID
+                addedWishlistItemUUID = courseWishlistService.getWishlistItemUUID(studentId, wishlistItemRequest.getBilkentCourse());
+            
+                // Save Wishlist Item Mappings
+                for (WishlistItemMapping wim : wishlistItemRequest.getMappings()) {
+                    courseWishlistService.addWishlistItemMapping(studentId, item.getBilkentCourse(), wim);
+                }
+            }
+
             return 
             responseResult ?
-                Response.create("adding a course wishlist item successful", HttpStatus.OK, responseResult)
+                Response.create("adding a course wishlist item successful", HttpStatus.OK, addedWishlistItemUUID)
                 :
                 Response.create("adding a course wishlist item unsuccessful", HttpStatus.BAD_REQUEST);
         }
