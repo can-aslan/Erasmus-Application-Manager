@@ -90,9 +90,8 @@ public class FormController {
     public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            // TODO: Fetch preapproval data using preapproval service, pass the mode lto generatePreApprovalForm function
             PreApprovalForm form = formService.createPreAppFromWishlist(studentId);
-            File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
+            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
             formService.uploadForm(approvalForm, studentId, formType);
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
         } catch (Exception e) {
@@ -106,8 +105,8 @@ public class FormController {
     public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
-            // TODO: Fetch preapproval data using preapproval service, pass the mode lto generatePreApprovalForm function
-            File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
+            PreApprovalForm form = formService.createPreAppFromWishlist(studentId);
+            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] file = fis.readAllBytes();
             fis.close();
@@ -119,4 +118,5 @@ public class FormController {
             return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
         }
     }
+
 }

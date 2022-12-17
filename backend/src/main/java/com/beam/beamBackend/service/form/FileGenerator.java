@@ -15,11 +15,13 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.repository.IStudentRepository;
+import com.beam.beamBackend.service.form.strategy.FormGenerationStrategy;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -43,6 +45,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class FileGenerator {
+
+    private final FormGenerationStrategy formGenerationStrategy;
+
     public File generatePreApprovalForm(PreApprovalForm preApprovalForm, Image signature) throws BadElementException, MalformedURLException, IOException{
         Document document = new Document();
 
@@ -444,8 +449,6 @@ public class FileGenerator {
 
     }
 
-    
-
     private void createApprovalTable(Document document, String approvedBy, String coordinatorName, Image signature,String date) throws DocumentException {
 
         // Table for the title of the course list
@@ -531,6 +534,4 @@ public class FileGenerator {
         
     
     }
-
-
 }

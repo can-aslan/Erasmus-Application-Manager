@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.enums.FormEnum;
+import com.beam.beamBackend.enums.PreApprovalStatus;
 import com.beam.beamBackend.model.Form;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.model.Student;
@@ -51,8 +52,8 @@ public class FormService {
     final long ONE_KB = 1024;
     final long ONE_MB = ONE_KB * ONE_KB; 
     final long FILE_SIZE_LIMIT = ONE_MB;
-
     private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
+
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
     private final IWishlistRepository wishlistRepository;
@@ -232,9 +233,9 @@ public class FormService {
             
             // Create instant date object here
             String date = "a";
-            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date));
+            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date, PreApprovalStatus.PENDING));
         
-        }catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
             throw e;
         }
@@ -260,5 +261,4 @@ public class FormService {
             }
         }
     }
-
 }
