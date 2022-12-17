@@ -64,7 +64,7 @@ public class StudentPlacementService {
         getAllUniversitiesQuota(department);
         
         //Assign coordinator to students
-        for (int i = 0; i < regiteredStudents.size(); i++){
+        for (int i = 0; i < regiteredStudents.size(); i++) {
             ArrayList<String> preferenceList = new ArrayList<>();
             Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
             preferenceList.add(preferences.get().getPref1());
@@ -73,15 +73,19 @@ public class StudentPlacementService {
             preferenceList.add(preferences.get().getPref4());
             preferenceList.add(preferences.get().getPref5());
 
-            for (int j = 0; j < preferenceList.size(); j++){
-                if (preferenceList.get(j) != null){
+            for (int j = 0; j < preferenceList.size(); j++) {
+
+                if (preferenceList.get(j) != null) {
                     University currentUni = universityRepository.findUniByName(preferenceList.get(j));
-                    if(quotas.get(currentUni) > 0){
+
+                    if(quotas.get(currentUni) > 0) {
                         regiteredStudents.get(i).setHostUni(currentUni);
-                        quotas.put(currentUni,quotas.get(currentUni) - 1 );
+                        quotas.put(currentUni,quotas.get(currentUni) - 1);
+
                         //Assign coordinator to students
                         Staff currentCoordinator = coordinators.get( assignedCoordinators % coordinators.size());
                         regiteredStudents.get(i).setCoordinator(currentCoordinator);
+
                         break;  
                     }
                 }
@@ -92,7 +96,7 @@ public class StudentPlacementService {
         // If a registeredstudent's hostUn property is null that means they are in the waiting list
         for (int i = 0; i < regiteredStudents.size(); i++){
             Student currentStudent = regiteredStudents.get(i);
-            if (currentStudent.getHostUni() == null){
+            if (currentStudent.getHostUni() == null) {
                 waitingList.add(currentStudent);
             }
         }
@@ -102,7 +106,7 @@ public class StudentPlacementService {
 
 
 
-    public ArrayList<Student> readFromStudentCsv(String department) throws Exception{
+    public ArrayList<Student> readFromStudentCsv(String department) throws Exception {
         try{ 
             String line = "";  
             String splitBy = ",";  
@@ -113,7 +117,7 @@ public class StudentPlacementService {
             while ((line = br.readLine()) != null)   //returns a Boolean value  
             {  
                 // Skip the first line of the table while registering students
-                if (isHeader){
+                if (isHeader) {
                     isHeader = false;
                     System.out.println("header Skipped");
                     continue;
@@ -125,9 +129,10 @@ public class StudentPlacementService {
                 String surname = lineSplitted[2];
                 Long bilkentId = Long.parseLong(lineSplitted[3]);
 
-                if (accountRepository.existsByBilkentId(bilkentId)){
+                if (accountRepository.existsByBilkentId(bilkentId)) {
                     continue;
                 }
+
                 String email = lineSplitted[39];
                 // What about password
 
@@ -138,14 +143,14 @@ public class StudentPlacementService {
                 Semester semester = Semester.valueOf(lineSplitted[21]);
 
                 Faculty f2;
-                if ((lineSplitted[31] != null) && !lineSplitted[31].isEmpty()){
+                if ((lineSplitted[31] != null) && !lineSplitted[31].isEmpty()) {
                     f2 = Faculty.valueOf(lineSplitted[31]);
-                } else{
+                } else {
                     f2 = null;
                 }
 
                 Department d2;
-                if ((lineSplitted[33] != null) && !lineSplitted[32].isEmpty()){
+                if ((lineSplitted[33] != null) && !lineSplitted[32].isEmpty()) {
                     d2 = Department.valueOf(lineSplitted[32]);
                 } else {
                     d2 = null;
@@ -154,13 +159,12 @@ public class StudentPlacementService {
                 String telephoneNo = lineSplitted[33];
                 String nationality = lineSplitted[34];
                 String dateOfBirth = lineSplitted[35];
-                Sex sex = Sex.valueOf(lineSplitted[36]);
-                
+                Sex sex = Sex.valueOf(lineSplitted[36]);                
 
                 String academicYear = lineSplitted[37];
 
                 StudyType st;
-                if ((lineSplitted[39] != null) && !lineSplitted[38].isEmpty()){
+                if ((lineSplitted[39] != null) && !lineSplitted[38].isEmpty()) {
                     st = StudyType.valueOf(lineSplitted[38].toUpperCase());
                 } else {
                     st = StudyType.NORMAL;
@@ -188,12 +192,10 @@ public class StudentPlacementService {
                 preferencesRepository.save(preferences);
                 newUser.setPassword(password);
             }  
+
             br.close();
 
-
-        }   
-        catch (IOException e)   
-        {  
+        } catch (IOException e) {  
             e.printStackTrace();  
             throw e;
         }
@@ -202,26 +204,26 @@ public class StudentPlacementService {
         return regiteredStudents;
     }
 
-
     /**
      * This method brings quota of all universities from relatedservices and put University and quota and university
      * pairs into the quotas hashmap
      * @param department department whose universites' quotas will be brought
      * @throws Exception
      */
-    public void getAllUniversitiesQuota(String department) throws Exception{
+    public void getAllUniversitiesQuota(String department) throws Exception {
         try {
             String line = "";  
             String splitBy = ",";  
 
             boolean isHeader = true;
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas "+ department + ".csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas " + department + ".csv"));  
 
-            while ((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 // Skip the first line of the table while registering students
-                if (isHeader){
+                if (isHeader) {
                     isHeader = false;
                     System.out.println("header Skipped");
+
                     continue;
                 }
 
@@ -234,7 +236,7 @@ public class StudentPlacementService {
                 University currentUniversity = universityRepository.findUniByName(uniName);
                 quotas.put(currentUniversity, quota);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();  
             throw e;
         }
@@ -248,23 +250,24 @@ public class StudentPlacementService {
         }
     }
 
-    public static String generatePsw(){
+    public static String generatePsw() {
         String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
         String generatedPsw = "";
-        for (int i = 0; i< 8; i++){
+
+        for (int i = 0; i < 8; i++) {
             int random = (int) Math.random();
             int modulo = random % 35;
-            generatedPsw = generatedPsw + allChars.substring(modulo, modulo+1);
+
+            generatedPsw = generatedPsw + allChars.substring(modulo, modulo + 1);
         }
         return generatedPsw;
     }
 
     
-    public void readFromUniCsv(String fepartment) throws IOException{
+    public void readFromUniCsv(String fepartment) throws IOException {
         try {
             String line = "";  
             String splitBy = ",";  
-    
     
             BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas.csv"));  
             while ((line = br.readLine()) != null){
@@ -280,7 +283,7 @@ public class StudentPlacementService {
                 // Creation of universities
                 //quotas.put()
             }  
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();  
             throw e;
         }
