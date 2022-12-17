@@ -10,8 +10,16 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
+import com.beam.beamBackend.model.PreApprovalForm;
+import com.beam.beamBackend.model.Student;
+import com.beam.beamBackend.model.Wishlist;
+import com.beam.beamBackend.model.WishlistItem;
+import com.beam.beamBackend.repository.IStudentRepository;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -29,41 +37,63 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class FileGenerator {
+import lombok.RequiredArgsConstructor;
 
-    public File generatePreApprovalForm(UUID userUuid) throws BadElementException, MalformedURLException, IOException{
+
+@Service
+@RequiredArgsConstructor
+public class FileGenerator {
+    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, Image signature) throws BadElementException, MalformedURLException, IOException{
         Document document = new Document();
-        String name = "Kubilay";
-        String surname = "Yilmaz";
-        long id =21901556;
-        String department = "Computer Science"; // Needs to be changed to enum
-        String hostInst = "Virje Universiteit";
-        String academicYear = "2022 - 2023";
-        String semester = "Fall";
-        ArrayList<String> hostCourses = new ArrayList<>();
+
+        // Get the owner student of the pre-approval form
+        Student student = preApprovalForm.getStudent();
+
+        // Get wishlist whose course information will be used
+        Wishlist wishlist = preApprovalForm.getWishlist();
+
+        // Student Information
+        String name = student.getUser().getName();
+        String surname = student.getUser().getSurname();
+        long id  = student.getUser().getBilkentId();
+        String department = student.getDepartment().toString();
+        String hostInst = student.getHostUni().getName();
+        String academicYear = student.getAcademicYear();
+        String semester = student.getSemester().toString();
+        String coordinatorName = student.getCoordinator().getUser().getName();
+        
+        
+        String approvedBy = "Exchange Coordinator";
+        signature.scaleAbsolute(50, 30);
+
+
+        // Date Information
+        String date = preApprovalForm.getDate();
+
+        // Wishlist Information
+        List<WishlistItem> wishlistItems = wishlist.getItems();
+
+        //ArrayList<String> hostCourses = new ArrayList<>();
         ArrayList<String> bilkentCourses = new ArrayList<>();
         ArrayList<String> courseCode = new ArrayList<>();
         ArrayList<Double> ects = new ArrayList<>();
         ArrayList<Double> bilkentCredit = new ArrayList<>();
         ArrayList<String> directlyEquivalent = new ArrayList<>();
-
-        String approvedBy = "Exchange Coordinator";
-        String coordinatorName = "Can Alkan";
-        Image signature = Image.getInstance(System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png");
-        signature.scaleAbsolute(50, 30);
-
-        String date = "13.12.2022";
+        ArrayList<ArrayList<String>> hostCourses = new ArrayList<>();
         // pseudo data starts
-        for (int i = 0; i < 5; i++){
-            hostCourses.add("Data Structures and Algorithms");
-            bilkentCourses.add("CS473 - Algorithms I");
-            courseCode.add("X_400614");
-            ects.add(6.0);
-            bilkentCredit.add(3.0);
-            if (i == 3)
-                directlyEquivalent.add("MATH 260");
-            else
-                directlyEquivalent.add("");
+        for (int i = 0; i < wishlistItems.size(); i++){
+            bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
+            bilkentCredit.add(wishlistItems.get(i).getBilkentCredits().toString());
+            double ectsTotal = 0;
+            for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
+                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostCourse());
+                ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
+            }
+            // Only gets the course code of the first host university course 
+            courseCode.add(wishlistItems.get(i).getMappings().get(0).getCourseCode());
+            // It is assumed that ects in the WishlistItem model since there should be one ects value even there are more than one host course
+            ects.add(ectsTotal);
+            directlyEquivalent.add("");
         }
         // pseudo data ends
 
@@ -269,7 +299,7 @@ public class FileGenerator {
     }
 
     
-    private void createCourseLists(Document document, ArrayList<String> hostCourses, ArrayList<String> bilkentCourses, ArrayList<String> courseCode, ArrayList<Double> ects, ArrayList<Double> bilkentCredit, ArrayList<String> directlyEquivalent) throws DocumentException {
+    private void createCourseLists(Document document, ArrayList<ArrayList<String>> hostCourses, ArrayList<String> bilkentCourses, ArrayList<String> courseCode, ArrayList<Double> ects, ArrayList<Double> bilkentCredit, ArrayList<String> directlyEquivalent) throws DocumentException {
 
         // Table for the title of the course list
         PdfPTable titleTable = new PdfPTable(2);
@@ -367,7 +397,11 @@ public class FileGenerator {
 
             // Course Name
             p1.clear();
-            p1.add(hostCourses.get(i));
+            // Adds more than 1 course names
+            for( int j = 0; j < hostCourses.get(i).size(); i++){
+                p1.add(hostCourses.get(i).get(j));
+            }
+
             cell = new PdfPCell();
             cell.addElement(p1);
             coursesTable.addCell(cell);
