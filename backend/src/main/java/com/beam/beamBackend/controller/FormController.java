@@ -3,6 +3,7 @@ package com.beam.beamBackend.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.beam.beamBackend.enums.FormEnum;
+import com.beam.beamBackend.model.PreApprovalForm;
+import com.beam.beamBackend.model.Student;
+import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.form.FileGenerator;
 import com.beam.beamBackend.service.form.FormService;
@@ -30,6 +34,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("api/v1/fileService")
 public class FormController {
     private final FormService formService;
+    private final IStudentRepository studentRepository;
     private final FileGenerator fileGenerator = new FileGenerator(); // Switch to singleton maybe?
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
@@ -89,6 +94,7 @@ public class FormController {
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
             // TODO: Fetch preapproval data using preapproval service, pass the mode lto generatePreApprovalForm function
+            PreApprovalForm form = formService.createPreAppFromWishlist(studentId);
             File approvalForm = fileGenerator.generatePreApprovalForm(studentId);
             formService.uploadForm(approvalForm, studentId, formType);
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
