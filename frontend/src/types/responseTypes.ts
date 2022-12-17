@@ -1,5 +1,5 @@
 
-import { BilkentCourse, CourseRequest, CourseWishlist, HostCourse, LearningAgreement, PreApprovalForm, PreviousCourseRequest, Student, StudentAssociatedCourse, StudentAssociatedUniPastEvaluationItem, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
+import { BilkentCourse, CourseRequest, CourseWishlist, ExistingCourseWishlist, HostCourse, LearningAgreement, PreApprovalForm, PreviousCourseRequest, Student, StudentAssociatedCourse, StudentAssociatedUniPastEvaluationItem, StudentAssociatedWishlist, UniAssociatedCourse, UniversityDetailed, UniversityProxy, User } from ".";
 
 export interface Response<T> {
     data: T,
@@ -9,7 +9,7 @@ export interface Response<T> {
 export type ResponseUser = Response<User>
 
 // Wishlist
-export type ResponseStudentCourseWishlist = Response<CourseWishlist>
+export type ResponseStudentCourseWishlist = Response<ExistingCourseWishlist>
 export type ResponseAllStudentCourseWishlist = Response<Array<StudentAssociatedCourse>>
 export type ResponseStudentSpecificCourseWishlist = Response<StudentAssociatedWishlist>
 
