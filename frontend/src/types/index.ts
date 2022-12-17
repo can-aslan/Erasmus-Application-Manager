@@ -68,11 +68,11 @@ export type StudentAssociatedWishlist = {
 }
 
 export type Course = {
-    courseId?: string | null,
     courseCode: string,
     courseName: string,
-    department: string,
     ects: number,
+    courseId?: string | null,
+    department?: string,
     syllabus?:string,
     webPage?: string
     instructorId?: string,
@@ -97,6 +97,39 @@ export type CourseWishlist = {
 export type CourseWishlistItem = {
     otherUniCourses: Array<HostCourse>,
     correspondingBilkentCourse: BilkentCourse,
+}
+
+export type NewCourseWish = {
+    bilkentCourse: string,
+    mappings: Array<CourseWishlistItemMapping>,
+    ects?: number,
+    bilkentCredits?: number,
+    courseName?: string,
+}
+
+export type CourseWishlistItemMapping = {
+    mappingItemId: string,
+    hostCourse: string, // course code
+    ects?: number,
+    courseName?: string,
+    wishlistItem?: string,
+}
+
+export type ExistingCourseWishlist = {
+    studentId: string,
+    status: ApprovalStatus,
+    items: Array<WishlistItemsInterface>
+}
+
+export interface WishlistItemsInterface {
+    wishlistItemId: string,
+    studentId: string,
+    bilkentCourse: string, // Course code
+    ownerWishlist: string,
+    ects: number,
+    bilkentCredits: number,
+    courseName: string,
+    mappings: Array<CourseWishlistItemMapping>
 }
 
 export type UniAssociatedCourse = {
@@ -254,6 +287,13 @@ export type Country = {
     name: string;
     isIncludedInErasmus: boolean;
     continent: Continent;
+}
+
+export enum Form {
+    PRE_APPROVAL="PRE_APPROVAL",
+    TRANSCRIPT="TRANSCRIPT",
+    LEARNING_AGREEMENT="LEARNING_AGREEMENT",
+    SIGNATURE="SIGNATURE",
 }
 
 

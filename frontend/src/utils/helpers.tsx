@@ -1,8 +1,8 @@
-export const downloadBlobFile = (body: Blob, filenameWithoutExtension: string, extension = 'pdf') => {
+export const downloadBlobFile = (body: Blob, filenameWithoutExtension: string='image', extension = 'pdf') => {
     const aElement = document.createElement('a');
     const url = URL.createObjectURL(body)
     aElement.href = url
-    aElement.download = 'image.png';
+    aElement.download = filenameWithoutExtension;
     document.body.appendChild(aElement);
     aElement.click();
     document.body.removeChild(aElement);
