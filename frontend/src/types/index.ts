@@ -68,7 +68,7 @@ export type StudentAssociatedWishlist = {
 }
 
 export type Course = {
-    courseUUID: string,
+    courseId?: string | null,
     courseCode: string,
     courseName: string,
     department: string,
@@ -195,13 +195,18 @@ export type PastEvaluation = {
     eval_list: Array<PastEvaluationItem>
 }
 export type PastEvaluationItem = {
-    uni_id?: string,
     author_id: string,
     rate: number,
     comment: string,
 }
 
-export type StudentAssociatedPastEvaluationItem = PastEvaluationItem & {
+export type StudentAssociatedCoursePastEvaluationItem = PastEvaluationItem & {
+    course_id?: string,
+    eval_status: string
+}
+
+export type StudentAssociatedUniPastEvaluationItem = PastEvaluationItem & {
+    uni_id?: string,
     eval_status: string
 }
 

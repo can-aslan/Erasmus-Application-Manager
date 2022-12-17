@@ -1,16 +1,15 @@
- import { Card, Center, Flex, Select } from "@mantine/core";
+import { Card, Center, Flex, Select } from "@mantine/core";
 import { IconBook } from "@tabler/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { MouseEvent, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { getUniCourses } from "../../api/Student/CourseService";
 import { evaluateCourse, getStudentPastCourseEval } from "../../api/Student/EvaluationService";
 import { getStudent } from "../../api/StudentService";
 import Evaluation from "../../components/evaluation/Evaluation";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { useCourses } from "../../hooks/useCourses";
 import { useUser } from "../../provider/UserProvider";
-import { Course, HostCourse, StudentAssociatedPastEvaluationItem } from "../../types";
+import { StudentAssociatedCoursePastEvaluationItem } from "../../types";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
@@ -18,60 +17,64 @@ import LoadingPage from "../Feedback/LoadingPage";
 const EvaluateCoursesPage = () => {
     const axiosSecure = useAxiosSecure()
     const { user } = useUser()
-
+    const queryClient = useQueryClient()
     const { data: dataStudent, isError: isStudentError, isLoading: isStudentLoading } = useQuery({
         queryFn: () => getStudent(axiosSecure, user?.bilkentId!),
         queryKey: ["get_student"]
     })
     const { data: dataCourses, isError: isCoursesError, isLoading: isCoursesLoading } = useQuery({
         queryFn: () => getUniCourses(axiosSecure, dataStudent?.data.hostUni.id!),
-        queryKey: ["get_uni_courses"]
+        queryKey: ["get_uni_courses", dataStudent],
+        enabled: !!dataStudent
     })
 
     const { mutate: mutateGetPastCourseEval, data: dataEval, isLoading: isEvalLoading } = useMutation({
         mutationKey: ['get_past_eval'],
         mutationFn: (selectedId: string) => getStudentPastCourseEval(axiosSecure, user?.bilkentId!, selectedId),
-        onSuccess: () => { },
-        onError: () => { }
+        onSuccess: dataEval => {
+            setGivenRating(dataEval.data.rate);
+            setCurrentEvaluation(dataEval.data.comment);
+        },
     })
 
     const { mutate: mutateSaveEvalUni, data: userSaveData, isLoading: isSaveUniLoading } = useMutation({
         mutationKey: ['saveUniEval'],
-        mutationFn: (newEval: StudentAssociatedPastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
+        mutationFn: (newEval: StudentAssociatedCoursePastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
         onSuccess: () => toast.success(`Evaluation saved.`),
         onError: () => toast.error("Evaluation save failed.")
     })
 
     const { mutate: mutateSubmitEvalUni, data: userSubmitData, isLoading: isSubmitUniLoading } = useMutation({
         mutationKey: ['submitUniEval'],
-        mutationFn: (newEval: StudentAssociatedPastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
-        onSuccess: () => toast.success(`Evaluation submitted.`),
+        mutationFn: (newEval: StudentAssociatedCoursePastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['get_past_eval'] })
+            toast.success(`Evaluation submitted.`);},
         onError: () => toast.error("Evaluation submit failed.")
     })
 
-    const courses = dataCourses?.data;
-    const evaluation = dataEval?.data;
+
     const [searchedCourse, setSearchedCourse] = useState('');
     const [selectedCourseName, setSelectedCourse] = useState<string | null>(null);
     const [selectedCourseId, setSelectedCourseId] = useState<string>('');
-    const [currentEvaluation, setCurrentEvaluation] = useState(evaluation?.comment);
-    const [givenRating, setGivenRating] = useState(evaluation?.rate);
+    const [currentEvaluation, setCurrentEvaluation] = useState("Waiting for response...");
+    const [givenRating, setGivenRating] = useState(0);
     const description = `You can evaluate ${selectedCourseName} in terms of difficulty, assignments, instructors, exams, course content and material etc.`;
 
-    const newSaveEval: StudentAssociatedPastEvaluationItem = {
-        uniId: dataStudent?.data.hostUni.id,
-        authorId: user?.bilkentId!,
+    const newSaveEval: StudentAssociatedCoursePastEvaluationItem = {
+        course_id: selectedCourseId,
+        author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
         rate: givenRating || 0,
-        evalStatus: "SAVED"
+        eval_status: "SAVED"
     }
 
-    const newSubmitEval: StudentAssociatedPastEvaluationItem = {
-        uniId: dataStudent?.data.hostUni.id,
-        authorId: user?.bilkentId!,
+    const newSubmitEval: StudentAssociatedCoursePastEvaluationItem = {
+        course_id: selectedCourseId,
+        author_id: user?.bilkentId!,
         comment: currentEvaluation || "",
         rate: givenRating || 0,
-        evalStatus: "SUBMITTED"
+        eval_status: "SUBMITTED"
     }
     const saveEval = () => {
         mutateSaveEvalUni(newSaveEval);
@@ -79,7 +82,7 @@ const EvaluateCoursesPage = () => {
     const submitEval = () => {
         mutateSubmitEvalUni(newSubmitEval);
     }
-    if (isCoursesLoading || isEvalLoading || isStudentLoading) {
+    if (isCoursesLoading || isEvalLoading) {
         return (
             <LoadingPage />
         )
@@ -90,22 +93,16 @@ const EvaluateCoursesPage = () => {
             <ErrorPage />
         )
     }
+    const courses = dataCourses.data;
 
-    // Generate courses for the Select. Select requires the use of a field called value and label.
-    const availableCourses: Array<HostCourse> = courses!.map((c) => {
-        return {
-            ...c,
-            value: c.courseName,
-            label: c.courseName
-        }
-    });
-
-    const availableCourseNames: Array<string> = availableCourses.map((course) => {
+    const availableCourseNames: Array<string> = courses.map((course) => {
         return course.courseName;
     });
+
     return (
         <>
             <Select
+                value={selectedCourseName}
                 searchable
                 placeholder="Choose a course to evaluate"
                 allowDeselect
@@ -114,9 +111,9 @@ const EvaluateCoursesPage = () => {
                 onSearchChange={setSearchedCourse}
                 onChange={(value) => {
                     setSelectedCourse(value);
-                    const id = availableCourses.find(course => course.courseName === value)?.courseUUID!;
+                    const id = courses.find(course => course.courseName === value)?.courseId!;
                     setSelectedCourseId(id);
-                    mutateGetPastCourseEval(selectedCourseId);
+                    mutateGetPastCourseEval(id);
                 }}
                 searchValue={searchedCourse}
                 data={availableCourseNames} />
@@ -129,7 +126,7 @@ const EvaluateCoursesPage = () => {
                     setCurrentEvaluation={setCurrentEvaluation}
                     emptySymbol={<IconBook />}
                     fullSymbol={<IconBook color="#1971c2" />}
-                    editable={(evaluation?.evalStatus !== "SUBMITTED")}
+                    editable={(dataEval?.data.eval_status !== "SUBMITTED")}
                     saveEval={saveEval} submitEval={submitEval}></Evaluation>}
         </>
     );
