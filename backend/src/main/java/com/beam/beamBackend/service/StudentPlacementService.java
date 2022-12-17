@@ -248,7 +248,7 @@ public class StudentPlacementService {
         }
     }
 
-    private String generatePsw(){
+    public static String generatePsw(){
         String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
         String generatedPsw = "";
         for (int i = 0; i< 8; i++){
