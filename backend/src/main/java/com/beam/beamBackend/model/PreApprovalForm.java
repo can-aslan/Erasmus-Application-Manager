@@ -4,14 +4,18 @@ import java.util.UUID;
 
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.enums.Semester;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,53 +32,22 @@ public class PreApprovalForm {
     
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "id", nullable = false)
+    @Column(name = "preApp_id", nullable = false)
     private UUID id;
 
-
     @NotNull
-    @Column(name = "student_id", nullable = false)
-    private UUID studentId;
-
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @NotNull
-    @Column(name = "surname", nullable = false)
-    private String surname;
-
-    @NotNull
-    @Column(name = "bilkent_id", nullable = false)
-    private Long bilkentId;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "department", nullable = false)
-    private Department department;
-
-    @NotNull
-    @Column(name = "uni_id", nullable = false)
-    private UUID uniId;
-
-    @NotNull
-    @Column(name = "academic_year", nullable = false)
-    private String academicYear;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "semester", nullable = true)
-    private Semester semester;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student", nullable = false)
+    private Student student;
     
     @NotNull
-    @Column(name = "wishlist_id", nullable = false)
-    private UUID wishlistId;
-
-    @NotNull
-    @Column(name = "coordiantor_id", nullable = false)
-    private UUID coordinatorId;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wishlist", nullable = false)
+    private Wishlist wishlist;
 
     @NotNull
     @Column(name = "date", nullable = false)
     private String date;
-
 }

@@ -6,6 +6,8 @@ import java.util.Hashtable;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.enums.Department;
@@ -14,9 +16,12 @@ import com.beam.beamBackend.enums.Semester;
 import com.beam.beamBackend.enums.Sex;
 import com.beam.beamBackend.enums.StudyType;
 import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.model.Preferences;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
+import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IPreferencesRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.StudentRequest;
@@ -39,19 +44,33 @@ public class StudentPlacementService {
     ArrayList<Student> regiteredStudents = new ArrayList<>();
     ArrayList<Student> waitingList = new ArrayList<>();
 
+    @Autowired
+    final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final IUniversityRepository universityRepository;
-    private final AccountService accountService;
     private final StudentService studentService;
     private final IStudentRepository studentRepository;
-    public void placeStudents(Department department) throws Exception {
-        ArrayList<String> preferences = new ArrayList<>();
-        readFromStudentCsv();
-        getAllUniversitiesQuota(department);
+    private final IPreferencesRepository preferencesRepository;
+    private final IAccountRepository accountRepository;
+    public ArrayList<Student> placeStudents(String department) throws Exception {
+        
+
+        return readFromStudentCsv(department);
+        /*getAllUniversitiesQuota(department);
+        
+
         for (int i = 0; i < regiteredStudents.size(); i++){
+            ArrayList<String> preferenceList = new ArrayList<>();
             //preferences = studentRepository.findById(regiteredStudents.get(i).getId()).get().getPreferences();
-            for (int j = 0; j < preferences.size(); j++){
-                if (preferences.get(j) != null){
-                    University currentUni = universityRepository.findUniByName(preferences.get(j));
+            Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
+            preferenceList.add(preferences.get().getPref1());
+            preferenceList.add(preferences.get().getPref2());
+            preferenceList.add(preferences.get().getPref3());
+            preferenceList.add(preferences.get().getPref4());
+            preferenceList.add(preferences.get().getPref5());
+
+            for (int j = 0; j < preferenceList.size(); j++){
+                if (preferenceList.get(j) != null){
+                    University currentUni = universityRepository.findUniByName(preferenceList.get(j));
                     if(quotas.get(currentUni) > 0){
                         regiteredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1 );
@@ -68,23 +87,21 @@ public class StudentPlacementService {
             if (currentStudent.getHostUni() == null){
                 waitingList.add(currentStudent);
             }
-        }
+        }*/
         
         //readFromUniCsv();
     }
 
 
 
-    public void readFromStudentCsv() throws Exception{
-        System.out.println("--------------------1--------------------");
-
+    public ArrayList<Student> readFromStudentCsv(String department) throws Exception{
         try{ 
             String line = "";  
             String splitBy = ",";  
 
             boolean isHeader = true;
             //parsing a CSV file into BufferedReader class constructor  
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/sortedStudents.csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/sortedStudents"+ department + ".csv"));  
             while ((line = br.readLine()) != null)   //returns a Boolean value  
             {  
                 // Skip the first line of the table while registering students
@@ -99,75 +116,73 @@ public class StudentPlacementService {
                 String name = lineSplitted[1];
                 String surname = lineSplitted[2];
                 Long bilkentId = Long.parseLong(lineSplitted[3]);
-                String email = lineSplitted[40];
-                System.out.println("--------------------2--------------------");
 
-                UserRequest newUserRequest = new UserRequest(null ,name, surname, email, bilkentId, UserType.OUTGOING_STUDENT); 
-                System.out.println("--------------------2.1--------------------");
-                User newUser = accountService.addUserWithUserRequest(newUserRequest);
-                System.out.println("--------------------2.2--------------------");
-                StudentRequest sReq = new StudentRequest(newUser.getId(), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                System.out.println("--------------------2.3--------------------");
-                Student.toStudent(sReq, newUser, universityRepository.findUniByName("Bilkent Univerity"), null, null);
-
-                //-------------------------------------Student creation starts here------------------
-                Optional<Student> newStudent = studentRepository.findById(newUser.getId());
-
-                if (!newStudent.isPresent()){
-                    throw new Exception("The student is not found!");
+                if (accountRepository.existsByBilkentId(bilkentId)){
+                    continue;
                 }
-                System.out.println("--------------------3--------------------");
+                String email = lineSplitted[39];
+                // What about password
 
                 Faculty f = Faculty.valueOf(lineSplitted[4]);
-                newStudent.get().setFaculty(f);
 
                 Department d = Department.valueOf(lineSplitted[5]);
-                newStudent.get().setDepartment(d);
 
-                // TODO add degree property to Student where degree is an enum
+                Semester semester = Semester.valueOf(lineSplitted[21]);
 
-                // TODO erasmusPoint propery to Student
-
-                Semester s = Semester.valueOf(lineSplitted[20]);
-                newStudent.get().setSemester(s);
-
-                // TODO 5 preferences to Student
-
-                if ((lineSplitted[32] != null) && !lineSplitted[32].isEmpty()){
-                    Faculty f2 = Faculty.valueOf(lineSplitted[32]);
-                    newStudent.get().setFaculty2(f2);
+                Faculty f2;
+                if ((lineSplitted[31] != null) && !lineSplitted[31].isEmpty()){
+                    f2 = Faculty.valueOf(lineSplitted[31]);
                 } else{
-                    newStudent.get().setFaculty2(null);
+                    f2 = null;
                 }
 
-                if ((lineSplitted[33] != null) && !lineSplitted[33].isEmpty()){
-                    Department d2 = Department.valueOf(lineSplitted[33]);
-                    newStudent.get().setDepartment2(d2);
+                Department d2;
+                if ((lineSplitted[33] != null) && !lineSplitted[32].isEmpty()){
+                    d2 = Department.valueOf(lineSplitted[32]);
                 } else {
-                    newStudent.get().setDepartment2(null);
+                    d2 = null;
                 }
-                System.out.println("--------------------4--------------------");
 
-                newStudent.get().setTelephoneNo(lineSplitted[34]);
-                newStudent.get().setNationality(lineSplitted[35]);
-                newStudent.get().setDateOfBirth(lineSplitted[36]);
+                String telephoneNo = lineSplitted[33];
+                String nationality = lineSplitted[34];
+                String dateOfBirth = lineSplitted[35];
+                Sex sex = Sex.valueOf(lineSplitted[36]);
                 
-                Sex sex = Sex.valueOf(lineSplitted[37]);
-                newStudent.get().setSex(sex);
 
-                newStudent.get().setAcademicYear(lineSplitted[38]);
+                String academicYear = lineSplitted[37];
 
-                if ((lineSplitted[39] != null) && !lineSplitted[39].isEmpty()){
-                    StudyType st = StudyType.valueOf(lineSplitted[39]);
-                    newStudent.get().setStudyType(st);
+                StudyType st;
+                if ((lineSplitted[39] != null) && !lineSplitted[38].isEmpty()){
+                    st = StudyType.valueOf(lineSplitted[38].toUpperCase());
                 } else {
-                    newStudent.get().setStudyType(null);
+                    st = StudyType.NORMAL;
                 }
 
+                String password = generatePsw();
+                String hashedpassword = encodePassword(password);
 
-                regiteredStudents.add(newStudent.get());
+                User newUser = new User(UUID.randomUUID(), name, surname, email, bilkentId, hashedpassword, UserType.OUTGOING_STUDENT);
+                //University homeUni = universityRepository.findUniByName("Bilkent University");
+                University homeUni = null;
+                accountRepository.save(newUser);
+                newUser = accountRepository.findUserByBilkentId(bilkentId);
+                Student newStudent = new Student(UUID.randomUUID(), newUser, d, f, d2, f2, telephoneNo, st, nationality, dateOfBirth, sex, homeUni, null, academicYear, semester, null);
+                studentRepository.save(newStudent);
+
+                regiteredStudents.add(newStudent);
+
+                String pref1 = lineSplitted[22];
+                String pref2 = lineSplitted[23];    
+                String pref3 = lineSplitted[24];
+                String pref4 = lineSplitted[25];
+                String pref5 = lineSplitted[26]; 
+                Preferences preferences = new Preferences(UUID.randomUUID(), newStudent.getUser().getBilkentId(), pref1, pref2, pref3, pref4, pref5);
+                preferencesRepository.save(preferences);
+                newUser.setPassword(password);
             }  
             br.close();
+
+
         }   
         catch (IOException e)   
         {  
@@ -176,6 +191,7 @@ public class StudentPlacementService {
         }
 
         System.out.println(regiteredStudents);
+        return regiteredStudents;
     }
 
 
@@ -183,8 +199,56 @@ public class StudentPlacementService {
      * This method brings quota of all universities from relatedservices and put University and quota and university
      * pairs into the quotas hashmap
      * @param department department whose universites' quotas will be brought
+     * @throws Exception
      */
-    public void getAllUniversitiesQuota(Department department){
+    public void getAllUniversitiesQuota(String department) throws Exception{
+        try {
+            String line = "";  
+            String splitBy = ",";  
+
+            boolean isHeader = true;
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas "+ department + ".csv"));  
+
+            while ((line = br.readLine()) != null){
+                // Skip the first line of the table while registering students
+                if (isHeader){
+                    isHeader = false;
+                    System.out.println("header Skipped");
+                    continue;
+                }
+
+                String[] lineSplitted = line.split(splitBy);    // use comma as separator  
+
+                String uniName = lineSplitted[0];
+                String quotaString = lineSplitted[1];
+
+                int quota = Integer.parseInt(quotaString);
+                University currentUniversity = universityRepository.findUniByName(uniName);
+                quotas.put(currentUniversity, quota);
+            }
+        }catch(Exception e){
+            e.printStackTrace();  
+            throw e;
+        }
+    }
+
+    private String encodePassword(String plainPassword) {
+        try {
+            return bCryptPasswordEncoder.encode(plainPassword);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private String generatePsw(){
+        String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
+        String generatedPsw = "";
+        for (int i = 0; i< 8; i++){
+            int random = (int) Math.random();
+            int modulo = random % 35;
+            generatedPsw = generatedPsw + allChars.substring(modulo, modulo+1);
+        }
+        return generatedPsw;
     }
 
     

@@ -52,7 +52,7 @@ public class FormService {
     private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
-    private final IWishlistRepository WishlistRepository;
+    private final IWishlistRepository wishlistRepository;
     private final IPreApprovalRepository preApprovalRepository;
     private final IStudentRepository studentRepository;
 
@@ -179,27 +179,51 @@ public class FormService {
      * @param userUuid user id of the student whose pre approval is supposed to be created
      * @throws Exception
      */
-    public void createPreAppFromWishlist(UUID userUuid) throws Exception{
-        Optional<PreApprovalForm> preApp = preApprovalRepository.findByStudentId(userUuid);
-        Optional<Student> student = studentRepository.findById(userUuid);
-        if (!student.isPresent()){
-            throw new Exception("Student with given user id does not exist!");
-        }
+    public PreApprovalForm createPreAppFromWishlist(Long bilkentId) throws Exception{
+        try{
+            Optional<Student> student = studentRepository.findByUserBilkentId(bilkentId);
+            if (!student.isPresent()){
+                throw new Exception("Student with given user id does not exist!");
+            }
 
-        Optional<Wishlist> wishlist = WishlistRepository.findByStudentId(student.get().getUser().getBilkentId());
+            Optional<Wishlist> wishlist = wishlistRepository.findByStudentId(student.get().getUser().getBilkentId());
 
-        if (!wishlist.isPresent()){
-            throw new Exception("Student does not have a wishlist!");
-        }
+            if (!wishlist.isPresent()){
+                throw new Exception("Student does not have a wishlist!");
+            }
 
-        if (wishlist.get().getStatus() != CourseWishlistStatus.APPROVED ){
-            throw new Exception("Student's wishlist has not been approved!");
-        }
+            if (wishlist.get().getStatus() != CourseWishlistStatus.APPROVED ){
+                throw new Exception("Student's wishlist has not been approved!");
+            }
+            
+            // Create instant date object here
+            String date = "a";
+            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date));
         
-        if (preApp.isPresent()){
-            //preApp.get().setWishlistId(wishlist.get().getWishlistId());
-        }else {
-            //preApp = preApprovalRepository.insertPreApp()
+        }catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public PreApprovalForm getPreApprovalForm(Long bilkentId) throws Exception{
+        Optional<Student> student = studentRepository.findByUserBilkentId(bilkentId);
+
+        if (!student.isPresent()){
+            throw new Exception("Student is not found!");
+        } else {
+            try{
+                Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentId(bilkentId);
+
+                if (!preApprovalForm.isPresent()){
+                    throw new Exception("PreApproval form for the student is not present!");
+                }
+
+                return preApprovalForm.get();
+            } catch(Exception e){
+                e.printStackTrace();  
+                throw e;
+            }
         }
     }
 
