@@ -8,5 +8,6 @@ import com.beam.beamBackend.model.WishlistItemMapping;
 
 @Repository
 public interface IWishlistItemMappingRepository extends JpaRepository<WishlistItemMapping, UUID> {
-    List<WishlistItemMapping> findAllByWishlistItemId(UUID wishlistItemId);
+    // List<WishlistItemMapping> findAllByWishlistItemId(UUID wishlistItemId);
+    List<WishlistItemMapping> findAllByWishlistItemWishlistItemId(UUID wishlistItemId);
 }

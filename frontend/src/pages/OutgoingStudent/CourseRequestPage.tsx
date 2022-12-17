@@ -90,7 +90,7 @@ const CourseRequestPage = () => {
     // ]
     const previouslyRequestedCoursesList: Array<CourseRequest> = dataPrevious.data;
     const previouslyRequestedRows = previouslyRequestedCoursesList.map((course) => (
-        <tr key={course.hostCode} >
+        <tr key={course.requestId} >
             <td>{course.hostCode}</td>
             <td>{course.name}</td>
             <td>{course.hostEcts}</td>

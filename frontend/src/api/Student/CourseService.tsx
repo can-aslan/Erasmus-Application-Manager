@@ -24,8 +24,8 @@ export const getUniCoursesByUserId = async (axios: AxiosInstance, userId: string
     return response.data
 }
 
-export const getCourseWishlist = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponseStudentCourseWishlist>(`/student/courseWishlist/${studentId}`)
+export const getCourseWishlist = async (axios: AxiosInstance, bilkentId: string) => {
+    const response = await axios.get<ResponseStudentCourseWishlist>(`/wishlist/fetch/${bilkentId}`)
     return response.data
 }
 

@@ -1,5 +1,5 @@
 import { Axios, AxiosInstance } from "axios"
-import { ResponsePreApprovalForm } from "../types/responseTypes"
+import { Response, ResponsePreApprovalForm } from "../types/responseTypes"
 
 export const getFile = async (axios: AxiosInstance, studentId: string) => {
     const response = await axios.get<ResponsePreApprovalForm>(`/fileService/form/${studentId}`)
@@ -39,6 +39,8 @@ export const submitSignature = async (axios: AxiosInstance, formData: FormData, 
 }
 
 export const downloadSignature = async (axios: AxiosInstance, userId: string) => {
-    const response = await axios.get(`signature/user/${userId}`)
+    const response = await axios.get(`/signature/user/${userId}`, {
+        responseType: "blob",
+    })
     return response.data
 }

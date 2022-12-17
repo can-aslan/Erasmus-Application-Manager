@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +54,8 @@ public class FormController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentUuid") UUID studentId,
+    @RequestMapping(path = "form/{studentId}/{formType}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentId") UUID studentId,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
             formService.deleteFile(studentId, formType);
@@ -66,12 +67,16 @@ public class FormController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/{studentUuid}/{formType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentUuid") UUID studentId,
+    @RequestMapping(path = "form/{studentId}/{formType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> downloadForm(@PathVariable(value = "studentId") UUID studentId,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            byte[] file = formService.downloadForm(studentId, formType);
-            return Response.create("Successfully downloaded the file", HttpStatus.OK, file);
+            byte[] form = formService.downloadForm(studentId, formType);
+            ByteArrayResource resource = new ByteArrayResource(form);
+
+            return ResponseEntity
+                    .ok()
+                    .body(resource);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.create("File download failed", HttpStatus.CONFLICT); // might change later

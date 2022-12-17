@@ -1,7 +1,19 @@
 import { Center, Flex, Group, Header, Title } from "@mantine/core";
-import UniversitiesTable from "../../components/tables/UniversitiesTable";
+import { NavLink } from "react-router-dom";
 import ToggleThemeIcon from "../../components/ToggleThemeIcon";
+import GuestHeader from "../../components/navbar/GuestHeader";
+import UniversitiesTable from "../../components/tables/UniversitiesTable";
 import { ResponseUniversities } from "../../types/responseTypes";
+
+const defaultStyle = {
+    textDecoration: 'none',
+}
+
+const activeLinkStyle = {
+    textDecoration: 'underline',
+    color: '#1aac83',
+}
+
 
 const GuestPage = () => {
     const universities: ResponseUniversities = {
@@ -84,19 +96,11 @@ const GuestPage = () => {
     }
     return (
         <>
-            <Header
-                height={80}
-                p="lg"
-            >
-                <Group position="apart">
-                    <Title ml={50}>Beam</Title>
-                    <ToggleThemeIcon mr={50} />
-                </Group>
-            </Header>
+            <GuestHeader/>
             <Center>
                 <Flex direction={"column"} gap={"md"}>
                     <Title>Welcome! Below you can find the universities that you can apply!</Title>
-                <UniversitiesTable universities={universities.data} isUniversitiesLoading={false} ></UniversitiesTable>
+                    <UniversitiesTable universities={universities.data} isUniversitiesLoading={false} />
                 </Flex>
                 
             </Center>

@@ -22,6 +22,7 @@ public interface IBilkentCourseRepository extends JpaRepository<BilkentCourse, U
     List<BilkentCourse> findByDepartment(Department department);
     List<Object> findByApprovedCoursesUniversityId(UUID universityId);
     boolean existsByCourseCode(String courseCode);
+    Optional<BilkentCourse> findByCourseCode(String courseCode);
 
     // @Query(value = "SELECT * FROM bilkent_course bil_course INNER JOIN approved_courses app_course ON INNER JOIN host_course h t1.id = t2.team_id WHERE t2.user_id = ?1 ")
     // List<BilkentCourse> findAllByUserId(long userId);

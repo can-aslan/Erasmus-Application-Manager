@@ -20,8 +20,9 @@ const UploadSignaturePage = () => {
 
     const { mutate: downloadSignatureMutate, isLoading: isDownloadingSignature, isError: isDownloadingError } = useMutation({
         mutationKey: ['downloadSignature'],
-        mutationFn: () => downloadSignature(axiosSecure, user.id),
-        onSuccess: (data) => {
+        mutationFn: async () => await downloadSignature(axiosSecure, user.id),
+        onSuccess: (data) => { 
+            console.log(data)
             downloadBlobFile(data, "filename")
         },
         onError: () => toast.error("Error while trying to fetch the file from the database. Make sure you have uploaded your signature before trying to download.")
@@ -52,10 +53,10 @@ const UploadSignaturePage = () => {
                 direction='column'
             >
                 <Flex gap='xs' direction='column'>
-                    <Text color='dimmed'>*Only accepts .png or .jpeg files</Text>
+                    <Text color='dimmed'>*Only accepts .png files</Text>
                     <FileButton
                         onChange={setSignatureFile}
-                        accept={"image/png,image/jpeg"}
+                        accept={"image/png"}
                     >
                         {(props) => <Button {...props}>Upload Signature</Button>}
                     </FileButton>
