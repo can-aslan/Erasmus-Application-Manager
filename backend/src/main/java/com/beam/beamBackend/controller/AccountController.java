@@ -81,17 +81,6 @@ public class AccountController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_staff_chunk")
-    public ResponseEntity<Object> registerStaff(@RequestBody RegisterStaff[] userInfo) {
-        try {
-            HashSet<User> users = accountService.addUserChunk(userInfo);
-            return Response.create("accounts are created", HttpStatus.OK, users);
-        } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
-        }        
-    }
-
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/change_password")
     public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePassword userInfo,
         @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
