@@ -68,11 +68,14 @@ public class CourseWishlistController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping(path = "/fetch/{studentId}")
-    public ResponseEntity<Object> getAllWishlistOfStudent(@PathVariable("studentId") Long studentId)
+    public ResponseEntity<Object> getWishlistOfStudent(@PathVariable("studentId") Long studentId)
     {
         try {
+            // Check if the student has a wishlist, if not open a new wishlist
+            courseWishlistService.createEmptyWishlistIfNew(studentId);
+            
             Wishlist responseResult = courseWishlistService.getWishlistByStudentId(studentId);
-            System.out.println(responseResult);
+            
             return 
             responseResult != null ?
                 Response.create("course wishlists fetch successful", HttpStatus.OK, responseResult)
