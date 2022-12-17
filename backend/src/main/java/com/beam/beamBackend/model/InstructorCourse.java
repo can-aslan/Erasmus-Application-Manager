@@ -29,7 +29,7 @@ public class InstructorCourse {
 
     @NotNull
     @JoinColumn(name = "instructor_id", nullable = false)
-    private UUID instructorId;
+    private UUID instructorId; // user id
 
     @NotBlank
     @Column(name = "bilkent_course", nullable = true)

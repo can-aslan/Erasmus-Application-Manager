@@ -1,7 +1,9 @@
 package com.beam.beamBackend.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -30,6 +32,7 @@ import com.beam.beamBackend.repository.UniEvaluationRepository;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
 import com.beam.beamBackend.response.RCourseEval;
+import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.response.RUniEval;
 
 import lombok.RequiredArgsConstructor;
@@ -43,30 +46,42 @@ public class InstructorCourseService {
     private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
 
-    public InstructorCourse addCourseToInstructor(InstructorCourse instructorAddCourse) throws Exception {
+    public RInstructorCourseAdd addCourseToInstructor(InstructorCourseAdd instructorCourses) throws Exception {
         try {
-            // if the given bilkent course does not exist throw an error
-            Optional<BilkentCourse> bilkentCourse = bilkentCourseRepo.findByCourseCode(instructorAddCourse.getBilkentCourseCode());
-
-            if (!bilkentCourse.isPresent()) {
-                throw new Exception("bilkent course not found");
-            }
-
             // if the given instructor id is not valid throw an exception
-            boolean instructorExist = userRepo.existsByIdAndUserType(instructorAddCourse.getInstructorId(), UserType.INSTRUCTOR);
+            boolean instructorExist = userRepo.existsByIdAndUserType(instructorCourses.getInstructorId(), UserType.INSTRUCTOR);
     
             if (!instructorExist) {
                 throw new Exception("instructor not found");
             }
 
-            // if instructor already has the course throw an error
-            boolean instructorAlreadyHasCourse = instructorCourseRepo.existsByInstructorIdAndBilkentCourseCode(instructorAddCourse.getInstructorId(), instructorAddCourse.getBilkentCourseCode());
+            Set<String> coursesNotAdded = new HashSet<String>();
+            Set<InstructorCourse> addedCourses = new HashSet<InstructorCourse>();
 
-            if (instructorAlreadyHasCourse) {
-                throw new Exception("instructor already has the course");
-            }
+            for (String courseCode : instructorCourses.getBilkentCourseCode()) {
+                // if the given bilkent course does not exist throw an error
+                Optional<BilkentCourse> bilkentCourse = bilkentCourseRepo.findByCourseCode(courseCode);
 
-            return instructorCourseRepo.save(instructorAddCourse);
+                if (!bilkentCourse.isPresent()) {
+                    throw new Exception("bilkent course not found");
+                }                
+
+                // if instructor already has the course throw an error
+                boolean instructorAlreadyHasCourse = instructorCourseRepo.existsByInstructorIdAndBilkentCourseCode(instructorCourses.getInstructorId(), courseCode);
+
+                if (instructorAlreadyHasCourse) {
+                    coursesNotAdded.add(courseCode);
+                    System.out.println("instructor already has the course");
+                    // throw new Exception("instructor already has the course");
+                    continue;
+                }
+
+                // if instructor course is unique add it to set
+                addedCourses.add(new InstructorCourse(null, instructorCourses.getInstructorId(), courseCode));
+            }            
+
+            List<InstructorCourse> dbAddedCourses = instructorCourseRepo.saveAll(addedCourses);
+            return new RInstructorCourseAdd(dbAddedCourses, coursesNotAdded);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
