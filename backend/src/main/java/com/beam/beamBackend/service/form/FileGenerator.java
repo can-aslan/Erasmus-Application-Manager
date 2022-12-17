@@ -1,4 +1,5 @@
 package com.beam.beamBackend.service.form;
+import java.awt.image.BufferedImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.enums.FormEnum;
@@ -21,7 +24,6 @@ import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.repository.IStudentRepository;
-import com.beam.beamBackend.service.form.strategy.FormGenerationStrategy;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -46,11 +48,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileGenerator {
 
-    private final FormGenerationStrategy formGenerationStrategy;
 
-    
-
-    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, Image signature) throws BadElementException, MalformedURLException, IOException{
+    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws BadElementException, MalformedURLException, IOException{
+        Image signature = Image.getInstance(bufferedSignature);
+        
         Document document = new Document();
 
         // Get the owner student of the pre-approval form

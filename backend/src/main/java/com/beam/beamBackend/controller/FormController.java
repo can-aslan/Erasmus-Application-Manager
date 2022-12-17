@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.response.Response;
+import com.beam.beamBackend.service.StudentService;
 import com.beam.beamBackend.service.form.FileGenerator;
 import com.beam.beamBackend.service.form.FormService;
 
@@ -90,9 +91,7 @@ public class FormController {
     public ResponseEntity<Object> generateAndSubmitPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            PreApprovalForm form = formService.createPreAppFromWishlist(studentId);
-            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
-            formService.uploadForm(approvalForm, studentId, formType);
+            formService.generateAndSubmitPreApproval(formType, studentId);
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -105,14 +104,28 @@ public class FormController {
     public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
-            PreApprovalForm form = formService.createPreAppFromWishlist(studentId);
-            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
-            FileInputStream fis = new FileInputStream(approvalForm);
-            byte[] file = fis.readAllBytes();
-            fis.close();
+            ByteArrayResource resource = formService.generateAndDownloadPreApproval(studentId);
+
             return ResponseEntity
                     .ok()
-                    .body(file);
+                    .body(resource);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @RequestMapping(path = "form/sign/student/{studentBilkentId}/coordinator/{coordinatorBilkentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Object> signPreApproval(@PathVariable(value = "studentBilkentId") Long studentBilkentId,
+                                                    @PathVariable(value = "coordinatorBilkentId") Long coordinatorBilkentId,
+                                                    @PathVariable(value = "formType") FormEnum formType) {
+        try {
+            formService.signPreApproval(studentBilkentId, coordinatorBilkentId);
+
+            return ResponseEntity
+                    .ok()
+                    .body(null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
