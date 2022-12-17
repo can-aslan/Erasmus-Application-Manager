@@ -5,7 +5,7 @@ interface RatingBarProps{
     emptySymbol: React.ReactNode;
     fullSymbol: React.ReactNode;
     value: number
-    setValue: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setValue: React.Dispatch<React.SetStateAction<number>>;
 }
 const RatingBar = ({editable, emptySymbol, fullSymbol, value, setValue}:RatingBarProps) => {
     return ( 

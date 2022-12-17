@@ -54,7 +54,7 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     accessor: "actions",
                     textAlignment: 'right',
                     render: (course) => (
-                        <ActionIcon onClick={(e) => handleRemoveItem(e, course.bilkentCourse.courseUUID)} color='red' size='xl'>
+                        <ActionIcon onClick={(e) => handleRemoveItem(e, course.bilkentCourse.courseId)} color='red' size='xl'>
                             <IconTrash />
                         </ActionIcon>
                     )
