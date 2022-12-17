@@ -7,6 +7,7 @@ import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
 import com.beam.beamBackend.model.User;
+import com.beam.beamBackend.service.StudentPlacementService;
 
 @SpringBootApplication
 @EntityScan(basePackageClasses = {

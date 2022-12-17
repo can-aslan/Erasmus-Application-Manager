@@ -5,11 +5,13 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
@@ -23,15 +25,18 @@ public class StudentService {
     final private IAccountRepository userRepo;
     private final IUniversityRepository uniRepository;
     private final IStaffRepository staffRepository;
+    private final IHostCourseRepository hostCourseRepo;
 
     public UUID addStudent(StudentRequest student) throws Exception {
         try {
+            // if student already exists throw an exception
             Optional<User> user = userRepo.findUserById(student.getUserId());
 
             if (!user.isPresent()) {
                 throw new Exception("user not found");
             }
 
+            // if universities don't exist throw an exception
             Optional<University> homeUni = uniRepository.findUniById(student.getHomeUniId());
 
             if (!homeUni.isPresent()) {
@@ -44,6 +49,7 @@ public class StudentService {
                 throw new Exception("host university not found");
             }
             
+            // if coordinator does not exists throw ane exception
             Optional<Staff> coordinator = staffRepository.findByUserId(student.getCoordinatorId());
 
             if (!coordinator.isPresent()) {
@@ -62,20 +68,17 @@ public class StudentService {
         }        
     }
 
-    // public Student getStudentByBilkentId(Long bilkentId) throws Exception {
-    //     try {
-    //         Optional<Student> s = studentRepo.findByBilkentId(bilkentId);
+    public List<HostCourse> getHostCoursesOfStudentHostUni(Long bilkentId) throws Exception {
+        try {
+            Student student = getStudentByBilkentId(bilkentId);
+            UUID hostUniId = student.getHostUni().getId();
 
-    //         if (!s.isPresent()) {
-    //             throw new Exception("user not found");
-    //         }
-
-    //         return s.get();
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    // }
+            return hostCourseRepo.findByUniversityId(hostUniId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     // this is user id
     public Student getStudentById(UUID id) throws Exception {
