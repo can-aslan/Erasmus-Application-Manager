@@ -30,6 +30,7 @@ import com.beam.beamBackend.service.form.decorator.MultipartFileWrapper;
 import com.beam.beamBackend.service.form.decorator.Postfix;
 import com.beam.beamBackend.service.form.decorator.Prefix;
 import com.beam.beamBackend.service.form.decorator.UniquelyNameable;
+import com.beam.beamBackend.service.form.strategy.FormGenerationStrategy;
 
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.ResponseBytes;
@@ -59,6 +60,7 @@ public class FormService {
     private final IWishlistRepository wishlistRepository;
     private final IPreApprovalRepository preApprovalRepository;
     private final IStudentRepository studentRepository;
+    private final FileGenerator fileGenerator;
 
     public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();

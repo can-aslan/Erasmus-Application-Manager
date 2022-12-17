@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("api/v1/fileService")
 public class FormController {
     private final FormService formService;
-    private final FileGenerator fileGenerator = new FileGenerator(); // Switch to singleton maybe?
+    private final FileGenerator fileGenerator; // Switch to singleton maybe?
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
