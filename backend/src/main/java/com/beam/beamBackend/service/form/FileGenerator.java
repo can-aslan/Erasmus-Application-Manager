@@ -90,7 +90,7 @@ public class FileGenerator {
             bilkentCredit.add(wishlistItems.get(i).getBilkentCredits());
             double ectsTotal = 0;
             for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
-                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostCourse());
+                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostName());
                 ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
             }
             // Only gets the course code of the first host university course 
