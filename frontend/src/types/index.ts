@@ -249,6 +249,13 @@ export type Country = {
     continent: Continent;
 }
 
+export enum Form {
+    PRE_APPROVAL="PRE_APPROVAL",
+    TRANSCRIPT="TRANSCRIPT",
+    LEARNING_AGREEMENT="LEARNING_AGREEMENT",
+    SIGNATURE="SIGNATURE",
+}
+
 
 // export type LearningAgreement = {
 //     formUuid: string,

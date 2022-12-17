@@ -1,6 +1,6 @@
 import { Autocomplete, Button, Card, Center, Divider, Flex, Modal, Stack, Title } from '@mantine/core';
 import { IconDeviceFloppy, IconFile, IconPlus, IconSend } from '@tabler/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { saveWishlist, submitWishlist } from '../../api/Student/CourseService';
@@ -12,7 +12,6 @@ import useHostCourses from '../../hooks/useHostCourses';
 import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
 import { BilkentCourse, Course, CourseWishlist, CourseWishlistItem, HostCourse } from "../../types";
-import { ResponseStudentSpecificCourseWishlist } from '../../types/responseTypes';
 import ErrorPage from '../Feedback/ErrorPage';
 import LoadingPage from '../Feedback/LoadingPage';
 
@@ -23,22 +22,20 @@ type CourseTableCourses = {
 
 const CourseWishlistPage = () => {
     const axiosSecure = useAxiosSecure()
+    const queryClient = useQueryClient()
     const { user } = useUser()
 
     // Fetch bilkent courses
     const {data: bilkentCourses, isLoading: isBilkentCoursesLoading, isError: isBilkentCoursesError} = useCourses(axiosSecure)
-
     // Fetch host courses based on userId
     const {data: hostCourses, isLoading: isHostCoursesLoading, isError: isHostCoursesError } = useHostCourses(axiosSecure, user.id)
-
-    // Fetch the initial state of course wishlist    
+    // Fetch the server state of course wishlist    
     const {data: courseWishlist, isLoading: isCourseWishlistLoading, isError: isCourseWishlistError} = useStudentWishlist(axiosSecure, user.bilkentId)
 
     // States are moved to here because the initial states depend on the properties being fetched
-    const [wishlist, setWishlist] = useState<CourseWishlist | undefined>(courseWishlist?.data)
-    const [wishlistItems, setWishlistItems] = useState<CourseWishlistItem[] | undefined>(courseWishlist?.data?.wishlistItems)
     const [selectedBilkentCourse, setSelectedBilkentCourse] = useState('')
     const [selectedHostCourse, setSelectedHostCourse] = useState('')
+    const [selectedHostCourses, setSelectedHostCourses] = useState<Array<string>>([])
     const [error, setError] = useState(false)
     
     /*
@@ -46,19 +43,25 @@ const CourseWishlistPage = () => {
         wishlist once they think, they have chosen enough courses. Once the user thinks that they don't want to
         choose any more courses, they will use the submit button to send their wishlist for coordinator approval.
     */
-        const { mutate: save, isLoading: isSaveLoading } = useMutation({
-            mutationKey: ['saveWishlist'],
-            mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
-            onSuccess: () => toast.success("Successfully saved the wishlist!"),
-            onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
-        })
-        
-        const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
-            mutationKey: ['submitWishlist'],
-            mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
-            onSuccess: () => toast.success("Wishlist has been submitted for the review of the coordinator."),
-            onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
-        })
+    const { mutate: save, isLoading: isSaveLoading } = useMutation({
+        mutationKey: ['saveWishlist'],
+        mutationFn: () => saveWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['wishlist'])
+            toast.success("Successfully saved the wishlist!")
+        },
+        onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
+    })
+    
+    const { mutate: submit, isLoading: isSubmitLoading } = useMutation({
+        mutationKey: ['submitWishlist'],
+        mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['wishlist'])
+            toast.success("Wishlist has been submitted for the review of the coordinator."),
+        },
+        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
+    })
 
     if (isBilkentCoursesLoading || isHostCoursesLoading || isCourseWishlistLoading) {
         return <LoadingPage />
@@ -85,7 +88,6 @@ const CourseWishlistPage = () => {
         }
     })
     
-    
     const handleSave = () => {
         save()
     }
@@ -96,36 +98,11 @@ const CourseWishlistPage = () => {
     }
     
     const handleRemoveWish = (e: React.MouseEvent, bilkentCourseId: string): void => {
-        setWishlistItems(prev => prev?.filter(i => i.correspondingBilkentCourse.courseUUID !== bilkentCourseId))
+
     }
 
     const handleAddWish = () => {
-        setError(false)
-        if (!selectedBilkentCourse || !selectedHostCourse ) {
-            setError(true)
-            return
-        }
 
-
-        setWishlistItems((prev) => {
-            const bilkentCourse: BilkentCourse = bilkentCourses?.data.find(b => b.courseName === selectedBilkentCourse)!
-            const hostCourse: HostCourse = hostCourses?.data.find(h => h.courseName === selectedHostCourse)!
-            const newWishlistItem: CourseWishlistItem = {
-                correspondingBilkentCourse: bilkentCourse,
-                otherUniCourses: [hostCourse],
-            }
-            if (prev) {
-                return [
-                    ...prev,
-                    newWishlistItem
-                ]
-            }
-            else {
-                return [
-                    newWishlistItem
-                ]
-            }
-        })
     }
     
     return (
