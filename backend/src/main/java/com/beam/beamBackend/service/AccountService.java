@@ -51,9 +51,6 @@ public class AccountService {
     @Autowired
     private final JWTUtils jwtUtils;
 
-    // @Autowired
-    // private AuthenticationManager authManager;
-
     public RLoginUser login(UserLogin user) throws Exception {
         try {
             System.out.println("id: "+ user.getBilkentId());
@@ -174,13 +171,13 @@ public class AccountService {
             // check if staff has necessary info
             if (newUser.getUserType() == UserType.COORDINATOR || newUser.getUserType() == UserType.INSTRUCTOR) {
                 if (staff.getDepartment() == null) {
-                    throw new Exception( " should have a department");
+                    throw new Exception(newUser.getUserType() + " should have a department");
                 }
                 
                 if (staff.getFaculty() == null) {
                     throw new Exception(newUser.getUserType() + " should have a faculty");
                 }
-            } else if (newUser.getUserType() == UserType.FAC_MEMBER) {
+            } else if (newUser.getUserType() == UserType.FAC_MEMBER && staff.getFaculty() == null) {
                 if (staff.getFaculty() == null) {
                     throw new Exception(newUser.getUserType() + " should have a faculty");
                 }
