@@ -64,7 +64,10 @@ public class FileGenerator {
         
         
         String approvedBy = "Exchange Coordinator";
-        signature.scaleAbsolute(50, 30);
+        if (signature != null){
+            signature.scaleAbsolute(50, 30);
+        }
+
 
 
         // Date Information
@@ -80,7 +83,8 @@ public class FileGenerator {
         ArrayList<Double> bilkentCredit = new ArrayList<>();
         ArrayList<String> directlyEquivalent = new ArrayList<>();
         ArrayList<ArrayList<String>> hostCourses = new ArrayList<>();
-        // pseudo data starts
+
+
         for (int i = 0; i < wishlistItems.size(); i++){
             bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
             bilkentCredit.add(wishlistItems.get(i).getBilkentCredits().toString());
@@ -498,7 +502,12 @@ public class FileGenerator {
 
         // Signature dynamic
         cell = new PdfPCell();
-        cell.addElement(signature);
+        if (signature != null){
+            cell.addElement(signature);
+        } else {
+            cell.addElement(new Phrase(""));
+        }
+       
         approvalTable.addCell(cell);
 
         // Date dynamic
