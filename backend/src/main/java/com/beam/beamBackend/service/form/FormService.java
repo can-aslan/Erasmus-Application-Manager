@@ -188,6 +188,7 @@ public class FormService {
             .key(key)
             .build();
         s3.deleteObject(deleteObjectRequest);
+        
         // Remove key from the database
         formRepository.deleteByUserId(userId);
         return true;
