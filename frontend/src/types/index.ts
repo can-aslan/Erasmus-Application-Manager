@@ -256,7 +256,12 @@ export type Country = {
     continent: Continent;
 }
 
+export type InstructorCourseRequestChange = {
+    courseStatus: string;
+    instructorId: string;
+    courseRequestId: string;
 
+}
 // export type LearningAgreement = {
 //     formUuid: string,
 //     studentId: string,
