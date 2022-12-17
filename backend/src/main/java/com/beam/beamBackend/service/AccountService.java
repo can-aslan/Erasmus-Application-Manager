@@ -6,15 +6,22 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.model.InstructorCourse;
+import com.beam.beamBackend.model.RegisterStaff;
+import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.request.ChangePassword;
+import com.beam.beamBackend.request.StaffRequest;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.security.JWTFilter;
@@ -32,6 +39,9 @@ public class AccountService {
 
     // @Autowired
     private final IAccountRepository accountRepository;
+    private final IStaffRepository staffRepository;
+
+    private final InstructorCourseService instructorCourseService;
 
     @Autowired
     private final JWTUserService jwtUserService;
@@ -131,7 +141,7 @@ public class AccountService {
         }
     }
 
-    public UUID addUser(User user) throws Exception {
+    public User addUser(User user) throws Exception {
         try {
             boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
             
@@ -140,13 +150,54 @@ public class AccountService {
             } else {
                 // generate uuid and hash password if user does not exist in the system
                 user.setId(UUID.randomUUID());
-                // user.setPassword(user.getPassword());
                 user.setPassword(encodePassword(user.getPassword()));
 
                 System.out.println("user_id: " + user.getId());
-                accountRepository.save(user);
+                User newUser = accountRepository.save(user);
 
                 System.out.println("user_id after register: " + accountRepository.findUserByEmail(user.getEmail()).get().getId());
+                return newUser;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public UUID addStaff(RegisterStaff staff) throws Exception {
+        try {
+            User newUser = addUser(staff);
+
+            if (newUser.getUserType() == UserType.COORDINATOR
+                    || newUser.getUserType() == UserType.FAC_MEMBER
+                    || newUser.getUserType() == UserType.OISEP
+                    || newUser.getUserType() == UserType.INSTRUCTOR) {
+                Staff staffDb = Staff.toStaff(new StaffRequest(null, staff.getDepartment(), staff.getFaculty()), newUser);
+                // staffDb.setId(UUID.randomUUID());
+                System.out.println("helodb: " + staffDb);
+
+				staffRepository.save(staffDb);
+            } else {
+                throw new Exception("user type is not valid");
+            }           
+            
+            
+            if (newUser.getUserType() == UserType.INSTRUCTOR) {
+                instructorCourseService.addCourseToInstructor(new InstructorCourse(null, newUser.getId(), newUser.))
+            }
+            // boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
+            
+            // if (userExist) {
+            //     throw new Exception();
+            // } else {
+            //     // generate uuid and hash password if user does not exist in the system
+            //     user.setId(UUID.randomUUID());
+            //     // user.setPassword(user.getPassword());
+            //     user.setPassword(encodePassword(user.getPassword()));
+
+            //     System.out.println("user_id: " + user.getId());
+            //     accountRepository.save(user);
+
+            //     System.out.println("user_id after register: " + accountRepository.findUserByEmail(user.getEmail()).get().getId());
                 return user.getId();
             }
         } catch (Exception e) {

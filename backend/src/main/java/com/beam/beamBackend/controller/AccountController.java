@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.request.ChangePassword;
@@ -48,7 +49,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            UUID ids = accountService.addUser(userInfo);
+            User ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -58,6 +59,28 @@ public class AccountController {
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_chunk")
     public ResponseEntity<Object> register(@RequestBody User[] userInfo) {
+        try {
+            HashSet<User> users = accountService.addUserChunk(userInfo);
+            return Response.create("accounts are created", HttpStatus.OK, users);
+        } catch (Exception e) {
+            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+    
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register_staff")
+    public ResponseEntity<Object> registerStaff(@Valid @RequestBody RegisterStaff userInfo) {
+        try {
+            // UUID ids = accountService.addUser(userInfo);
+            return Response.create("account is created", HttpStatus.OK, "ids");
+        } catch (Exception e) {
+            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+        }        
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_staff_chunk")
+    public ResponseEntity<Object> registerStaff(@RequestBody RegisterStaff[] userInfo) {
         try {
             HashSet<User> users = accountService.addUserChunk(userInfo);
             return Response.create("accounts are created", HttpStatus.OK, users);

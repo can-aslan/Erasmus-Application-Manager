@@ -1,11 +1,17 @@
 package com.beam.beamBackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.enums.Faculty;
 
 import jakarta.persistence.Entity;
 import lombok.Data;
 
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.Table;
@@ -25,41 +31,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "staff")
-public class Staff {
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "id", nullable = false)
-    private UUID id;
-
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
-
-    @NotNull
+@EqualsAndHashCode(callSuper = true)
+public class RegisterStaff extends User {
     @Enumerated(EnumType.STRING)
-    @Column(name = "department", nullable = true)
     private Department department;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "faculty", nullable = true)
     private Faculty faculty;
 
-    public static Staff toStaff(StaffRequest sReq, User u) {
-        return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
-    }
-    
-    // public static Staff toStaff(StaffRequest sReq, User u) {
-    //     return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
-    // }
-
-    @JsonIgnore
-    public UUID getId() {
-        return id;
-    }
+    private Set<String> bilkentCourseCodes;
 }
