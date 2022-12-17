@@ -57,7 +57,7 @@ public class StudentPlacementService {
         readFromStudentCsv(department);
         getAllUniversitiesQuota(department);
         
-
+        //ASSING COORDINATOR TO STUDENTS
         for (int i = 0; i < regiteredStudents.size(); i++){
             ArrayList<String> preferenceList = new ArrayList<>();
             Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
