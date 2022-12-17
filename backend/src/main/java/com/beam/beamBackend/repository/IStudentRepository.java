@@ -15,4 +15,5 @@ public interface IStudentRepository extends JpaRepository<Student, UUID> {
     Optional<Student> findByUserId(UUID id);
     List<Student> findAll();
     List<Student> findAllByCoordinatorUserId(UUID id);
+    
 }
