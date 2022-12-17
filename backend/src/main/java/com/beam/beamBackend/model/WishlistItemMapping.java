@@ -31,10 +31,6 @@ public class WishlistItemMapping {
     @GeneratedValue(generator = "UUID")
     @Column(name = "mapping_item_id")
     private UUID mappingItemId;
-
-    @NotNull
-    @Column(name = "wishlist_item_id")
-    private UUID wishlistItemId;
     
     @NotBlank
     @Column(name = "host_course")
@@ -45,11 +41,9 @@ public class WishlistItemMapping {
     private WishlistItem wishlistItem;
 
     public WishlistItemMapping(
-        @JsonProperty("wishlistItemId") UUID wishlistItemId,
         @JsonProperty("hostCourse") String hostCourse
     ) {
         this.mappingItemId = UUID.randomUUID();
-        this.wishlistItemId = wishlistItemId;
         this.hostCourse = hostCourse;
     }
 }

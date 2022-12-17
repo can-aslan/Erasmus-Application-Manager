@@ -18,15 +18,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItemMapping;
+import com.beam.beamBackend.request.WishlistItemRequest;
 
 @Entity
 @Data
 @Table(name = "wishlist_item")
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "wishlistItemId")
 public class WishlistItem {
     @Id
@@ -57,5 +60,9 @@ public class WishlistItem {
         this.wishlistItemId = (wishlistItemId == null) ? UUID.randomUUID() : wishlistItemId;
         this.studentId = studentId;
         this.bilkentCourse = bilkentCourse;
+    }
+
+    public static WishlistItem toWishlistItem(WishlistItemRequest wReq, UUID id, Long studentId, Wishlist owner) {
+        return new WishlistItem(id, studentId, wReq.getBilkentCourse(), owner, wReq.getMappings());
     }
 }

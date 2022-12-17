@@ -11,6 +11,7 @@ import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
+import com.beam.beamBackend.model.WishlistItemMapping;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IWishlistItemMappingRepository;
 import com.beam.beamBackend.repository.IWishlistItemRepository;
@@ -89,6 +90,7 @@ public class WishlistService implements IWishlistService {
 
         WishlistItem newItemToAdd = itemToAdd;
         newItemToAdd.setOwnerWishlist(getWishlistByStudentId(studentId));
+        newItemToAdd.setMappings(getAllWishlistMappingOfItem(newItemToAdd.getWishlistItemId()));
         itemRepository.save(newItemToAdd);
         return true;
     }
@@ -144,6 +146,20 @@ public class WishlistService implements IWishlistService {
         return result.get().getWishlistItemId();
     }
 
+    @Override
+    public boolean createEmptyWishlistIfNew(Long studentId) throws Exception {
+        // Checks if student ID has a wishlist in the system
+        try {
+            return !verifyStudentHasWishlist(studentId);
+        }
+        catch (NoSuchFieldException e) {
+            // If the code reaches here, it means the student has no wishlist, therefore one must be created
+            wishlistRepository.save(new Wishlist(studentId, CourseWishlistStatus.WAITING));
+        }
+
+        return true;
+    }
+
     /**
      * Verifies that a given student ID has a wishlist
      * saved in the repository. Throws an exception otherwise.
@@ -156,6 +172,29 @@ public class WishlistService implements IWishlistService {
             throw new NoSuchFieldException("student with id " + studentId + " does not have a wishlist in the system");
         }
         
+        return true;
+    }
+
+    @Override
+    public List<WishlistItemMapping> getAllWishlistMappingOfItem(UUID itemId) throws Exception {
+        return mappingRepository.findAllByWishlistItemWishlistItemId(itemId);
+    }
+
+    @Override
+    public boolean addWishlistItemMapping(Long studentId, String bilkentCourse, WishlistItemMapping itemMappingToAdd) throws Exception {
+        // Checks if student ID has a wishlist in the system
+        verifyStudentHasWishlist(studentId);
+
+        WishlistItemMapping mapping = itemMappingToAdd;
+        Optional<WishlistItem> item = itemRepository.findByStudentIdAndBilkentCourse(studentId, bilkentCourse);
+
+        if (!item.isPresent()) {
+            throw new NoSuchFieldException("no wishlist item exists with student id " + studentId + " and bilkent course " + bilkentCourse);
+        }
+
+        mapping.setWishlistItem(item.get());
+        mappingRepository.save(mapping);
+
         return true;
     }
 }
