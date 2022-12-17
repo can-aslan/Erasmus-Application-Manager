@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.model.Wishlist;
+import jakarta.transaction.Transactional;
 
 @Repository
+@Transactional
 public interface IWishlistRepository extends JpaRepository<Wishlist, UUID> {
     
     Optional<Wishlist> findByStudentId(Long studentId);
