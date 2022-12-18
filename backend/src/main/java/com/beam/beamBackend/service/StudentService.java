@@ -71,9 +71,9 @@ public class StudentService {
     public List<HostCourse> getHostCoursesOfStudentHostUni(Long bilkentId) throws Exception {
         try {
             Student student = getStudentByBilkentId(bilkentId);
-            UUID hostUniId = student.getHostUni().getId();
+            String hostUniName = student.getHostUni().getName();
 
-            return hostCourseRepo.findByUniversityId(hostUniId);
+            return hostCourseRepo.findByUniName(hostUniName);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

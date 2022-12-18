@@ -35,13 +35,6 @@ public class BilkentCourse extends Course {
     @Column(name = "department", nullable = false)
     @Enumerated(EnumType.STRING)
     private Department department;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "approved_courses", 
-        joinColumns = @JoinColumn(name = "bilkent_course_id"), 
-        inverseJoinColumns = @JoinColumn(name = "host_course_id"))
-    private Set<HostCourse> approvedCourses;
     
     public BilkentCourse(
         @JsonProperty("id") UUID id,

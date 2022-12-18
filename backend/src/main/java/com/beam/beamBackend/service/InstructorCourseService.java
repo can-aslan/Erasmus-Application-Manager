@@ -16,6 +16,7 @@ import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.EvaluationForm;
+import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.UniEvaluationForm;
@@ -25,6 +26,7 @@ import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.ICourseEvalRepository;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
+import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IInstructorCourseRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IUniversityEvalRepository;
@@ -42,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 public class InstructorCourseService {
     private final IInstructorCourseRepository instructorCourseRepo;
     private final IBilkentCourseRepository bilkentCourseRepo;
+    private final CourseService courseService;
     private final IAccountRepository userRepo;
     private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
@@ -144,7 +147,19 @@ public class InstructorCourseService {
     
             requestedCourse.get().setStatus(requestResult.getCourseStatus());
             requestedCourse.get().setFeedback(requestResult.getFeedback());
-            return courseRequestRepo.save(requestedCourse.get());
+
+            CourseRequest request = requestedCourse.get();
+
+            if (requestResult.getCourseStatus() == CourseRequestStatus.APPROVED) {
+                
+                HostCourse hostCourse = new HostCourse(UUID.randomUUID(), request.getHostCode(), request.getName(), request.getHostEcts(),
+                    request.getSyllabusLink(), request.getWebpage(), request.getHostUniName());
+
+                System.out.println("hosat ocurse: " + hostCourse);
+                courseService.addHostCourse(hostCourse);
+            }
+
+            return courseRequestRepo.save(request);
         } catch (Exception e) {
             e.getStackTrace();
             throw e;
