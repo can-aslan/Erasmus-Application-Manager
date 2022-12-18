@@ -252,8 +252,8 @@ public class StudentPlacementService {
         String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
         String generatedPsw = "";
         for (int i = 0; i< 8; i++){
-            int random = (int) Math.random();
-            int modulo = random % 35;
+            int random = (int) (Math.random() * 1000);
+            int modulo = random % 36;
             generatedPsw = generatedPsw + allChars.substring(modulo, modulo+1);
         }
         return generatedPsw;
