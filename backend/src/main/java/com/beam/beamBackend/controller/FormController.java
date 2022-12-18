@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.beam.beamBackend.enums.FormEnum;
+import com.beam.beamBackend.enums.PreApprovalStatus;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.StudentService;
@@ -33,7 +34,6 @@ import lombok.AllArgsConstructor;
 @RequestMapping("api/v1/fileService")
 public class FormController {
     private final FormService formService;
-    private final FileGenerator fileGenerator; // Switch to singleton maybe?
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -61,7 +61,10 @@ public class FormController {
     public ResponseEntity<Object> deleteForm(@PathVariable(value = "studentId") UUID studentId,
                                                 @PathVariable(value = "formType") FormEnum formType) {
         try {
-            formService.deleteFile(studentId, formType);
+            boolean success = formService.deleteFile(studentId, formType);
+            if (!success) {
+                return Response.create("Bad request", HttpStatus.BAD_REQUEST);
+            }
             return Response.create("Successfully deleted the file", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -100,12 +103,11 @@ public class FormController {
     }
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/generate/download/{studentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(path = "form/generate/download/student/{studentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
             ByteArrayResource resource = formService.generateAndDownloadPreApproval(studentId);
-
             return ResponseEntity
                     .ok()
                     .body(resource);
@@ -122,14 +124,22 @@ public class FormController {
                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
             formService.signPreApproval(studentBilkentId, coordinatorBilkentId);
-
-            return ResponseEntity
-                    .ok()
-                    .body(null);
+            return Response.create("Signed the file successfully", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("File sign failed", HttpStatus.CONFLICT); // might change later
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @RequestMapping(path = "form/student/{studentId}/preApproval/status/", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPreApprovalStatus(@PathVariable(value = "studentId") Long studentId) {
+        try {
+            PreApprovalStatus status = formService.getPreApprovalStatus(studentId);
+            return Response.create("Fetched pre-approval status successfully", HttpStatus.OK, status);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.create("Pre-approval status fetch failed", HttpStatus.CONFLICT); // might change later
+        }
+    }
 }
