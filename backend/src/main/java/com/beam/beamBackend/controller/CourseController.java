@@ -2,13 +2,10 @@ package com.beam.beamBackend.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.beam.beamBackend.service.CourseService;
-
+import com.beam.beamBackend.service.ICourseService;
 import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +25,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("api/v1/course")
 public class CourseController {
-    private final CourseService courseService;
+    private final ICourseService courseService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "bilkent")
