@@ -11,21 +11,24 @@ const CoordinatorApprovePreApprovalsPage = () => {
     const { user } = useUser()
     const axiosSecure = useAxiosSecure()
     const { data, isError, isLoading } = useQuery({
-        queryFn: () => getSubmittedPreApprovalsCoord(axiosSecure, user?.id!)
+        queryKey: ['getPreApprovalsCoord'],
+        queryFn: () => getSubmittedPreApprovalsCoord(axiosSecure, user.id)
     })
 
+    
     if (isLoading) {
         return (
             <LoadingPage />
-        )
-    }
-
+            )
+        }
+        
     if (isError || !data) {
         return (
             <ErrorPage />
         )
     }
-
+            
+    console.log(data)
     return (
         <Center>
             <Box

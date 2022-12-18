@@ -1,13 +1,19 @@
-import { Button, Flex, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { registerUser } from "../../../api/UserService";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { NewUser } from "../../../types";
+import { Button, Flex, LoadingOverlay, Select, TextInput } from "@mantine/core"
+import { useForm } from "@mantine/form"
+import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
+import { toast } from "react-toastify"
+import { registerStaff } from "../../../api/UserService"
+import useAxiosSecure from "../../../hooks/useAxiosSecure"
+import { useCourses } from "../../../hooks/useCourses"
+import { BilkentCourse, NewStaff, UserEnum } from "../../../types"
+import { DEPARTMENTS, FACULTIES } from "../../../utils/constants"
 
-const RegisterUserTab = () => {
+const RegisterCoordinator = () => {
     const axiosSecure = useAxiosSecure()
+    const [department, setDepartment] = useState(DEPARTMENTS[0].label)
+    const [faculty, setFaculty] = useState(FACULTIES[0].label)
+
     const form = useForm({
         initialValues: {
             name: '',
@@ -25,9 +31,12 @@ const RegisterUserTab = () => {
 
     const handleRegister = () => {
         const validation = form.validate()
-        if (!validation.hasErrors) {
-            const user: NewUser = {
+        if (!validation.hasErrors && department && faculty) {
+            const user: NewStaff = {
                 ...form.values,
+                userType: UserEnum.Coordinator,
+                department,
+                faculty
             }
             mutateRegister(user)
         }
@@ -35,9 +44,9 @@ const RegisterUserTab = () => {
 
     const { mutate: mutateRegister, data: userData, isLoading: isRegisterLoading } = useMutation({
         mutationKey: ['registerUser'],
-        mutationFn: (user: NewUser) => registerUser(axiosSecure, user),
+        mutationFn: (user: NewStaff) => registerStaff(axiosSecure, user),
         onSuccess: () => toast.success(`Registered the user.`),
-        onError: () => toast.success("Student registration failed.")
+        onError: () => toast.error("Student registration failed.")
     })
     
     return (
@@ -61,9 +70,23 @@ const RegisterUserTab = () => {
                 label="BilkentID"
                 {...form.getInputProps('bilkentId')}
             />
+            <Select
+                label="Select faculty"
+                placeholder="Faculties"
+                data={FACULTIES}
+                value={faculty}
+                onChange={(value) => setFaculty(value!)}
+            />
+            <Select
+                label="Select department"
+                placeholder="Departments"
+                data={DEPARTMENTS}
+                value={department}
+                onChange={(value) => setFaculty(value!)}
+            />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>
     );
 }
  
-export default RegisterUserTab;
+export default RegisterCoordinator;
