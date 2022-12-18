@@ -2,7 +2,6 @@ package com.beam.beamBackend.model;
 
 import java.util.List;
 import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
