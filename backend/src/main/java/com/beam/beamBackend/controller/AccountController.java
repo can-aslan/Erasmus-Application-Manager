@@ -25,7 +25,7 @@ import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.AccountService;
+import com.beam.beamBackend.service.IAccountService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/auth")
 public class AccountController {
-    private final AccountService accountService;
+    private final IAccountService accountService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
