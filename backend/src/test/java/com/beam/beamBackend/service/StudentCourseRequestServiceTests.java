@@ -19,7 +19,7 @@ public class StudentCourseRequestServiceTests {
     private ICourseRequestRepository courseRequestRepository;
 
     @InjectMocks
-    private StudentCourseRequestService studentCourseRequestService;
+    private CourseRequestService studentCourseRequestService;
 
     @Test
     public void requestValidCourse() throws Exception {

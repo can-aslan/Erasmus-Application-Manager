@@ -11,19 +11,19 @@ import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.model.CourseRequest;
 // import com.beam.beamBackend.enums.StudentType;
-import com.beam.beamBackend.service.IStudentCourseRequestService;
+import com.beam.beamBackend.service.ICourseRequestService;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = StudentCourseRequestController.class)
-@ContextConfiguration(classes = StudentCourseRequestController.class)
+@WebMvcTest(controllers = CourseRequestController.class)
+@ContextConfiguration(classes = CourseRequestController.class)
 // @WithMockUser(roles = {"OUTGOING"}) // Temporary user role for outgoing student
 public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
 
     @MockBean
-    private IStudentCourseRequestService studentCourseRequestService;
+    private ICourseRequestService studentCourseRequestService;
 
     @Test
     public void requestValidCourse() throws Exception {
