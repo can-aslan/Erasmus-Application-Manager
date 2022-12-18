@@ -71,6 +71,9 @@ public class CourseRequest {
     @Column(name = "host_uni_name")
     private String hostUniName;
 
+    @Column(name = "feedback")
+    private String feedback;
+
     public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
         @JsonProperty("studentId") Long studentId,
@@ -82,7 +85,8 @@ public class CourseRequest {
         @JsonProperty("syllabusLink") String syllabusLink,
         @JsonProperty("destination") CourseRequestDestination destination,
         @JsonProperty("status") CourseRequestStatus status,
-        @JsonProperty("hostUniName") String hostUniName        
+        @JsonProperty("hostUniName") String hostUniName,        
+        @JsonProperty("feedback") String feedback        
     ) {
 
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
@@ -96,11 +100,18 @@ public class CourseRequest {
         this.destination = (destination == null) ? CourseRequestDestination.COORDINATOR : destination;
         this.status = (status == null) ? CourseRequestStatus.PENDING : status;
         this.hostUniName = hostUniName;
+        this.feedback = feedback;
     }
 
     public static CourseRequest toCourseRequest(CourseRequestRequestBody courseRequestBody, String hostUniName) {
         return new CourseRequest(null, courseRequestBody.getStudentId(), courseRequestBody.getHostCode(), courseRequestBody.getHostEcts(), 
                 courseRequestBody.getName(), courseRequestBody.getBilkentCode(), courseRequestBody.getWebpage(), courseRequestBody.getSyllabusLink(),
-                courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName);
+                courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName, null); // feedback is null in this implementation
     }
+
+    // public static CourseRequest toCourseRequest(CourseRequestRequestBody courseRequestBody, String hostUniName) {
+    //     return new CourseRequest(null, courseRequestBody.getStudentId(), courseRequestBody.getHostCode(), courseRequestBody.getHostEcts(), 
+    //             courseRequestBody.getName(), courseRequestBody.getBilkentCode(), courseRequestBody.getWebpage(), courseRequestBody.getSyllabusLink(),
+    //             courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName, null); // feedback is null in this implementation
+    // }
 }
