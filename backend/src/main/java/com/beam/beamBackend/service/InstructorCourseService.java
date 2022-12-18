@@ -107,7 +107,6 @@ public class InstructorCourseService {
         try {
             boolean instructorExist = userRepo.existsByIdAndUserType(instructorId, UserType.INSTRUCTOR);
     
-            System.out.println("alllloooooooo");
             if (!instructorExist) {
                 throw new Exception("instructor not found");
             }

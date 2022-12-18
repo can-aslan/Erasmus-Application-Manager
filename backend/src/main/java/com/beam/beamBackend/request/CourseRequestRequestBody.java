@@ -36,7 +36,7 @@ public class CourseRequestRequestBody {
     @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String bilkentCode;
 
     @NotBlank

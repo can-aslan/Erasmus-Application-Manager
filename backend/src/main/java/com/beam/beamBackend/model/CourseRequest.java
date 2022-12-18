@@ -68,7 +68,7 @@ public class CourseRequest {
     private CourseRequestStatus status;
     
     // @NotBlank
-    @Column(name = "hostUniName")
+    @Column(name = "host_uni_name")
     private String hostUniName;
 
     public CourseRequest(
