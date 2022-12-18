@@ -31,16 +31,19 @@ public class CoordinatorWishlistService {
     public ArrayList<Wishlist> getCoordinatorsWishlists(@Valid UUID coordinatorId) throws Exception {
         try {
             List<Wishlist> wishlists = wishlistRepository.findAll();
+
+            System.out.println(wishlists.get(0));
             ArrayList<Wishlist> coordinatorsWishLists = new ArrayList<>();
 
             Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
 
-            // Check is the coordinator exists
+            // Check if the coordinator exists
             if (!coordinator.isPresent()) {
                 throw new Exception("Coordinator is not found!");
             } else {
                 for (int i = 0; i < wishlists.size(); i++) {
                     Optional<Student> aStudent = studentRepository.findByUserBilkentId(wishlists.get(i).getStudentId());
+
                     if (!aStudent.isPresent()) {                        
                         throw new Exception("The student is not found!");
                     }
@@ -53,11 +56,10 @@ public class CoordinatorWishlistService {
 
             return coordinatorsWishLists;
 
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
             throw e;
         }
-
     }
 
     public Optional<Wishlist> getWishlist(@Valid UUID coordinatorId, @Valid Long studentId) throws Exception {
