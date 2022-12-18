@@ -7,3 +7,10 @@ export const downloadBlobFile = (body: Blob, filenameWithoutExtension: string='i
     aElement.click();
     document.body.removeChild(aElement);
 }
+
+export const downloadPdf = (data: string) => {
+    const link = document.createElement('a');
+    link.href = "data:application/octet-stream;base64," + data;
+    link.download = 'file.pdf';
+    link.click();
+}

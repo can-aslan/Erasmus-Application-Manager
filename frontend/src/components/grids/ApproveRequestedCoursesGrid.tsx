@@ -1,10 +1,10 @@
-import { SimpleGrid, Card, Flex, Text, TextInput, Button, Modal, Space, Anchor, Center, Stack } from "@mantine/core";
+import { Anchor, Button, Card, Center, Flex, Modal, SimpleGrid, Space, Stack, Text, TextInput } from "@mantine/core";
 import { IconBook2, IconWorld } from "@tabler/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
-import { axiosSecure } from "../../api/axios";
 import { changeRequestStatus } from "../../api/Instructor/CourseRequestService";
+import { axiosSecure } from "../../api/axios";
 import { useUser } from "../../provider/UserProvider";
 import { CourseRequest, InstructorCourseRequestChange } from "../../types";
 import CapybaraLottie from "../Loader/CapybaraLottie";
@@ -73,12 +73,12 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
                         <Flex direction={"row"} gap={"sm"}>
                             <Flex direction={"column"} gap={"sm"}>
                                 <TextInput disabled label={course.hostUniName} value={course.name + ` ${course.hostCode}`}></TextInput>
-                                <Button leftIcon={<IconBook2 />} color={'blue'}><Anchor target="_blank" href={course.syllabusLink} span>{"Course Syllabus"}</Anchor></Button>
+                                <Anchor color='white' target="_blank" href={course.syllabusLink} span><Button leftIcon={<IconBook2 />} color={'blue'}>{"Course Syllabus"}</Button></Anchor>
                                 <Button color={'red'} onClick={() => { setRejectionFeedbackOpened(true); setSelectedRequestId(course.requestId!) }}>Reject</Button>
                             </Flex>
                             <Flex direction={"column"} gap={"sm"} >
                                 <TextInput disabled label={"Bilkent"} value={course.bilkentCode}></TextInput>
-                                <Button leftIcon={<IconWorld />} color={'blue'}><Anchor target="_blank" href={course.webpage} span>{"Course Webpage"}</Anchor></Button>
+                                <Anchor target="_blank" href={course.webpage} span><Button leftIcon={<IconWorld />} color={'blue'}>{"Course Webpage"}</Button></Anchor>
                                 <Button color={'green'} onClick={() => { changeRequest("APPROVED", course.requestId!) }}>Approve</Button>
                             </Flex>
 

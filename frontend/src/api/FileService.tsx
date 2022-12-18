@@ -19,7 +19,10 @@ export const submitFile = async (axios: AxiosInstance, formData: FormData, stude
 
 export const generateAndDownloadPreApproval = async (axios: AxiosInstance, studentId: string) => {
     const response = await axios.post(`/fileService/form/generate/download/student/${studentId}/${Form.PRE_APPROVAL}`, {
-        responseType: "blob"
+        responseType: "blob",
+        headers: {
+            'Accept': 'application/pdf'
+        }
     })
     return response.data
 }

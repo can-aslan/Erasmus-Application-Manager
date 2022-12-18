@@ -2,6 +2,7 @@ import {
     IconArrowsTransferDown,
     IconBook,
     IconClick,
+    IconFileCheck,
     IconFileReport,
     IconFileSearch,
     IconGift,
@@ -147,11 +148,10 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.Instructor]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Approve Course Request',
-            to: '/instructor/approve-course-request'
-
+            to: '/instructor/approve-course-request',
+            icon: <IconFileCheck />
         }
     ],
     [UserEnum.ExperiencedStudent]: [
