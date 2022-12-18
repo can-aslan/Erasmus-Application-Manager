@@ -2,17 +2,14 @@ package com.beam.beamBackend.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
-
-import com.beam.beamBackend.exception.NoStudentException;
-import com.beam.beamBackend.exception.NoUniversityException;
+import com.beam.beamBackend.exception.StudentNotFound;
+import com.beam.beamBackend.exception.UniversityNotFound;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.request.CourseRequestRequestBody;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,7 +20,7 @@ public class CourseRequestService implements ICourseRequestService {
     private final IStudentRepository studentRepository;
 
     @Override
-    public boolean requestCourse(CourseRequestRequestBody courseRequestBody) throws Exception, NoStudentException, NoUniversityException {
+    public boolean requestCourse(CourseRequestRequestBody courseRequestBody) throws Exception, StudentNotFound, UniversityNotFound {
         try {
             Student student = getStudentByCheckingIdAndHostUniName(courseRequestBody.getStudentId());
             String hostUniName = student.getHostUni().getName();
@@ -32,13 +29,13 @@ public class CourseRequestService implements ICourseRequestService {
             courseRequestRepository.save(courseRequest);
             return true;
         }
-        catch (NoStudentException noStudentException) {
-            noStudentException.printStackTrace();
-            throw noStudentException;
+        catch (StudentNotFound studentNotFoundException) {
+            studentNotFoundException.printStackTrace();
+            throw studentNotFoundException;
         }
-        catch (NoUniversityException noUniversityException) {
-            noUniversityException.printStackTrace();
-            throw noUniversityException;
+        catch (UniversityNotFound universityNotFoundException) {
+            universityNotFoundException.printStackTrace();
+            throw universityNotFoundException;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -58,19 +55,19 @@ public class CourseRequestService implements ICourseRequestService {
     }
 
     @Override
-    public List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId) throws Exception, NoStudentException, NoUniversityException {
+    public List<CourseRequest> getAllCourseRequestsOfStudent(Long studentId) throws Exception, StudentNotFound, UniversityNotFound {
         try {
             getStudentByCheckingIdAndHostUniName(studentId);
 
             return courseRequestRepository.findAllByStudentId(studentId);
         }
-        catch (NoStudentException noStudentException) {
-            noStudentException.printStackTrace();
-            throw noStudentException;
+        catch (StudentNotFound studentNotFoundException) {
+            studentNotFoundException.printStackTrace();
+            throw studentNotFoundException;
         }
-        catch (NoUniversityException noUniversityException) {
-            noUniversityException.printStackTrace();
-            throw noUniversityException;
+        catch (UniversityNotFound universityNotFoundException) {
+            universityNotFoundException.printStackTrace();
+            throw universityNotFoundException;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -78,17 +75,17 @@ public class CourseRequestService implements ICourseRequestService {
         }
     }
 
-    private Student getStudentByCheckingIdAndHostUniName(Long studentId) throws NoStudentException, NoUniversityException {
+    private Student getStudentByCheckingIdAndHostUniName(Long studentId) throws StudentNotFound, UniversityNotFound {
         Optional<Student> student = studentRepository.findByUserBilkentId(studentId);
 
         if (!student.isPresent()) {
-            throw new NoStudentException("user not found");
+            throw new StudentNotFound("user not found");
         }
 
         String hostUniName = student.get().getHostUni().getName();
 
         if (hostUniName.isBlank()) {
-            throw new NoUniversityException("host university not found");
+            throw new UniversityNotFound("host university not found");
         }
 
         return student.get();
