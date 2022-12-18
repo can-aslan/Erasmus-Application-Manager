@@ -83,7 +83,7 @@ public class AccountController {
         @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
 
         try {
-            boolean isPasswordChanged = accountService.changePassword(auth, userInfo);
+            accountService.changePassword(auth, userInfo);
             return Response.create("password is changed", HttpStatus.OK);
         } catch (Exception e) {
             return Response.create("password cannot be changed", HttpStatus.BAD_REQUEST); // might change later

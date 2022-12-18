@@ -5,16 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.UserType;
-import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.User;
@@ -31,7 +26,6 @@ import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -46,7 +40,7 @@ public class AccountService implements IAccountService {
     private final IAccountRepository accountRepository;
     private final IStaffRepository staffRepository;
     private final InstructorCourseService instructorCourseService;
-    private final JWTUserService jwtUserService;
+    private final IJWTUserService jwtUserService;
 
     @Autowired
     private final JWTUtils jwtUtils;
