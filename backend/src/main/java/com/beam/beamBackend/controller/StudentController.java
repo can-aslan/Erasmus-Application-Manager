@@ -82,7 +82,7 @@ public class StudentController {
             List<HostCourse> courses = studentService.getHostCoursesOfStudentHostUni(bilkentId);
             return Response.create("uni id of student is retrieved", HttpStatus.OK, courses);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), 499); // might change later
         }        
     }
 
