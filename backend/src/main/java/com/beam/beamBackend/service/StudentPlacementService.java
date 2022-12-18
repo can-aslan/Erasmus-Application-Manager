@@ -49,6 +49,7 @@ public class StudentPlacementService implements IStudentPlacementService {
     private final IAccountRepository accountRepository;
     private final IStaffRepository staffRepository;
     private final IWaitingListStudentRepository waitingListStudentRepository;
+
     @Override
     public ArrayList<Student> placeStudents(String department) throws Exception {
         // Get List of coordinators
@@ -77,7 +78,6 @@ public class StudentPlacementService implements IStudentPlacementService {
                         registeredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1);
                         
-                        System.out.println("==========================================================");
                         //Assign coordinator to students
                         Staff currentCoordinator = coordinators.get( assignedCoordinators % coordinators.size());
                         System.out.println(currentCoordinator);
@@ -89,7 +89,6 @@ public class StudentPlacementService implements IStudentPlacementService {
             }
         }
 
-        System.out.println("-----------------------------------------------------------------------------------------");
         // Waiting list creation 
         // If a registeredstudent's hostUn property is null that means they are in the waiting list
         int waitingListIndex = 0;
@@ -104,8 +103,6 @@ public class StudentPlacementService implements IStudentPlacementService {
         for (Student s: registeredStudents) {
             studentRepository.save(s);
         }
-
-        System.out.println("---------------------------------------------------------");
         
         return registeredStudents;
     }

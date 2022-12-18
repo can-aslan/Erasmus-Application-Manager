@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "student")
+@Table(name = "waiting_list_student")
 public class WaitingListStudent {
     @Id
     @GeneratedValue(generator = "UUID")
