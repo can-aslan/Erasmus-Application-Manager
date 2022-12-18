@@ -108,7 +108,6 @@ public class SignatureService {
             GetObjectRequest.builder().bucket(bucketName).key(key).build(),
             ResponseTransformer.toBytes());
         final byte[] bytes = s3Object.asByteArray();
-
         return bytes;
     }
 
@@ -151,6 +150,11 @@ public class SignatureService {
 
         s3.deleteObject(deleteObjectRequest); // TODO:Handle AWS exception
         signatureRepository.deleteById(userId); // TODO: Not sure if this works
+    }
 
+    public Optional<Signature> getSignatureByBilkentId(Long bilkentId) {
+        User user = accountRepository.findUserByBilkentId(bilkentId);
+        UUID id = user.getId();
+        return signatureRepository.findSignatureByUserId(id);
     }
 }

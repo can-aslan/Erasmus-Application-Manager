@@ -25,6 +25,7 @@ public interface IAccountRepository extends JpaRepository<User, UUID> {
     Optional<User> findUserById(UUID id);
     Optional<User> findUserByEmail(String email);
     boolean existsByBilkentId(Long bilkentId);
+    boolean existsByBilkentIdOrEmail(Long bilkentId, String email);
     boolean existsByIdAndUserType(UUID id, UserType userType);
     /*
         @Query("SELECT phoneNumber FROM CustomerEntity customer")

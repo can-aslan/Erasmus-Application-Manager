@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
+import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.AccountService;
 import jakarta.validation.Valid;
@@ -48,7 +50,7 @@ public class AccountController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            UUID ids = accountService.addUser(userInfo);
+            User ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -63,6 +65,18 @@ public class AccountController {
             return Response.create("accounts are created", HttpStatus.OK, users);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
+        }        
+    }
+    
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register_staff")
+    public ResponseEntity<Object> registerStaff(@Valid @RequestBody RegisterStaff userInfo) {
+        try {
+            System.out.println(userInfo);
+            RRegisterStaff savedStaff = accountService.addStaff(userInfo);
+            return Response.create("account is created", HttpStatus.OK, savedStaff);
+        } catch (Exception e) {
+            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
         }        
     }
 

@@ -26,12 +26,12 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     width: 80
                 },
                 {
-                    accessor: 'bilkentCourse.courseName',
+                    accessor: 'bilkentCourse.bilkentName',
                     title: "Bilkent Course Name",
                     width: 120
                 },
                 {
-                    accessor: 'bilkentCourse.ECTSCredits',
+                    accessor: 'bilkentCourse.ects',
                     title: "ECTS Credits",
                     width: 120
                 },
@@ -41,12 +41,12 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     width: 80
                 },
                 {
-                    accessor: 'hostCourse.courseName',
+                    accessor: 'hostCourse.hostName',
                     title: "Host Course Name",
                     width: 120
                 },
                 {
-                    accessor: 'hostCourse.ECTSCredits',
+                    accessor: 'hostCourse.ects',
                     title: "ECTS Credits",
                     width: 120
                 },

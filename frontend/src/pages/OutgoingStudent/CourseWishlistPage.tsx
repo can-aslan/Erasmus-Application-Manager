@@ -54,15 +54,15 @@ const CourseWishlistPage = () => {
         onError: () => toast.error("Oops. We couldn't save the wishlist. Please try again later.")
     })
     
-    // const { mutate: submitMutation, isLoading: isSubmitLoading } = useMutation({
-    //     mutationKey: ['submitWishlist'],
-    //     mutationFn: () => submitWishlist(axiosSecure, user.id, wishlistItems),
-    //     onSuccess: () => {
-    //         queryClient.invalidateQueries(['wishlist'])
-    //         toast.success("Wishlist has been submitted for the review of the coordinator."),
-    //     },
-    //     onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
-    // })
+    const { mutate: submitMutation, isLoading: isSubmitLoading } = useMutation({
+        mutationKey: ['submitWishlist'],
+        mutationFn: () => submitWishlist(axiosSecure, user.bilkentId),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['wishlist'])
+            toast.success("Wishlist has been submitted for the review of the coordinator.")
+        },
+        onError: () => toast.error("Oops. We couldn't submit the wishlist. Please try again later.")
+    })
 
     const { mutate: deleteWishMutation, isLoading: isDeleteLoading } = useMutation({
         mutationKey: ['deleteWishItem'],
@@ -88,22 +88,22 @@ const CourseWishlistPage = () => {
         Autocomplete component accepts an array of strings or objects with value property to display them on the dropdown. 
         We chose the array of strings for this purpose and we are displaying course names.
     */
-    const bilkentCoursesData = bilkentCourses.data.map((c) => c.courseName)
-    const hostCoursesData = hostCourses.data.map((h) => h.courseName)
+    const bilkentCoursesData = bilkentCourses.data.map((c) => c.courseName!)
+    const hostCoursesData = hostCourses.data.map((h) => h.courseName!)
 
     // Table will consist of pairs of Bilkent courses and host uni courses. This is because
     // of the course transfer process that will happen later on. 
-    const tableItems: Array<CourseTableCourses> | undefined = courseWishlist ? courseWishlist.data.items.map((w) => {
+    const tableItems: Array<CourseTableCourses> | undefined = courseWishlist?.data.items ? courseWishlist.data.items.map((w) => {
         const bilkentCourse: BilkentCourse = {
-            bilkentCredits: w.bilkentCredits,
-            courseCode: w.courseName,
-            courseName: w.courseName,
+            bilkentCredit: w.bilkentCredits,
+            courseCode: w.bilkentCourse,
+            bilkentName: w.bilkentName,
             ects: w.ects,
         }
 
         const hostCourse: HostCourse = {
             courseCode: w.mappings[0].hostCourse,
-            courseName: w.mappings[0].courseName || "",
+            hostName: w.mappings[0].hostName,
             ects: w.mappings[0].ects || 0,
         }
 
@@ -115,36 +115,37 @@ const CourseWishlistPage = () => {
     }) : []
     
     const handleSave = () => {
+        let uuid = "00000000-0000-0000-0000-000000000000"
         const courseWishlistItemMapping: CourseWishlistItemMapping[] = selectedHostCourses?.map((s, index) => {
+            const hostCourse: HostCourse = hostCourses.data.find(h => h.courseName === s)!
+            uuid = `${index}${uuid.substring((index / 10) + 1)}`
             return {
-                hostCourse: s,
-                mappingItemId: index + ""
+                hostCourse: hostCourse.courseCode,
+                mappingItemId: uuid,
+                ects: hostCourse.ects,
+                hostName: hostCourse.courseName!,
             }   
         })
+
+        const bilkentCourse: BilkentCourse = bilkentCourses.data.find(b => b.courseName === selectedBilkentCourse)!
+        console.log(bilkentCourse)
         const newWish: NewCourseWish = {
-            bilkentCourse: selectedBilkentCourse,
+            bilkentCourse: bilkentCourse.courseCode,
+            bilkentCredits: bilkentCourse.bilkentCredit,
+            ects: bilkentCourse.ects,
+            bilkentName: bilkentCourse.courseName,
             mappings: [
                 ...courseWishlistItemMapping
             ]
         }
         saveMutation(newWish)
+        setSelectedHostCourses([])
+        setSelectedBilkentCourse('')
+        setSelectedBilkentCourse('')
     }
     
     const handleSubmit = async () => {
-        const courseWishlistItemMapping: CourseWishlistItemMapping[] = selectedHostCourses?.map((s, index) => {
-            return {
-                hostCourse: s,
-                mappingItemId: index + ""
-            }   
-        })
-        const newWish: NewCourseWish = {
-            bilkentCourse: selectedBilkentCourse,
-            mappings: [
-                ...courseWishlistItemMapping
-            ]
-        }
-        saveMutation(newWish)
-        // submitMutation(newWish)
+        submitMutation()
     }
     
     const handleRemoveWish = (e: React.MouseEvent, wishlistId: string): void => {
@@ -229,7 +230,15 @@ const CourseWishlistPage = () => {
                                 handleRemoveItem={handleRemoveWish}
                             />
                             <Flex gap='xl' align='center' justify='center'>
-                                {/* <Button onClick={handleSubmit} loading={isSubmitLoading} color='red' leftIcon={<IconSend />}>Submit for Approval</Button> */}
+                                <Button 
+                                    onClick={handleSubmit} 
+                                    loading={isSubmitLoading} 
+                                    color='red' 
+                                    leftIcon={<IconSend />}
+                                    disabled={selectedHostCourses.length !== 0}
+                                >
+                                        Submit for Approval
+                                </Button>
                             </Flex>
                         </Flex>
                     </Card>

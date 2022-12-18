@@ -49,20 +49,38 @@ public class WishlistItem {
     @JoinColumn(name = "wishlist_student_id", referencedColumnName = "student_id")
     private Wishlist ownerWishlist;
 
-    @OneToMany(mappedBy = "wishlistItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
+    @Column(name = "ects")
+    private Double ects;
+    
+    @NotNull
+    @Column(name = "bilkent_credits")
+    private Double bilkentCredits;
+
+    @NotBlank
+    @Column(name = "bilkent_name")
+    private String bilkentName;
+
+    @OneToMany(mappedBy = "wishlistItem", cascade = CascadeType.ALL) //, orphanRemoval = true)
     private List<WishlistItemMapping> mappings;
 
     public WishlistItem(
         @JsonProperty("wishlistItemId") UUID wishlistItemId,
         @JsonProperty("studentId") Long studentId,
-        @JsonProperty("bilkentCourse") String bilkentCourse
+        @JsonProperty("bilkentCourse") String bilkentCourse,
+        @JsonProperty("ects") Double ects,
+        @JsonProperty("bilkentCredits") Double bilkentCredits,
+        @JsonProperty("bilkentName") String bilkentName
     ) {
         this.wishlistItemId = (wishlistItemId == null) ? UUID.randomUUID() : wishlistItemId;
         this.studentId = studentId;
         this.bilkentCourse = bilkentCourse;
+        this.ects = ects;
+        this.bilkentCredits = bilkentCredits;
+        this.bilkentName = bilkentName;
     }
 
     public static WishlistItem toWishlistItem(WishlistItemRequest wReq, UUID id, Long studentId, Wishlist owner) {
-        return new WishlistItem(id, studentId, wReq.getBilkentCourse(), owner, wReq.getMappings());
+        return new WishlistItem(id, studentId, wReq.getBilkentCourse(), owner, wReq.getEcts(), wReq.getBilkentCredits(), wReq.getBilkentName(), wReq.getMappings());
     }
 }

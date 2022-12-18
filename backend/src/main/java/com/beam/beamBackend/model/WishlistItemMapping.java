@@ -36,14 +36,26 @@ public class WishlistItemMapping {
     @Column(name = "host_course")
     private String hostCourse;
 
+    @NotNull
+    @Column(name = "ects")
+    private Double ects;
+    
+    @NotBlank
+    @Column(name = "host_name")
+    private String hostName;
+
     @ManyToOne
     @JoinColumn(name = "wishlist_item_wishlist_item_id")
     private WishlistItem wishlistItem;
 
     public WishlistItemMapping(
-        @JsonProperty("hostCourse") String hostCourse
+        @JsonProperty("hostCourse") String hostCourse,
+        @JsonProperty("ects") Double ects,
+        @JsonProperty("hostName") String hostName
     ) {
         this.mappingItemId = UUID.randomUUID();
         this.hostCourse = hostCourse;
+        this.ects = ects;
+        this.hostName = hostName;
     }
 }

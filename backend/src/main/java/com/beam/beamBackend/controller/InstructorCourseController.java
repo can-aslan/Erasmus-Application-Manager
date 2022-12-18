@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.InstructorCourse;
+import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
+import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.InstructorCourseService;
 
@@ -31,9 +33,9 @@ public class InstructorCourseController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "course")
-    public ResponseEntity<Object> addCourseToInstructor(@Valid @RequestBody InstructorCourse courseInfo) {
+    public ResponseEntity<Object> addCourseToInstructor(@Valid @RequestBody InstructorCourseAdd courseInfo) {
         try {
-            InstructorCourse result = instructorService.addCourseToInstructor(courseInfo);
+            RInstructorCourseAdd result = instructorService.addCourseToInstructor(courseInfo);
             return Response.create("account is created", HttpStatus.OK, result);
         } catch (Exception e) {
             return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
@@ -63,7 +65,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/determineStatus")
+    @PostMapping("/course/determineStatus")
     public ResponseEntity<Object> decideCourseRequestStatus(@Valid @RequestBody InstructorCourseApproval requestResult) {
         try {
             CourseRequest result = instructorService.determineRequestedCourseStatus(requestResult);

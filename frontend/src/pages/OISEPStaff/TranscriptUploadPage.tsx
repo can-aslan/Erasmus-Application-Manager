@@ -1,52 +1,63 @@
-import { Autocomplete, Center, FileInput, Flex } from "@mantine/core";
+import { Autocomplete, Button, Center, FileInput, Flex } from "@mantine/core";
 import { IconUpload } from "@tabler/icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { submitFile } from "../../api/FileService";
+import useAllStudents from "../../hooks/useAllStudents";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { CoordinatorAssociatedStudents, StudentAssociatedCourse } from "../../types";
+import ErrorPage from "../Feedback/ErrorPage";
+import LoadingPage from "../Feedback/LoadingPage";
+
+interface TranscriptSubmitInterface {
+    formData: FormData,
+    studentId: string,
+}
 
 const TranscriptUploadPage = () => {
-    const [selectedCoordinatorValue, setSelectedCoordinatorValue] = useState('')
     const [selectedStudentValue, setSelectedStudentValue] = useState('')
-    const [selectedStudentIndex, setSelectedStudentIndex] = useState(0)
     const [transcriptFile, setTranscriptFile] = useState<File | null>(null)
+    const axiosSecure = useAxiosSecure()
     
-    // TODO: Fetch coordinator list
-    
-    // TODO: Fetch students based on coordinator
-    const students: Array<CoordinatorAssociatedStudents> = [
-        {
-            studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
-            studentName: "Selim Can Güler",
-            studentSurname: "Güler",
-            studentId: "22002811",
-            studentDepartment: ["CS"],
-        },
-        {
-            studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
-            studentName: "Ahmet",
-            studentSurname: "Güler",
-            studentId: "22002811",
-            studentDepartment: ["CS"],
-        },
-        {
-            studentUuid: "student1",
-            file: "file",
-            formUuid: "form1",
-            studentName: "Mahmut",
-            studentSurname: "Güler",
-            studentId: "22002811",
-            studentDepartment: ["CS"],
-        },
-    ]
-    const studentsData = students.map((s) => {
-        return {
-            ...s,
-            value: `${s.studentName} - ${s.studentId}`,
-        }
+    // Fetch students
+    const { data: allStudents, isLoading: isStudentsLoading, isError: isStudentsError } = useAllStudents(axiosSecure)
+
+    const { mutate: transcriptUploadMutation } = useMutation({
+        mutationKey: ['submitTranscriptForm'],
+        mutationFn: (data: TranscriptSubmitInterface) => submitFile(axiosSecure, data.formData, data.studentId),
+        onSuccess: () => toast.success(`Submitted the transcript for student: ${selectedStudentValue}`),
+        onError: () => toast.error(`Couldn't submit the transcript for student: ${selectedStudentValue}`),
     })
+
+    if (isStudentsLoading) {
+        return <LoadingPage message="Fetching student details..."/>
+    }
+
+    if (isStudentsError) {
+        return <ErrorPage message="We have encountered with an error while fetching the students"/>
+    }
+
+    const studentsData = allStudents.map((s) => `${s.user.name} - ${s.user.bilkentId}`)
+
+    const handleTranscriptUpload = () => {
+        if (transcriptFile) {
+            const formData = new FormData()
+            const student = allStudents.find(s => selectedStudentValue.includes(`${s.user.name} - ${s.user.bilkentId}`))
+            const studentId = student?.user.id!
+
+            formData.append("file", transcriptFile)
+            
+            const mutationData = {
+                formData,
+                studentId
+            }
+            transcriptUploadMutation(mutationData)
+        }
+        else {
+            toast.error("Please choose a transcript first.")
+        }
+    }
     
     return (
         <Center>
@@ -62,13 +73,7 @@ const TranscriptUploadPage = () => {
                     data={studentsData}
                     placeholder='Select a student'
                     value={selectedStudentValue}
-                    onChange={((value) => {
-                        students.map((s, index) => {
-                            value.includes(s.studentName) && value.includes(s.studentId) ? setSelectedStudentIndex(index) : ''
-                        })
-                        setSelectedStudentValue(value)
-                    })}
-                    disabled={!selectedCoordinatorValue}
+                    onChange={setSelectedStudentValue}
                 />
                 <FileInput
                     placeholder="Pick transcript"
@@ -78,8 +83,14 @@ const TranscriptUploadPage = () => {
                     onChange={setTranscriptFile}
                     accept={'application/pdf'}
                     icon={<IconUpload />}
-                    disabled={!selectedCoordinatorValue}
+                    disabled={!selectedStudentValue}
                 />
+                <Button
+                    disabled={!transcriptFile}
+                    onClick={handleTranscriptUpload}
+                >
+                    Submit Transcript
+                </Button>
                 {transcriptFile && 
                     <object
                         data={URL.createObjectURL(transcriptFile)}
@@ -87,7 +98,6 @@ const TranscriptUploadPage = () => {
                         width='600px'
                         height='600px'
                     >/
-
                     </object>
                 }
             </Flex>

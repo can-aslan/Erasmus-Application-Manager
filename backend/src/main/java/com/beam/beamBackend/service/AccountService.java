@@ -7,18 +7,28 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.model.InstructorCourse;
+import com.beam.beamBackend.model.RegisterStaff;
+import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.request.ChangePassword;
+import com.beam.beamBackend.request.InstructorCourseAdd;
+import com.beam.beamBackend.request.StaffRequest;
+import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.request.UserRequest;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
+import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
 
@@ -34,22 +44,19 @@ public class AccountService {
 
     // @Autowired
     private final IAccountRepository accountRepository;
+    private final IStaffRepository staffRepository;
 
-    @Autowired
+    private final InstructorCourseService instructorCourseService;
+
     private final JWTUserService jwtUserService;
 
     @Autowired
     private final JWTUtils jwtUtils;
 
-    @Autowired
-    private AuthenticationManager authManager;
-
     public RLoginUser login(UserLogin user) throws Exception {
         try {
-            System.out.println("id: "+ user.getBilkentId());
             User dbUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
 
-            System.out.println("user: " + dbUser);
             if (dbUser == null) {
                 throw new Exception("user is not found");
             }
@@ -133,24 +140,67 @@ public class AccountService {
         }
     }
 
-    public UUID addUser(User user) throws Exception {
+    public User addUser(User user) throws Exception {
         try {
-            boolean userExist = accountRepository.existsByBilkentId(user.getBilkentId());
+            System.out.println("user that will be saved: " + user);
+            boolean userExist = accountRepository.existsByBilkentIdOrEmail(user.getBilkentId(), user.getEmail());
             
             if (userExist) {
-                throw new Exception();
+                throw new Exception("user already exists");
             } else {
                 // generate uuid and hash password if user does not exist in the system
                 user.setId(UUID.randomUUID());
-                // user.setPassword(user.getPassword());
                 user.setPassword(encodePassword(user.getPassword()));
 
                 System.out.println("user_id: " + user.getId());
-                accountRepository.save(user);
+                User newUser = accountRepository.save(user);
 
                 System.out.println("user_id after register: " + accountRepository.findUserByEmail(user.getEmail()).get().getId());
-                return user.getId();
+                return newUser;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public RRegisterStaff addStaff(RegisterStaff staff) throws Exception {
+        try {
+            String generatedPassword = StudentPlacementService.generatePsw();
+            
+            User newUser = addUser(new User(UUID.randomUUID(), staff.getName(), staff.getSurname(), staff.getEmail(), staff.getBilkentId(), generatedPassword, staff.getUserType()));        
+            
+            // set unhashed password to user so that frontend can show it
+            newUser.setPassword(generatedPassword);
+
+            // check if staff has necessary info
+            if (newUser.getUserType() == UserType.COORDINATOR || newUser.getUserType() == UserType.INSTRUCTOR) {
+                if (staff.getDepartment() == null) {
+                    throw new Exception(newUser.getUserType() + " should have a department");
+                }
+                
+                if (staff.getFaculty() == null) {
+                    throw new Exception(newUser.getUserType() + " should have a faculty");
+                }
+            } else if (newUser.getUserType() == UserType.FAC_MEMBER && staff.getFaculty() == null) {
+                throw new Exception(newUser.getUserType() + " should have a faculty");                
+            }
+
+            // save staff to database
+            Staff staffDb = Staff.toStaff(new StaffRequest(newUser.getId(), staff.getDepartment(), staff.getFaculty()), newUser);
+            Staff savedStaff = staffRepository.save(staffDb);
+            RInstructorCourseAdd responseInstructorSavedCourses = null;
+            
+            // if staff is user, add instructor course
+            if (newUser.getUserType() == UserType.INSTRUCTOR) {
+                if (staff.getBilkentCourseCodes() != null) {
+                    responseInstructorSavedCourses = instructorCourseService.addCourseToInstructor(new InstructorCourseAdd(newUser.getId(), staff.getBilkentCourseCodes()));                    
+                } else {
+                    System.out.println("instructor has no course");
+                }
+            }
+
+            return new RRegisterStaff(savedStaff, responseInstructorSavedCourses);
         } catch (Exception e) {
             throw e;
         }

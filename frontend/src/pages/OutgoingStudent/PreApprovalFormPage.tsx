@@ -61,7 +61,6 @@ const PreApprovalFormPage = () => {
             formData.append('file', file)
             formData.append("fileType", "PRE_APPROVAL")
             manualUploadMutation.mutate(formData)
-            console.log(manualUploadMutation.data)
         }
         else {
             toast.error("You should upload a file before submitting.")

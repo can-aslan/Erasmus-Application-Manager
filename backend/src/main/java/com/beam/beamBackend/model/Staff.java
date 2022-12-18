@@ -40,12 +40,12 @@ public class Staff {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @NotNull
+    // @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "department", nullable = true)
     private Department department;
 
-    @NotNull
+    // @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "faculty", nullable = true)
     private Faculty faculty;
@@ -53,6 +53,10 @@ public class Staff {
     public static Staff toStaff(StaffRequest sReq, User u) {
         return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
     }
+    
+    // public static Staff toStaff(StaffRequest sReq, User u) {
+    //     return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
+    // }
 
     @JsonIgnore
     public UUID getId() {
