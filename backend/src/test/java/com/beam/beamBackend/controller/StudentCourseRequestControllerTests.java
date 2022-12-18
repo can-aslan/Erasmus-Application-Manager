@@ -38,7 +38,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "www.syllabus.com",
             CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING,
-            "Host University"
+            "Host University",
+            "feedback"
         );
         
         // when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(true);
@@ -59,7 +60,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                     +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\","
                     +     "\"destination\": \"" + courseRequest.getDestination() + "\","
                     +     "\"status\": \"" + courseRequest.getStatus() + "\","
-                    +     "\"hostUniName\": \"" + courseRequest.getHostUniName() + "\""
+                    +     "\"hostUniName\": \"" + courseRequest.getHostUniName() + "\","
+                    +     "\"feedback\": \"" + courseRequest.getFeedback() + "\""
                     + "}"
                 )
             )
@@ -84,7 +86,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
             "www.syllabus.com",
             CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING,
-            "Host University"
+            "Host University",
+            "feedback"
         );
         
         // when(studentCourseRequestService.requestCourse(courseRequest)).thenReturn(false);
@@ -105,7 +108,8 @@ public class StudentCourseRequestControllerTests extends ControllerTestsSetup {
                     +     "\"syllabusLink\": \"" + courseRequest.getSyllabusLink() + "\","
                     +     "\"destination\": \"" + courseRequest.getDestination() + "\","
                     +     "\"status\": \"" + courseRequest.getStatus() + "\","
-                    +     "\"hostUniName\": \"" + courseRequest.getHostUniName() + "\""
+                    +     "\"hostUniName\": \"" + courseRequest.getHostUniName() + "\","
+                    +     "\"feedback\": \"" + courseRequest.getFeedback() + "\""
                     + "}"
                 )
             )

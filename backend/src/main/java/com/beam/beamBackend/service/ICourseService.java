@@ -12,10 +12,10 @@ public interface ICourseService {
     BilkentCourse getBilkentCourseById(UUID courseId) throws Exception;
     HostCourse addHostCourse(HostCourse hostCourse) throws Exception;
     HostCourse getHostCourseById(UUID courseId) throws Exception;
-    List<HostCourse> getHostCourseByUniId(UUID uniId) throws Exception;
+    // List<HostCourse> getHostCourseByUniId(UUID uniId) throws Exception;
     List<BilkentCourse> getBilkentCourseByDepartment(Department department) throws Exception;
     List<BilkentCourse> getAllBilkentCourse() throws Exception;
     List<HostCourse> getAllHostCourse() throws Exception;
-    BilkentCourse addApprovedCourse(ApprovedCourse approvedCourse) throws Exception;
-    List<Object> getAllApprovedCoursesInUni(UUID hostUniId) throws Exception;
+    // BilkentCourse addApprovedCourse(ApprovedCourse approvedCourse) throws Exception;
+    // List<Object> getAllApprovedCoursesInUni(UUID hostUniId) throws Exception;
 }

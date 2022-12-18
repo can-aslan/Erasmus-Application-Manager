@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class InstructorCourseService implements ICourseService {
+public class InstructorCourseService {
     private final IInstructorCourseRepository instructorCourseRepo;
     private final IBilkentCourseRepository bilkentCourseRepo;
     private final ICourseService courseService;
