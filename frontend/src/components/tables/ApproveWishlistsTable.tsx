@@ -39,7 +39,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
             toast.success(`Wishlist approved successfully.`);
         },
         onError:()=>{
-            toast.success(`Wishlist approved failed.`);
+            toast.error(`Wishlist approve failed.`);
         }
     })
 
@@ -51,7 +51,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
             toast.success(`Wishlist rejected successfully.`);
         },
         onError:()=>{
-            toast.success(`Wishlist rejected failed.`);
+            toast.error(`Wishlist reject failed.`);
         }
     })
 
@@ -75,37 +75,14 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
         setOpened(false);
     }
 
-    // Below are mock data, they will be changed.
-    //------------------------------------------ Mock Data Starts ----------------------------------------------------------------
-    // const wishlistList: Course[] = [
-    //     { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "xxx"},
-    //     { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "abc"},
-    //     { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "abd"},
-    //     { courseCode: "CS 319", courseName: "Object Oriented Software Engineering", ects: 6.5, bilkentCredits: 6.5, wishlistUuid: "aby"},
-    // ];
-    // const waitingWishlist: StudentAssociatedWishlist[] = [
-    //     { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},
-    //     { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},
-    //     { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},
-    //     { studentName: "Can Ersoy", studentId: "22003216", status: 'approved', wishlistItems: wishlistList, wishlistUuid: 'x'},
-    // ];
-
-    //------------------------------------------ Mock Data Ends ----------------------------------------------------------------
-
-    const wishlistRows = wishlistDetails!.map((element) => (
+    const wishlistRows = wishlistDetails?.map((element) => (
         <tr key={element.mappings[0].hostCourse}>
             <td>{element.mappings[0].hostCourse}</td>
             <td>{element.mappings[0].hostName}</td>
             <td>{element.ects}</td>
-            <td>{""}
-                <Center>
-                    <Button 
-                        onClick={() => {
-                            
-                        }}>
-                        Syllabus
-                    </Button>
-                </Center></td>
+            <td>{element.bilkentCourse}</td>
+            <td>{element.bilkentName}</td>
+            <td>{element.ects}</td>
         </tr>
     ));
     const waitingApprovalRows = wishlists.map((wishlist) => (
@@ -132,6 +109,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
 
     return (
         <><Modal
+            size={"auto"}
             opened={opened}
             centered={true}
             onClose={() => setOpened(false)}
@@ -142,11 +120,13 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
                     <tr>
                         <th>Course Code At Host University</th>
                         <th>Course Name At Host University</th>
-                        <th>ECTS Credit</th>
-                        <th>View Syllabus</th>
+                        <th>ECTS Credits of Host Course</th>
+                        <th>Course Code at Bilkent</th>
+                        <th>Course Name at Bilkent</th>
+                        <th>ECTS Credits of Bilkent Course</th>
                     </tr>
                 </thead>
-                {/* <tbody>{wishlistRows}</tbody> */}
+                <tbody>{wishlistRows}</tbody>
 
             </Table>}
             <Space h="xs" />
