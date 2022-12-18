@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
-import { Course, StudentAssociatedCourse } from "../../types"
+import { CoordinatorWishlistChange, Course, StudentAssociatedCourse } from "../../types"
 import { ResponseAllStudentCourseWishlist, ResponseStudentCourseWishlist, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
 
@@ -14,18 +14,7 @@ export const getStudentWishlist = async (axios: AxiosInstance, coordinatorId: st
     return response.data
 }
 
-export const approveWishlist = async (axios: AxiosInstance, wishlistId: string, coordinatorId: string) => {
-    const response = await axios.post<ResponseAllStudentCourseWishlist>(`/coordinator/approveWishlist/`, {
-        coordinatorId,
-        wishlistId,
-    })
-    return response.data
-}
-
-export const rejectWishlist = async (axios: AxiosInstance, wishlistId: string, coordinatorId: string) => {
-    const response = await axios.post<ResponseAllStudentCourseWishlist>(`/coordinator/rejectWishlist/`, {
-        coordinatorId,
-        wishlistId,
-    })
+export const changeStatus = async (axios: AxiosInstance, body: CoordinatorWishlistChange) => {
+    const response = await axios.post<ResponseAllStudentCourseWishlist>(`/coordinator/wishlist/determineStatus`, body)
     return response.data
 }

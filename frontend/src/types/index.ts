@@ -305,6 +305,14 @@ export type InstructorCourseRequestChange = {
     courseRequestId: string;
 
 }
+
+export type CoordinatorWishlistChange = {
+    status: string;
+    coordinatorUserId: string;
+    studentBilkentId: string;
+    feedback?: string | null;
+
+}
 // export type LearningAgreement = {
 //     formUuid: string,
 //     studentId: string,

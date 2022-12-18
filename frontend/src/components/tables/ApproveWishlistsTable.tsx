@@ -1,13 +1,14 @@
-import { Button, Center, Group, Modal, Space, Table } from "@mantine/core";
+import { Button, Center, Flex, Group, Modal, Space, Table, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
-import { approveWishlist, getStudentWishlist, rejectWishlist } from '../../api/Coordinator/CourseWishlistService';
+import { changeStatus, getStudentWishlist } from '../../api/Coordinator/CourseWishlistService';
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
 import { useUser } from "../../provider/UserProvider";
-import { Course, ExistingCourseWishlist, StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemsInterface } from "../../types";
+import { CoordinatorWishlistChange, Course, ExistingCourseWishlist, StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemsInterface } from "../../types";
+import RejectionFeedbackModal from "../modals/RejectionFeedbackModal";
 
 interface ApproveWishlistTableProps {
     wishlists: Array<ExistingCourseWishlist>
@@ -16,41 +17,44 @@ interface ApproveWishlistTableProps {
 const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
     const axiosSecure = useAxiosSecure();
     const { user } = useUser();
+    const [rejectionFeedback, setRejectionFeedback] = useState("");
+    const [rejectionFeedbackOpened, setRejectionFeedbackOpened] = useState(false);
     const [opened, setOpened] = useState(false);
     const [selectedStudentID, setSelectedStudentID] = useState("");
-    const [selectedIsApproved, setSelectedIsApproved] = useState(false);
+    const [selectedShowApprove, setSelectedShowApprove] = useState(false);
+    const [selectedShowReject, setSelectedShowReject] = useState(false);
     const [wishlistDetails, setWishlistDetails] = useState<Array<WishlistItemsInterface>>();
     const queryClient = useQueryClient()
 
-    const { mutate: mutateGetWishlist, data:dataWishlistDetails } = useMutation({
+    const { mutate: mutateGetWishlist, data: dataWishlistDetails } = useMutation({
         mutationKey: ['getWishlist'],
         mutationFn: (studentBilkentId: string) => getStudentWishlist(axiosSecure, user!.id, studentBilkentId),
         onSuccess: (dataWishlistDetails) => {
-            
+
             setWishlistDetails(dataWishlistDetails.data.items);
         }
     })
 
     const { mutate: mutateApproval } = useMutation({
         mutationKey: ['approveWishlist'],
-        mutationFn: (studentBilkentId: string) => approveWishlist(axiosSecure, user!.id, studentBilkentId),
-        onSuccess:()=>{
+        mutationFn: (body: CoordinatorWishlistChange) => changeStatus(axiosSecure, body),
+        onSuccess: () => {
             queryClient.invalidateQueries(['getAllStudentWishlists']);
             toast.success(`Wishlist approved successfully.`);
         },
-        onError:()=>{
+        onError: () => {
             toast.error(`Wishlist approve failed.`);
         }
     })
 
     const { mutate: mutateRejection } = useMutation({
         mutationKey: ['rejectWishlist'],
-        mutationFn: (studentBilkentId: string) => rejectWishlist(axiosSecure, user!.id, studentBilkentId),
-        onSuccess:()=>{
+        mutationFn: (body: CoordinatorWishlistChange) => changeStatus(axiosSecure, body),
+        onSuccess: () => {
             queryClient.invalidateQueries(['getAllStudentWishlists']);
             toast.success(`Wishlist rejected successfully.`);
         },
-        onError:()=>{
+        onError: () => {
             toast.error(`Wishlist reject failed.`);
         }
     })
@@ -62,15 +66,26 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
 
     }
 
-    const approve = (studentBilkentId: string) => {
+    const approve = (studentBilkentId: string, newStatus: string) => {
         // Approve the selected student's wishlist
-        mutateApproval(studentBilkentId);
+        const approveBody: CoordinatorWishlistChange = {
+            status: newStatus,
+            studentBilkentId: studentBilkentId,
+            coordinatorUserId: user.id,
+        }
+        mutateApproval(approveBody);
         // Close pop-up
         setOpened(false);
     }
-    const reject = (studentBilkentId: string) => {
+    const reject = (studentBilkentId: string, newStatus: string, feedback: string) => {
         // Reject the selected student's wishlist
-        mutateRejection(studentBilkentId)
+        const rejectionBody: CoordinatorWishlistChange = {
+            status: newStatus,
+            studentBilkentId: studentBilkentId,
+            coordinatorUserId: user.id,
+            feedback: feedback
+        }
+        mutateRejection(rejectionBody)
         // Close pop-up
         setOpened(false);
     }
@@ -96,7 +111,8 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
                         onClick={() => {
                             setSelectedStudentID(wishlist.studentId);
                             viewWishlist(wishlist.studentId);
-                            setSelectedIsApproved(wishlist.status == "PENDING" || wishlist.status == "REJECTED");
+                            setSelectedShowApprove(wishlist.status == "PENDING" || wishlist.status == "REJECTED");
+                            setSelectedShowReject(wishlist.status == "PENDING" || wishlist.status == "APPROVED");
                         }}
                     >
                         View
@@ -131,10 +147,28 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
             </Table>}
             <Space h="xs" />
             <Group position={"right"}>
-                {selectedIsApproved && <Button color={'green'} onClick={() => { approve(selectedStudentID) }}>Approve</Button>}
-                <Button color={'red'} onClick={() => { reject(selectedStudentID) }}>Reject</Button>
+                {selectedShowApprove && <Button color={'green'} onClick={() => { approve(selectedStudentID, 'APPROVED') }}>Approve</Button>}
+                {selectedShowReject && <Button color={'red'} onClick={() => {setRejectionFeedbackOpened(true)}}>Reject</Button>}
             </Group>
         </Modal>
+            <Modal opened={rejectionFeedbackOpened}
+                size={"50%"}
+                centered={false}
+                onClose={() => setRejectionFeedbackOpened(false)}
+                withCloseButton={false}
+                closeOnClickOutside={false}
+                closeOnEscape={false}
+            >
+                <Flex direction={"column"} gap={"xs"}>
+                    <TextInput value={rejectionFeedback} onChange={(event) => setRejectionFeedback(event.currentTarget.value)} label={"Rejection Feedback"} placeholder={"Please a feedback for your rejection..."}></TextInput>
+                    <Flex justify={"right"} gap={"xs"}>
+                        <Button color={"red"} onClick={() => { setRejectionFeedbackOpened(false); setRejectionFeedback(""); }}>Cancel Rejection</Button>
+                        <Button color={"green"} onClick={() => { setRejectionFeedbackOpened(false); reject(selectedStudentID, 'REJECTED', rejectionFeedback)}}>Confirm Rejection</Button>
+                    </Flex>
+
+                </Flex>
+
+            </Modal>
             <Table striped withBorder withColumnBorders>
                 <thead>
                     <tr>

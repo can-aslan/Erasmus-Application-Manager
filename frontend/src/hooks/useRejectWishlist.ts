@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import { AxiosInstance } from "axios"
-import { approveWishlist, rejectWishlist } from "../api/Coordinator/CourseWishlistService"
+import { changeStatus, rejectWishlist } from "../api/Coordinator/CourseWishlistService"
 import { useUser } from "../provider/UserProvider"
 
 export const useRejectWishlist = (axiosSecure: AxiosInstance) => {
