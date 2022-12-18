@@ -1,9 +1,9 @@
 import { Axios, AxiosInstance } from "axios"
 import { Form } from "../types"
-import { Response, ResponsePreApprovalForm } from "../types/responseTypes"
+import { Response, ResponseApprovePreApprovalStatus } from "../types/responseTypes"
 
-export const getFile = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.get<ResponsePreApprovalForm>(`/fileService/form/${studentId}`)
+export const getPreApprovalStatus = async (axios: AxiosInstance, bilkentId: string) => {
+    const response = await axios.get<ResponseApprovePreApprovalStatus>(`/fileService/form/student/${bilkentId}/preApproval/status/`)
     return response.data
 }
 
@@ -17,15 +17,15 @@ export const submitFile = async (axios: AxiosInstance, formData: FormData, stude
     return response.data
 }
 
-// TODO: Mutation: generate & download pre approval file
 export const generateAndDownloadPreApproval = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.post(`/fileService/form/generate/download/${studentId}`)
+    const response = await axios.post(`/fileService/form/generate/download/student/${studentId}/${Form.PRE_APPROVAL}`, {
+        responseType: "blob"
+    })
     return response.data
 }
 
-// TODO: Mutation: generate & submit pre approval file
 export const generateAndSubmitPreApproval = async (axios: AxiosInstance, studentId: string) => {
-    const response = await axios.post(`/fileService/form/generate/submit/${studentId}`)
+    const response = await axios.post(`/fileService/form/generate/submit/student/${studentId}/${Form.PRE_APPROVAL}`)
     return response.data
 }
 
