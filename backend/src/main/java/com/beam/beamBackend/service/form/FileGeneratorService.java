@@ -1,37 +1,20 @@
 package com.beam.beamBackend.service.form;
-import java.awt.image.BufferedImage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import javax.imageio.ImageIO;
-
 import org.springframework.stereotype.Service;
-
-import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
-import com.beam.beamBackend.repository.IStudentRepository;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -40,16 +23,13 @@ import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor
-public class FileGenerator {
-
-
-    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws Exception{
+public class FileGeneratorService implements IFileGeneratorService {
+    @Override
+    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws Exception {
         Image signature = null;
         if (bufferedSignature != null && bufferedSignature.length != 0) {
             signature = Image.getInstance(bufferedSignature);
@@ -75,13 +55,10 @@ public class FileGenerator {
         String semester = student.getSemester().toString();
         String coordinatorName = student.getCoordinator().getUser().getName();
         
-        
         String approvedBy = "Exchange Coordinator";
         if (signature != null){
             signature.scaleAbsolute(50, 30);
         }
-
-
 
         // Date Information
         String date = preApprovalForm.getDate();
@@ -96,7 +73,6 @@ public class FileGenerator {
         ArrayList<Double> bilkentCredit = new ArrayList<>();
         ArrayList<String> directlyEquivalent = new ArrayList<>();
         ArrayList<ArrayList<String>> hostCourses = new ArrayList<>();
-
 
         for (int i = 0; i < wishlistItems.size(); i++){
             bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
@@ -146,47 +122,54 @@ public class FileGenerator {
     }
 
     private void addTitleTable(Document document) throws MalformedURLException, IOException, DocumentException {
-           // Image handling
-           String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png";
-           Image bilkentLogo = Image.getInstance(imagePath);
-           bilkentLogo.scaleAbsolute(40,40);
+        // Image handling
+        String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png";
+        Image bilkentLogo = Image.getInstance(imagePath);
+        bilkentLogo.scaleAbsolute(40,40);
 
-           // Create Title Table
-           PdfPTable titleTable = new PdfPTable(3);
-           titleTable.setWidths(new float [] {1, 2, 7});
+        // Create Title Table
+        PdfPTable titleTable = new PdfPTable(3);
+        titleTable.setWidths(new float [] {1, 2, 7});
 
-           // Image Cell
-           PdfPCell imageCell = new PdfPCell(bilkentLogo);
-           imageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-           imageCell.setBorder(0);
-           titleTable.addCell(imageCell);
+        // Image Cell
+        PdfPCell imageCell = new PdfPCell(bilkentLogo);
+        imageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        imageCell.setBorder(0);
+        titleTable.addCell(imageCell);
 
-           // Phrase to put in cells
-           Phrase currentPhrase = new Phrase();
-           currentPhrase.setFont(new Font(FontFamily.TIMES_ROMAN,15, Font.BOLD));
+        // Phrase to put in cells
+        Phrase currentPhrase = new Phrase();
+        currentPhrase.setFont(new Font(FontFamily.TIMES_ROMAN,15, Font.BOLD));
 
-           // Generic type of cells to put in title table
-           PdfPCell titleCell = new PdfPCell();
-           titleCell.setBorder(0);
-           titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        // Generic type of cells to put in title table
+        PdfPCell titleCell = new PdfPCell();
+        titleCell.setBorder(0);
+        titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-           // Uni name cell in the title table
-           currentPhrase.add("Bilkent University");
-           titleCell.addElement(currentPhrase);
-           titleTable.addCell(titleCell);
+        // Uni name cell in the title table
+        currentPhrase.add("Bilkent University");
+        titleCell.addElement(currentPhrase);
+        titleTable.addCell(titleCell);
 
-           // Title in the title table
-           currentPhrase.clear();
-           currentPhrase.add("Course Exemption Pre-Approval Form for Outgoing Exchange Students");
-           titleCell = new PdfPCell(currentPhrase);
-           titleCell.setBorder(0);
-           titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        // Title in the title table
+        currentPhrase.clear();
+        currentPhrase.add("Course Exemption Pre-Approval Form for Outgoing Exchange Students");
+        titleCell = new PdfPCell(currentPhrase);
+        titleCell.setBorder(0);
+        titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-           titleTable.addCell(titleCell);
-           document.add(titleTable);
+        titleTable.addCell(titleCell);
+        document.add(titleTable);
     }
 
-    private void addStudentInfo(Document document, String name, String surname, long id, String department) throws DocumentException {
+    private void addStudentInfo(
+        Document document,
+        String name,
+        String surname,
+        long id,
+        String department
+    ) throws DocumentException {
+        
         // Create Student information table
         PdfPTable siTable = new PdfPTable(4);
         siTable.setWidths(new float [] {2, 7, 2, 7});
@@ -239,7 +222,6 @@ public class FileGenerator {
         siCell.addElement(currentPhrase);
         siTable.addCell(siCell);
 
-
         // Department static
         currentPhraseBold.clear();
         currentPhraseBold.add("Department");
@@ -254,11 +236,15 @@ public class FileGenerator {
         siCell.addElement(currentPhrase);
         siTable.addCell(siCell);
 
-
         document.add(siTable);
     }
 
-    private void addInstAndPeriodInfo(Document document, String hostInst, String academicYear, String semester) throws DocumentException {
+    private void addInstAndPeriodInfo(
+        Document document,
+        String hostInst,
+        String academicYear,
+        String semester
+    ) throws DocumentException {
 
         PdfPTable table;
         PdfPCell cell;
@@ -272,7 +258,6 @@ public class FileGenerator {
         p1.setFont(new Font(FontFamily.TIMES_ROMAN,12, Font.BOLD));
         p2.setFont(new Font(FontFamily.TIMES_ROMAN,12, Font.BOLD));
         p3.setFont(new Font(FontFamily.TIMES_ROMAN,12, Font.BOLD));
-
 
         // Host Int name static
         cell = new PdfPCell(); 
@@ -302,7 +287,6 @@ public class FileGenerator {
         // Add the pseudo cell again
         table.addCell(cell);
 
-
         // Semester static
         cell = new PdfPCell(); 
         cell.addElement(p3);
@@ -312,12 +296,18 @@ public class FileGenerator {
         cell = new PdfPCell(new Phrase(semester)); 
         table.addCell(cell);
 
-
         document.add(table);
     }
-
     
-    private void createCourseLists(Document document, ArrayList<ArrayList<String>> hostCourses, ArrayList<String> bilkentCourses, ArrayList<String> courseCode, ArrayList<Double> ects, ArrayList<Double> bilkentCredit, ArrayList<String> directlyEquivalent) throws DocumentException {
+    private void createCourseLists(
+        Document document,
+        ArrayList<ArrayList<String>> hostCourses,
+        ArrayList<String> bilkentCourses,
+        ArrayList<String> courseCode,
+        ArrayList<Double> ects,
+        ArrayList<Double> bilkentCredit,
+        ArrayList<String> directlyEquivalent
+    ) throws DocumentException {
 
         // Table for the title of the course list
         PdfPTable titleTable = new PdfPTable(2);
@@ -343,12 +333,10 @@ public class FileGenerator {
 
         document.add(titleTable);
 
-
         // Table for courses 
         PdfPTable coursesTable = new PdfPTable(7);
         coursesTable.setWidths(new float [] {1, 2, 5, 1, 5, 1, 3});
         p2.setFont(new Font(FontFamily.TIMES_ROMAN,10, Font.BOLD));
-
 
         p2.clear();
         p2.add("");
@@ -394,12 +382,10 @@ public class FileGenerator {
         cell.addElement(p2);
         coursesTable.addCell(cell);
 
-
         p2.setFont(new Font(FontFamily.TIMES_ROMAN,12, Font.BOLD));
         // Add courses list
         for (int i = 0; i < hostCourses.size(); i++){
             // row no
-
             p2.clear();
             p2.add(Integer.toString(i + 1));
             cell = new PdfPCell();
@@ -438,7 +424,6 @@ public class FileGenerator {
             cell.addElement(p1);
             coursesTable.addCell(cell);
 
-
             // Bilkent credit
             p1.clear();
             p1.add(Double.toString(bilkentCredit.get(i)));
@@ -453,10 +438,17 @@ public class FileGenerator {
             cell.addElement(p1);
             coursesTable.addCell(cell);
         }
+
         document.add(coursesTable);
     }
 
-    private void createApprovalTable(Document document, String approvedBy, String coordinatorName, Image signature,String date) throws DocumentException {
+    private void createApprovalTable(
+        Document document,
+        String approvedBy,
+        String coordinatorName,
+        Image signature,
+        String date
+    ) throws DocumentException {
 
         // Table for the title of the course list
         PdfPTable approvalTable = new PdfPTable(4);
@@ -543,7 +535,5 @@ public class FileGenerator {
         document.add(p4);
         document.add(p5);
         document.add(p6);
-        
-    
     }
 }

@@ -3,10 +3,8 @@ package com.beam.beamBackend.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.HostCourse;
@@ -15,16 +13,16 @@ import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.ApprovedCourse;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CourseService {
+public class CourseService implements ICourseService {
     private final IBilkentCourseRepository bilkentCourseRepo;
     private final IHostCourseRepository hostCourseRepo;
     private final IUniversityRepository uniRepo;
 
+    @Override
     public BilkentCourse addBilkentCourse(BilkentCourse bilkentCourse) throws Exception {        
 
         try {
@@ -48,6 +46,7 @@ public class CourseService {
         }
     }
 
+    @Override
     public BilkentCourse getBilkentCourseById(UUID courseId) throws Exception {        
 
         try {
@@ -64,6 +63,7 @@ public class CourseService {
         }
     }
 
+    @Override
     public HostCourse addHostCourse(HostCourse hostCourse) throws Exception {        
 
         try {
@@ -89,6 +89,7 @@ public class CourseService {
         }
     }
 
+    @Override
     public HostCourse getHostCourseById(UUID courseId) throws Exception {        
 
         try {
@@ -105,6 +106,7 @@ public class CourseService {
         }
     }
 
+    @Override
     public List<HostCourse> getHostCourseByUniId(UUID uniId) throws Exception {        
 
         try {
@@ -117,6 +119,7 @@ public class CourseService {
         }
     }
     
+    @Override
     public List<BilkentCourse> getBilkentCourseByDepartment(Department department) throws Exception {        
 
         try {
@@ -129,6 +132,7 @@ public class CourseService {
         }    
     }
 
+    @Override
     public List<BilkentCourse> getAllBilkentCourse() throws Exception {    
         try {
             return bilkentCourseRepo.findAll();
@@ -138,6 +142,7 @@ public class CourseService {
         }
     }
     
+    @Override
     public List<HostCourse> getAllHostCourse() throws Exception {    
         try {
             return hostCourseRepo.findAll();
@@ -147,6 +152,7 @@ public class CourseService {
         }
     }
 
+    @Override
     public BilkentCourse addApprovedCourse(ApprovedCourse approvedCourse) throws Exception {
 
         try {
@@ -169,6 +175,7 @@ public class CourseService {
     }
 
     //not working at the moment :((((((
+    @Override
     public List<Object> getAllApprovedCoursesInUni(UUID hostUniId) throws Exception {
         try {
             Optional<University> hostUni = uniRepo.findById(hostUniId);

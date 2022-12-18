@@ -2,7 +2,6 @@ package com.beam.beamBackend.controller;
 
 import java.io.IOException;
 import java.util.UUID;
-
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -15,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.enums.PreApprovalStatus;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.form.FormService;
+import com.beam.beamBackend.service.form.IFormService;
 
 import lombok.AllArgsConstructor;
 
@@ -30,7 +28,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/fileService")
 public class FormController {
-    private final FormService formService;
+    private final IFormService formService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "form/{studentId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})

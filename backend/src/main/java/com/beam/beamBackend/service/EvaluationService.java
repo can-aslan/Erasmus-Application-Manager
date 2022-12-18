@@ -3,31 +3,25 @@ package com.beam.beamBackend.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.model.CourseEvaluationForm;
-import com.beam.beamBackend.model.EvaluationForm;
 import com.beam.beamBackend.model.UniEvaluationForm;
-import com.beam.beamBackend.repository.CourseEvaluationRepository;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.ICourseEvalRepository;
 import com.beam.beamBackend.repository.IUniversityEvalRepository;
-import com.beam.beamBackend.repository.UniEvaluationRepository;
 import com.beam.beamBackend.response.RCourseEval;
 import com.beam.beamBackend.response.RUniEval;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class EvaluationService {
-
+public class EvaluationService implements IEvaluationService {
     private final IUniversityEvalRepository uniEvalRepo;
     private final ICourseEvalRepository courseEvalRepo;
     private final IAccountRepository userRepo;
 
+    @Override
     public UUID evaluateUni(UniEvaluationForm uniEval) throws Exception {
         try {
             System.out.println(uniEval);
@@ -58,6 +52,7 @@ public class EvaluationService {
         }
     }
 
+    @Override
     public RUniEval getUniEval(UUID uniId) throws Exception {
         try {
             List<UniEvaluationForm> eval = uniEvalRepo.findByUniIdAndEvalStatus(uniId, EvalStatus.SUBMITTED);
@@ -70,6 +65,7 @@ public class EvaluationService {
         }
     }
 
+    @Override
     public UUID evaluateCourse(CourseEvaluationForm courseEval) throws Exception {
         try {
             // throw exception if user is not found in the db
@@ -99,6 +95,7 @@ public class EvaluationService {
         }
     }
 
+    @Override
     public RCourseEval getCourseEval(UUID courseId) throws Exception {
         try {
             List<CourseEvaluationForm> eval = courseEvalRepo.findByCourseId(courseId);
@@ -115,6 +112,7 @@ public class EvaluationService {
         }
     }
 
+    @Override
     public UniEvaluationForm getStudentUniEval(Long authorId) throws Exception {
         try {
             // throw exception if user is not found in the db
@@ -137,6 +135,7 @@ public class EvaluationService {
         }
     }
     
+    @Override
     public CourseEvaluationForm getStudentCourseEval(Long authorId, UUID courseId) throws Exception {
         try {
             // throw exception if user is not found in the db
@@ -159,6 +158,7 @@ public class EvaluationService {
         }
     }
 
+    @Override
     public List<CourseEvaluationForm> getStudentCourseEval(Long authorId) throws Exception {
         try {
             // throw exception if user is not found in the db

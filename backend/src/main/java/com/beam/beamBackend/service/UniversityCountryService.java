@@ -5,23 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.model.Country;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.repository.ICountryRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.AddUni;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class UniversityCountryService {
+public class UniversityCountryService implements IUniversityCountryService {
     private final IUniversityRepository uniRepository;
     private final ICountryRepository countryRepository;
 
+    @Override
     public HashSet<University> addUniversity(AddUni[] uni) throws Exception {
         HashSet<University> uniSet = new HashSet<>();
         HashSet<AddUni> removedUni = new HashSet<>();
@@ -58,6 +56,7 @@ public class UniversityCountryService {
         return uniSet;
     }
 
+    @Override
     public University getUni(UUID id) throws Exception {
         try {
             Optional<University> uni = uniRepository.findUniById(id);
@@ -72,6 +71,7 @@ public class UniversityCountryService {
         }
     }
 
+    @Override
     public List<University> getUniByCountry(UUID countryId) throws Exception {
         try {
             boolean countryExist = countryRepository.existsById(countryId);
@@ -88,6 +88,7 @@ public class UniversityCountryService {
         }
     }
 
+    @Override
     public List<University> getAllUni() {
         try {
             System.out.println("himm");
@@ -97,6 +98,7 @@ public class UniversityCountryService {
         }
     }
 
+    @Override
     public HashSet<Country> addCountry(Country[] country) {
         HashSet<Country> countrySet = new HashSet<>(Arrays.asList(country));
         HashSet<Country> removedCountry = new HashSet<>();
@@ -126,6 +128,7 @@ public class UniversityCountryService {
         return countrySet;
     }
 
+    @Override
     public Country getCountry(UUID id) throws Exception {
         try {
             Optional<Country> country = countryRepository.findCountryById(id);
@@ -140,6 +143,7 @@ public class UniversityCountryService {
         }
     }
 
+    @Override
     public List<Country> getCountryByEasmus(boolean isIncludedInErasmus) {
         try {
             return countryRepository.findCountryByIsIncludedInErasmus(isIncludedInErasmus);
@@ -148,6 +152,7 @@ public class UniversityCountryService {
         }
     }
 
+    @Override
     public List<Country> getAllCountry() {
         try {
             

@@ -12,16 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseRequest;
-import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.InstructorCourseService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
