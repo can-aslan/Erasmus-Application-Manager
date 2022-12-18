@@ -1,6 +1,7 @@
 package com.beam.beamBackend.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,12 @@ public class PreApprovalController {
     private final IPreApprovalService preApprovalService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("coordinator/{coordinatorUserId}")
+    @GetMapping("/coordinator/{coordinatorUserId}")
     public ResponseEntity<Object> getCoordinatorPreApprovals(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId) {
         try {
-            ArrayList<PreApprovalForm> preApprovalForms = preApprovalService.getCoordinatorPreApprovals(coordinatorUserId);
-            return Response.create("PreApprovals are fetched!", HttpStatus.OK,preApprovalForms);
+            System.out.println("lao tst");
+            List<PreApprovalForm> preApprovalForms = preApprovalService.getCoordinatorPreApprovals(coordinatorUserId);
+            return Response.create("PreApprovals are fetched!", HttpStatus.OK, preApprovalForms);
         }
         catch (Exception e) {
             return Response.create("PreApprovals could not fetched!", 499);
@@ -39,7 +41,7 @@ public class PreApprovalController {
     public ResponseEntity<Object> approvePreApproval(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentId") Long studentId) {
         try {
             boolean isSuccessfull = preApprovalService.approvePreApprovals(coordinatorUserId, studentId);
-            return Response.create("PreApprovals are approved!", HttpStatus.OK,isSuccessfull);
+            return Response.create("PreApprovals are approved!", HttpStatus.OK, isSuccessfull);
         }
         catch (Exception e) {
             return Response.create("PreApprovals could not be approved!", 499);
@@ -51,7 +53,7 @@ public class PreApprovalController {
     public ResponseEntity<Object> rejectPreApproval(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentId") Long studentId) {
         try {
             boolean isSuccessfull = preApprovalService.rejectPreApprovals(coordinatorUserId, studentId);
-            return Response.create("PreApprovals are rejected!", HttpStatus.OK,isSuccessfull);
+            return Response.create("PreApprovals are rejected!", HttpStatus.OK, isSuccessfull);
         }
         catch (Exception e) {
             return Response.create("PreApprovals could not be rejected!", 499);

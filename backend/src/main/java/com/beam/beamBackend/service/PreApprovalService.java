@@ -23,23 +23,19 @@ public class PreApprovalService implements IPreApprovalService {
     private final FormService formService;
 
     @Override
-    public ArrayList<PreApprovalForm> getCoordinatorPreApprovals(@Valid UUID coordinatorUserId) throws Exception {
+    public List<PreApprovalForm> getCoordinatorPreApprovals(@Valid UUID coordinatorUserId) throws Exception {
         try {
-            List<PreApprovalForm> preApprovalForms = preApprovalRepository.findAll();
-            ArrayList<PreApprovalForm> coordinatorPreApprovals = new ArrayList<PreApprovalForm>();
+            boolean userExist = accountRepository.existsById(coordinatorUserId);
 
-            for (int i = 0; i < preApprovalForms.size(); i++) {
-                if (coordinatorUserId == preApprovalForms.get(i).getStudent().getCoordinator().getUser().getId()) {
-                    coordinatorPreApprovals.add(preApprovalForms.get(i));
-                }
+            if (!userExist) {
+                throw new Exception("user not found");
             }
 
-            return coordinatorPreApprovals;
+            return preApprovalRepository.findByStudentCoordinatorUserId(coordinatorUserId);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-
     }
 
     @Override
