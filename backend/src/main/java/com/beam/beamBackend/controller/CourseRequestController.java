@@ -100,7 +100,7 @@ public class CourseRequestController {
         catch (NoStudentException noStudentException) {
             noStudentException.printStackTrace();
             return Response.create(
-                "course request failed: "
+                "could not retrieve course requests of student: "
                 + noStudentException.getLocalizedMessage()
                 + ", "
                 + noStudentException.getMessage()
@@ -110,7 +110,7 @@ public class CourseRequestController {
         catch (NoUniversityException noUniversityException) {
             noUniversityException.printStackTrace();
             return Response.create(
-                "course request failed: "
+                "could not retrieve course requests of student: "
                 + noUniversityException.getLocalizedMessage()
                 + ", "
                 + noUniversityException.getMessage()
