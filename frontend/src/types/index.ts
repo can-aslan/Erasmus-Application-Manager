@@ -74,7 +74,7 @@ export type Course = {
     ects: number,
     courseId?: string | null,
     department?: string,
-    syllabus?:string,
+    syllabus?: string,
     webPage?: string
     instructorId?: string,
     universityId?: string,
@@ -123,7 +123,8 @@ export type CourseWishlistItemMapping = {
 export type ExistingCourseWishlist = {
     studentId: string,
     status: ApprovalStatus,
-    items: Array<WishlistItemsInterface>
+    items: Array<WishlistItemsInterface>,
+    feedback?: string | null
 }
 
 export interface WishlistItemsInterface {
@@ -295,16 +296,24 @@ export type Country = {
 }
 
 export enum Form {
-    PRE_APPROVAL="PRE_APPROVAL",
-    TRANSCRIPT="TRANSCRIPT",
-    LEARNING_AGREEMENT="LEARNING_AGREEMENT",
-    SIGNATURE="SIGNATURE",
+    PRE_APPROVAL = "PRE_APPROVAL",
+    TRANSCRIPT = "TRANSCRIPT",
+    LEARNING_AGREEMENT = "LEARNING_AGREEMENT",
+    SIGNATURE = "SIGNATURE",
 }
 
 export type InstructorCourseRequestChange = {
     courseStatus: string;
     instructorId: string;
     courseRequestId: string;
+
+}
+
+export type CoordinatorWishlistChange = {
+    status: string;
+    coordinatorUserId: string;
+    studentBilkentId: string;
+    feedback?: string | null;
 
 }
 // export type LearningAgreement = {

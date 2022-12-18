@@ -12,6 +12,8 @@ import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IWishlistRepository;
+import com.beam.beamBackend.request.CoordinatorWishlistApproval;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -25,30 +27,32 @@ public class CoordinatorWishlistService implements ICoordinatorWishlistService {
     @Override
     public ArrayList<Wishlist> getCoordinatorsWishlists(@Valid UUID coordinatorId) throws Exception {
         try {
-            List<Wishlist> wishlists = wishlistRepository.findAll();
-            ArrayList<Wishlist> coordinatorsWishLists = new ArrayList<Wishlist>();
+            List<Wishlist> wishlists = wishlistRepository.findAllByStatusNot(CourseWishlistStatus.WAITING);
+
+            ArrayList<Wishlist> coordinatorsWishLists = new ArrayList<>();
 
             Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
 
-            // Check is the coordinator exists
-            if (!coordinator.isPresent()){
+            // Check if the coordinator exists
+            if (!coordinator.isPresent()) {
                 throw new Exception("Coordinator is not found!");
-            }
-           
-            for (int i = 0; i < wishlists.size(); i++) {
-                Optional<Student> aStudent = studentRepository.findByUserBilkentId(wishlists.get(i).getStudentId());
-                if (!aStudent.isPresent()) {
-                    throw new Exception("The student is not found!");
-                }
+            } else {
+                for (int i = 0; i < wishlists.size(); i++) {
+                    Optional<Student> aStudent = studentRepository.findByUserBilkentId(wishlists.get(i).getStudentId());
 
-                if (aStudent.get().getCoordinator().getUser().getId() == coordinator.get().getUser().getId()) {
-                    coordinatorsWishLists.add(wishlists.get(i));
+                    if (!aStudent.isPresent()) {                        
+                        throw new Exception("The student is not found!");
+                    }
+
+                    if (aStudent.get().getCoordinator().getUser().getId() == coordinator.get().getUser().getId()){
+                        coordinatorsWishLists.add(wishlists.get(i));
+                    }
                 }
             }
 
             return coordinatorsWishLists;
-        }
-        catch(Exception e) {
+
+        } catch(Exception e) {
             e.printStackTrace();
             throw e;
         }
@@ -64,14 +68,13 @@ public class CoordinatorWishlistService implements ICoordinatorWishlistService {
                 throw new Exception("Student is not found!");
             }
 
-            Optional<Staff> coordinator = staffRepository.findById(coordinatorId);
-
+            Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
             // Check is the coordinator exists
             if (!coordinator.isPresent()) {
                 throw new Exception("Coordinator is not found!");
             }
 
-            if (aStudent.get().getCoordinator().getId() == coordinator.get().getId()) {
+            if(aStudent.get().getCoordinator().getId() == coordinator.get().getUser().getId()){
                 throw new Exception("You are not coordinator of this student!");
             } 
 
@@ -88,28 +91,27 @@ public class CoordinatorWishlistService implements ICoordinatorWishlistService {
         }
     }
 
-    @Override
-    public void determineWishlistStatus(@Valid UUID coordinatorId, @Valid Long studentId, @Valid CourseWishlistStatus status) throws Exception {
+    public Wishlist determineWishlistStatus(CoordinatorWishlistApproval wishlistResult) throws Exception {
         try {
-            Optional<Staff> coordinator = staffRepository.findById(coordinatorId);
-
+            Optional<Staff> coordinator = staffRepository.findByUserId(wishlistResult.getCoordinatorUserId());
             if (!coordinator.isPresent()) {
                 throw new Exception("Coordinator is not found!");
             }
 
-            Optional<Student> aStudent = studentRepository.findByUserBilkentId(studentId);
+            Optional<Student> aStudent = studentRepository.findByUserBilkentId(wishlistResult.getStudentBilkentId());
             if (!aStudent.isPresent()) {
                 throw new Exception("Student is not found!");
             }
 
-            Optional<Wishlist> wishlist = wishlistRepository.findByStudentId(studentId);
+            Optional<Wishlist> wishlist = wishlistRepository.findByStudentId(wishlistResult.getStudentBilkentId());
             if (!wishlist.isPresent()) {
                 throw new Exception("Student does not have a course wishlist!");
             }
-            
-            wishlist.get().setStatus(status);
-        }
-        catch (Exception e) {
+
+            wishlist.get().setStatus(wishlistResult.getStatus());
+            wishlist.get().setFeedback(wishlistResult.getFeedback());
+            return wishlistRepository.save(wishlist.get());            
+        } catch(Exception e) {
             e.printStackTrace();
             throw e;
         }
