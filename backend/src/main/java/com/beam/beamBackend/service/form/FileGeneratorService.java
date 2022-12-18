@@ -30,100 +30,109 @@ import lombok.RequiredArgsConstructor;
 public class FileGeneratorService implements IFileGeneratorService {
     @Override
     public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws Exception {
-        Image signature = null;
-        if (bufferedSignature != null && bufferedSignature.length != 0) {
-            signature = Image.getInstance(bufferedSignature);
-        }
-
-        signature = Image.getInstance(bufferedSignature);
-        
-        Document document = new Document();
-
-        // Get the owner student of the pre-approval form
-        Student student = preApprovalForm.getStudent();
-
-        // Get wishlist whose course information will be used
-        Wishlist wishlist = preApprovalForm.getWishlist();
-
-        // Student Information
-        String name = student.getUser().getName();
-        String surname = student.getUser().getSurname();
-        long id  = student.getUser().getBilkentId();
-        String department = student.getDepartment().toString();
-        String hostInst = student.getHostUni().getName();
-        String academicYear = student.getAcademicYear();
-        String semester = student.getSemester().toString();
-        String coordinatorName = student.getCoordinator().getUser().getName();
-        
-        String approvedBy = "Exchange Coordinator";
-        if (signature != null){
-            signature.scaleAbsolute(50, 30);
-        }
-
-        // Date Information
-        String date = preApprovalForm.getDate();
-
-        // Wishlist Information
-        List<WishlistItem> wishlistItems = wishlist.getItems();
-
-        //ArrayList<String> hostCourses = new ArrayList<>();
-        ArrayList<String> bilkentCourses = new ArrayList<>();
-        ArrayList<String> courseCode = new ArrayList<>();
-        ArrayList<Double> ects = new ArrayList<>();
-        ArrayList<Double> bilkentCredit = new ArrayList<>();
-        ArrayList<String> directlyEquivalent = new ArrayList<>();
-        ArrayList<ArrayList<String>> hostCourses = new ArrayList<>();
-
-        for (int i = 0; i < wishlistItems.size(); i++){
-            bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
-            bilkentCredit.add(wishlistItems.get(i).getBilkentCredits());
-            double ectsTotal = 0;
-            for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
-                hostCourses.get(i).add(wishlistItems.get(i).getMappings().get(j).getHostName());
-                ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
-            }
-            // Only gets the course code of the first host university course 
-            courseCode.add(wishlistItems.get(i).getMappings().get(0).getHostCourse());
-            // It is assumed that ects in the WishlistItem model since there should be one ects value even there are more than one host course
-            ects.add(ectsTotal);
-            directlyEquivalent.add("");
-        }
-        // pseudo data ends
-
         try {
-            // Make the document landscape
-            document.setPageSize(PageSize.A4.rotate());
-
-            PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.dir") + "/backend/src/main/resources/testPDF.pdf"));
+            System.out.println(bufferedSignature);
+            Image signature = null;
+            if (bufferedSignature != null && bufferedSignature.length != 0) {
+                signature = Image.getInstance(bufferedSignature);
+            }
+    
+            Document document = new Document();
+    
+            // Get the owner student of the pre-approval form
+            Student student = preApprovalForm.getStudent();
+    
+            // Get wishlist whose course information will be used
+            Wishlist wishlist = preApprovalForm.getWishlist();
+    
+            // Student Information
+            String name = student.getUser().getName();
+            String surname = student.getUser().getSurname();
+            long id  = student.getUser().getBilkentId();
+            String department = student.getDepartment().toString();
+            String hostInst = student.getHostUni().getName();
+            String academicYear = student.getAcademicYear();
+            String semester = student.getSemester().toString();
+            String coordinatorName = student.getCoordinator().getUser().getName();
             
-            //FileOutputStream fos = new FileOutputStream("d:/testPDF.pdf");
-            //PdfWriter.getInstance(document, fos);
-
-            // Create the document
-            document.setMargins(0, 0,5, 5);
-            document.open();
-
-            addTitleTable(document);
-            addStudentInfo(document ,name, surname, id, department);
-            addInstAndPeriodInfo( document, hostInst, academicYear, semester );
-            createCourseLists(document, hostCourses, bilkentCourses, courseCode, ects, bilkentCredit, directlyEquivalent);
-            createApprovalTable(document, approvedBy, coordinatorName, signature, date);
-
-            document.close();
-            
-        } catch(Exception e) {
+            String approvedBy = "Exchange Coordinator";
+            if (signature != null){
+                signature.scaleAbsolute(50, 30);
+            }
+    
+            // Date Information
+            String date = preApprovalForm.getDate();
+    
+            // Wishlist Information
+            List<WishlistItem> wishlistItems = wishlist.getItems();
+    
+            //ArrayList<String> hostCourses = new ArrayList<>();
+            ArrayList<String> bilkentCourses = new ArrayList<>();
+            ArrayList<String> courseCode = new ArrayList<>();
+            ArrayList<Double> ects = new ArrayList<>();
+            ArrayList<Double> bilkentCredit = new ArrayList<>();
+            ArrayList<String> directlyEquivalent = new ArrayList<>();
+            ArrayList<ArrayList<String>> hostCourses = new ArrayList<>();
+    
+            int wishlistItemsSize = wishlistItems.size();
+            for (int i = 0; i < wishlistItemsSize; i++){
+                bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
+                bilkentCredit.add(wishlistItems.get(i).getBilkentCredits());
+                double ectsTotal = 0;
+                ArrayList<String> a = new ArrayList<>();
+                for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
+                    String s = wishlistItems.get(i).getMappings().get(j).getHostName();
+                    a.add(s);
+                    hostCourses.add(a);
+                    ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
+                }
+                // Only gets the course code of the first host university course 
+                courseCode.add(wishlistItems.get(i).getMappings().get(0).getHostCourse());
+                // It is assumed that ects in the WishlistItem model since there should be one ects value even there are more than one host course
+                ects.add(ectsTotal);
+                directlyEquivalent.add("");
+            }
+            // pseudo data ends
+    
+            try {
+                // Make the document landscape
+                document.setPageSize(PageSize.A4.rotate());
+    
+                PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.dir") + "/src/main/resources/testPDF.pdf"));
+                
+                //FileOutputStream fos = new FileOutputStream("d:/testPDF.pdf");
+                //PdfWriter.getInstance(document, fos);
+    
+                // Create the document
+                document.setMargins(0, 0,5, 5);
+                document.open();
+    
+                addTitleTable(document);
+                addStudentInfo(document ,name, surname, id, department);
+                addInstAndPeriodInfo( document, hostInst, academicYear, semester );
+                createCourseLists(document, hostCourses, bilkentCourses, courseCode, ects, bilkentCredit, directlyEquivalent);
+                createApprovalTable(document, approvedBy, coordinatorName, signature, date);
+    
+                document.close();
+                
+            } catch(Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+            System.out.println("PDF generated!");
+    
+            File createdPdf = new File(System.getProperty("user.dir") + "/src/main/resources/testPDF.pdf");
+            return createdPdf; // need to return InputStream (convert outputstream to inputStream)
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-        System.out.println("PDF generated!");
-
-        File createdPdf = new File(System.getProperty("user.dir") + "/backend/src/main/resources/testPDF.pdf");
-        return createdPdf; // need to return InputStream (convert outputstream to inputStream)
+       
     }
 
     private void addTitleTable(Document document) throws MalformedURLException, IOException, DocumentException {
         // Image handling
-        String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png";
+        String imagePath = System.getProperty("user.dir") + "/src/main/resources/bilkent_logo.png";
         Image bilkentLogo = Image.getInstance(imagePath);
         bilkentLogo.scaleAbsolute(40,40);
 
@@ -402,7 +411,7 @@ public class FileGeneratorService implements IFileGeneratorService {
             // Course Name
             p1.clear();
             // Adds more than 1 course names
-            for( int j = 0; j < hostCourses.get(i).size(); i++){
+            for( int j = 0; j < hostCourses.get(i).size(); j++){
                 p1.add(hostCourses.get(i).get(j));
             }
 
