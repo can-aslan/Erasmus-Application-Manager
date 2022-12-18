@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
+import org.hibernate.grammars.hql.HqlParser.CurrentDateFunctionContext;
 import org.springframework.stereotype.Service;
 
 import com.beam.beamBackend.enums.Sex;
@@ -23,12 +24,12 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-
 
 public class LearningAgreementGenerator {
 
-    public void generateLearningAgreementForm(){
+    public void generateLearningAgreementForm() {
         // Student information
         String name = "Kubilay";
         String surname = "Yilmaz";
@@ -38,6 +39,12 @@ public class LearningAgreementGenerator {
         String department = "Computer Engineering";
         String studyCycle = "First Cycle";
         String academicYear = "2022 - 2023";
+        String email = "kubilay.yilmaz@ug.bilkent.edu.tr";
+        String currentDate = "18.12.2022";
+
+        // Coordinator information
+        String coordinatorName = "Can Alkan";
+        String coordinatorEmail = "calkan@cs.bilkent.edu.tr";
 
         // Bilkent Information
         String uniName = "Ihsan Dogramaci Bilkent University";
@@ -53,7 +60,7 @@ public class LearningAgreementGenerator {
         String hostErasmusCode = "NT AMSTERDAM 03";
         String hostAddress = "Amsterdam mahallesi, 167. st. Merkez Campus";
         String hostCountry = "Netherlands";
-        String hostContact= "Office of International Students and Exchange Programs exchange@virje.edu.tr Tel: +90 312 290 2435";
+        String hostContact = "Office of International Students and Exchange Programs exchange@virje.edu.tr Tel: +90 312 290 2435";
 
         // Table A courses in host uni
         ArrayList<String> courseCodeTableA = new ArrayList<>();
@@ -62,7 +69,7 @@ public class LearningAgreementGenerator {
         ArrayList<String> ectsCreditsTableA = new ArrayList<>();
 
         // Mock Data A
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             courseCodeTableA.add("X_400614");
             courseNameTableA.add("Data Structures and Algorithms");
             semesterTableA.add("Fall");
@@ -75,43 +82,96 @@ public class LearningAgreementGenerator {
         ArrayList<String> ectsCreditsTableB = new ArrayList<>();
 
         // Mock Data B
-        for (int i = 0; i < 6; i++){
-            courseCodeTableA.add(" CS473");
-            courseNameTableA.add("Technical Elective");
-            semesterTableA.add("Fall");
-            ectsCreditsTableA.add("5.0");
+        for (int i = 0; i < 6; i++) {
+            courseCodeTableB.add(" CS473");
+            courseNameTableB.add("Technical Elective");
+            semesterTableB.add("Fall");
+            ectsCreditsTableB.add("5.0");
         }
         Document document = new Document();
 
         try {
             PdfWriter.getInstance(document, new FileOutputStream("d:/LAtestPdf.pdf"));
 
-            document.setMargins(-40, -40,5, 5);
+            document.setMargins(-40, -40, 5, 5);
             document.open();
 
             addTitle(document, name, surname, academicYear);
-            addGeneralInfoTable(document, name, surname, dateOfBirth, nationality, sex, studyCycle, department,uniName, 
-            faculty, erasmusCode, address, country, contactInfo, hostName, hostFaculty, hostErasmusCode, hostAddress, 
-            hostCountry, hostContact);
-            addTableA(document, courseCodeTableA, courseNameTableA, semesterTableA, ectsCreditsTableA);
-
+            addGeneralInfoTable(document, name, surname, dateOfBirth, nationality, sex, studyCycle, department, uniName,
+                    faculty, erasmusCode, address, country, contactInfo, hostName, hostFaculty, hostErasmusCode,
+                    hostAddress,
+                    hostCountry, hostContact);
+            addTable(document, courseCodeTableA, courseNameTableA, semesterTableA, ectsCreditsTableA, "A");
+            addTable(document, courseCodeTableB, courseNameTableB, semesterTableB, ectsCreditsTableB, "B");
+            addCommitmentTable(document, name, email, currentDate, coordinatorName, coordinatorEmail);
             document.close();
 
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
         System.out.println("LA PDF generated!");
     }
 
-    private void addTitle(Document document, String name, String surname, String academicYear) throws MalformedURLException, IOException, DocumentException {
+    private void addCommitmentTable(Document document, String name, String email, String currentDate,
+            String coordinatorName, String coordinatorEmail) throws DocumentException {
+        String commitment = "By signing this document, the student, the Sending Institution and the Receiving Institution confirm that they approve the Learning Agreement and that they will comply with all the arrangements agreed by all parties. Sending and Receiving Institutions undertake to apply all the principles of the Erasmus Charter for Higher Education relating to mobility for studies (or the principles agreed in the Inter-Institutional Agreement for institutions located in Partner Countries). The Beneficiary Institution and the student should also commit to what is set out in the Erasmus+ grant agreement. The Receiving Institution confirms that the educational components listed in Table A are in line with its course catalogue and should be available to the student. The Sending Institution commits to recognise all the credits or equivalent units gained at the Receiving Institution for the successfully completed educational components and to count them towards the student's degree as described in Table B. Any exceptions to this rule are documented in an annex of this Learning Agreement and agreed by all parties. The student and the Receiving Institution will communicate to the Sending Institution any problems or changes regarding the study programme, responsible persons and/or study period.";
+        PdfPTable commitmentTable = new PdfPTable(1);
+        commitmentTable.setSpacingBefore(10);
+
+        addTableBold("Commitment", commitmentTable, 0);
+        addTableNormal(commitment, commitmentTable, 1);
+        document.add(commitmentTable);
+
+        // Signatures table
+        PdfPTable signaturestable = new PdfPTable(6);
+        signaturestable.setWidths(new float[] { 3, 3, 3, 2, 2, 3 });
+
+        // Headers
+        addTableBold("Commitment", signaturestable, 2);
+        addTableBold("Name", signaturestable, 2);
+        addTableBold("Email", signaturestable, 2);
+        addTableBold("Position", signaturestable, 2);
+        addTableBold("Date", signaturestable, 2);
+        addTableBold("Signature", signaturestable, 2);
+
+        // Information part
+        // Student
+        addTableNormal("Student", signaturestable, 2);
+        addTableNormal(name, signaturestable, 2);
+        addTableNormal(email, signaturestable, 2);
+        addTableNormal("Student", signaturestable, 2);
+        addTableNormal(currentDate, signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+
+        // Bilkent Coordinator Part
+        addTableNormal("Responsible person at the Sending Institution", signaturestable, 2);
+        addTableNormal(coordinatorName, signaturestable, 2);
+        addTableNormal(coordinatorEmail, signaturestable, 2);
+        addTableNormal("Dept Coordinator", signaturestable, 2);
+        addTableNormal(currentDate, signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+
+        // Host reponsible person
+        addTableNormal("", signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+        addTableNormal("", signaturestable, 2);
+
+        document.add(signaturestable);
+    }
+
+    private void addTitle(Document document, String name, String surname, String academicYear)
+            throws MalformedURLException, IOException, DocumentException {
         // Image handling
         String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/erasmus_logo.jpeg";
         Image erasmusLogo = Image.getInstance(imagePath);
-        erasmusLogo.scaleAbsolute(50,50);
+        erasmusLogo.scaleAbsolute(50, 50);
 
         // Create Title Table
         PdfPTable titleTable = new PdfPTable(3);
-        titleTable.setWidths(new float [] {3, 5, 4});
+        titleTable.setWidths(new float[] { 3, 5, 4 });
 
         // Image Cell
         PdfPCell imageCell = new PdfPCell(erasmusLogo);
@@ -121,7 +181,7 @@ public class LearningAgreementGenerator {
 
         // Phrase to put in cells
         Phrase currentPhrase = new Phrase();
-        Font font = new Font(FontFamily.TIMES_ROMAN,12, Font.BOLD);
+        Font font = new Font(FontFamily.TIMES_ROMAN, 12, Font.BOLD);
         font.setColor(BaseColor.BLUE);
         currentPhrase.setFont(font);
 
@@ -140,7 +200,8 @@ public class LearningAgreementGenerator {
 
         // Right corner text in the title table
         currentPhrase.clear();
-        currentPhrase.add("Higher Education: Learning Agreement form " + name + " " + surname + " Academic year " + academicYear);
+        currentPhrase.add(
+                "Higher Education: Learning Agreement form " + name + " " + surname + " Academic year " + academicYear);
         titleCell = new PdfPCell(currentPhrase);
         titleCell.setBorder(0);
         titleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -149,22 +210,21 @@ public class LearningAgreementGenerator {
         document.add(titleTable);
     }
 
-    private void addGeneralInfoTable(Document document, String name, String surname, String dateOfBirth, String nationality, String sex,
+    private void addGeneralInfoTable(Document document, String name, String surname, String dateOfBirth,
+            String nationality, String sex,
             String studyCycle, String department, String uniName, String faculty, String erasmusCode, String address,
             String country, String contactInfo, String hostName, String hostFaculty, String hostErasmusCode,
             String hostAddress, String hostCountry, String hostContact) throws DocumentException {
 
         // Create General information table
-        //Student Table
+        // Student Table
         PdfPTable studentTable = new PdfPTable(8);
-        studentTable.setWidths(new float [] {2, 2, 2, 2, 2, 2, 2, 2});
+        studentTable.setWidths(new float[] { 2, 2, 2, 2, 2, 2, 2, 2 });
         studentTable.setSpacingBefore(10);
-
-
 
         // Student static
         addTableBold("Student", studentTable, 0); // Bottomless
-        addTableBold("Lastname(s)", studentTable, 2 );
+        addTableBold("Lastname(s)", studentTable, 2);
         addTableBold("First Name(s)", studentTable, 2);
         addTableBold("Date of Birth", studentTable, 2);
         addTableBold("Nationality", studentTable, 2);
@@ -186,7 +246,7 @@ public class LearningAgreementGenerator {
 
         // Institution Table
         PdfPTable instTable = new PdfPTable(7);
-        instTable.setWidths(new float [] {2, 2, 2, 2, 2, 2, 4});
+        instTable.setWidths(new float[] { 2, 2, 2, 2, 2, 2, 4 });
 
         // Sending Institution static
         addTableBold("Sending Institution", instTable, 0);
@@ -206,9 +266,7 @@ public class LearningAgreementGenerator {
         addTableNormal(country, instTable, 2);
         addTableNormal(contactInfo, instTable, 2);
 
-        
-
-        // Receiving Institution static 
+        // Receiving Institution static
         addTableBold("Receiving Institution", instTable, 0);
         addTableBold("Name", instTable, 2);
         addTableBold("Faculty/Department", instTable, 2);
@@ -227,68 +285,108 @@ public class LearningAgreementGenerator {
         addTableNormal(hostContact, instTable, 2);
         document.add(instTable);
     }
-    private void addTableBold(String phrase, PdfPTable table, int sideChoice ){
+
+    private void addTableBold(String phrase, PdfPTable table, int sideChoice) {
         Phrase currentPhraseBold = new Phrase(phrase);
-        currentPhraseBold.setFont(new Font(FontFamily.TIMES_ROMAN,10, Font.BOLD));
+        currentPhraseBold.setFont(new Font(FontFamily.TIMES_ROMAN, 10, Font.BOLD));
         currentPhraseBold.clear();
         currentPhraseBold.add(phrase);
         PdfPCell cell = new PdfPCell();
         cell.addElement(currentPhraseBold);
 
         // No bottom
-        if (sideChoice == 0){
+        if (sideChoice == 0) {
             cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
-        } else if(sideChoice == 1){
+        } else if (sideChoice == 1) {
             cell.setBorder(PdfPCell.BOTTOM | PdfPCell.LEFT | PdfPCell.RIGHT); // No top
-        } else if(sideChoice < 0){
+        } else if (sideChoice < 0) {
             cell.setBorder(0);
         }
         table.addCell(cell);
     }
 
-    private void addTableNormal(String phrase, PdfPTable table, int sideChoice){
+    private void addTableNormal(String phrase, PdfPTable table, int sideChoice) {
         Phrase currentPhrase = new Phrase();
-        currentPhrase.setFont(new Font(FontFamily.TIMES_ROMAN,9));
-        
+        currentPhrase.setFont(new Font(FontFamily.TIMES_ROMAN, 9));
+
         currentPhrase.clear();
         currentPhrase.add(phrase);
         PdfPCell cell = new PdfPCell();
         cell.addElement(currentPhrase);
 
         // No bottom
-        if (sideChoice == 0){
-            cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
-        } else if (sideChoice == 1){
+        if (sideChoice == 0) {
+            cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT); // No bottom
+        } else if (sideChoice == 1) {
             cell.setBorder(PdfPCell.BOTTOM | PdfPCell.LEFT | PdfPCell.RIGHT); // No top
-        } else if (sideChoice < 0){
+        } else if (sideChoice == 5) {
+            cell.setBorder(PdfPCell.LEFT | PdfPCell.RIGHT);
+        } else if (sideChoice < 0) {
             cell.setBorder(0);
         }
         table.addCell(cell);
     }
 
-    
-    private void addTableA(Document document, ArrayList<String> courseCodeTableA, ArrayList<String> courseNameTableA,
-            ArrayList<String> semesterTableA, ArrayList<String> ectsCreditsTableA) throws DocumentException {
-                
+    private void addTable(Document document, ArrayList<String> courseCodeTableA, ArrayList<String> courseNameTableA,
+            ArrayList<String> semesterTableA, ArrayList<String> ectsCreditsTableA, String tableName)
+            throws DocumentException {
 
         // Title
         PdfPTable titleTable = new PdfPTable(1);
-        titleTable.setWidths(new float [] {1});
+        titleTable.setWidths(new float[] { 1 });
         titleTable.setSpacingBefore(10);
 
-        Phrase titlePhrase = new Phrase("Before the Mobility");
-        titlePhrase.setFont(new Font(FontFamily.TIMES_ROMAN,16, Font.BOLD));
+        Phrase titlePhrase;
+        if (tableName == "A") {
+            titlePhrase = new Phrase("Before the Mobility");
+        } else {
+            titlePhrase = new Phrase("");
+        }
+        titlePhrase.setFont(new Font(FontFamily.TIMES_ROMAN, 16, Font.BOLD));
         PdfPCell cell = new PdfPCell();
         cell.addElement(titlePhrase);
         cell.setBorder(0);
         titleTable.addCell(cell);
         document.add(titleTable);
 
-        // Table A
-        PdfPTable tableA = new PdfPTable(5);
-        tableA.setWidths(new float [] {1,1,3,1,2});
-        tableA.setSpacingBefore(10);
+        // Table
 
-        
+        // Table Top
+        PdfPTable tableATop = new PdfPTable(1);
+        tableATop.setSpacingBefore(10);
+        if (tableName == "A") {
+            addTableBold("Study Programme at the Receiving Institution", tableATop, 0);
+            addTableBold("Planned period of the mobility: from [month/year] 08/2022 to [month/year] 02/2023", tableATop,
+                    1);
+        } else {
+            addTableBold("Recognition at the Sending Institution", tableATop, 0);
+        }
+
+        document.add(tableATop);
+        PdfPTable tableA = new PdfPTable(5);
+        tableA.setWidths(new float[] { 1, 1, 3, 1, 2 });
+
+        // Header
+        addTableBold("Table " + tableName + " Before the mobility", tableA, 0);
+        addTableBold("Component Code (if any)", tableA, 2);
+        addTableBold("Component title at the Receiving Institution (as indicated in the course catalogue)", tableA, 2);
+        addTableBold("Semester", tableA, 2);
+        addTableBold(
+                "Number of ECTS credits (or equivalent) to be awarded by the Receiving Institution upon successful completion",
+                tableA, 2);
+
+        // Data rows
+        for (int i = 0; i < courseCodeTableA.size(); i++) {
+            if (i == courseCodeTableA.size() - 1) {
+                addTableNormal("", tableA, 1);
+            } else {
+                addTableNormal("", tableA, 5);
+            }
+            addTableNormal(courseCodeTableA.get(i), tableA, 2);
+            addTableNormal(courseNameTableA.get(i), tableA, 2);
+            addTableNormal(semesterTableA.get(i), tableA, 2);
+            addTableNormal(ectsCreditsTableA.get(i), tableA, 2);
+        }
+        document.add(tableA);
     }
 }

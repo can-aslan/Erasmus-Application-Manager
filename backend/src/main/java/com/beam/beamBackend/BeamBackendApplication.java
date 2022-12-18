@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.CourseWishlist;
 import com.beam.beamBackend.model.CourseWishlistItem;
+import com.beam.beamBackend.model.LearningAgreementForm;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.service.StudentPlacementService;
+import com.beam.beamBackend.service.form.LearningAgreementGenerator;
 
 @SpringBootApplication
 @EntityScan(basePackageClasses = {
@@ -19,6 +21,8 @@ import com.beam.beamBackend.service.StudentPlacementService;
 public class BeamBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BeamBackendApplication.class, args);
+		//SpringApplication.run(BeamBackendApplication.class, args);
+		LearningAgreementGenerator lag = new LearningAgreementGenerator();
+		lag.generateLearningAgreementForm();
 	}
 }
