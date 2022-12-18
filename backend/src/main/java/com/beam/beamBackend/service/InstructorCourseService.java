@@ -41,10 +41,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class InstructorCourseService {
+public class InstructorCourseService implements ICourseService {
     private final IInstructorCourseRepository instructorCourseRepo;
     private final IBilkentCourseRepository bilkentCourseRepo;
-    private final CourseService courseService;
+    private final ICourseService courseService;
     private final IAccountRepository userRepo;
     private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
@@ -155,7 +155,7 @@ public class InstructorCourseService {
                 HostCourse hostCourse = new HostCourse(UUID.randomUUID(), request.getHostCode(), request.getName(), request.getHostEcts(),
                     request.getSyllabusLink(), request.getWebpage(), request.getHostUniName());
 
-                System.out.println("hosat ocurse: " + hostCourse);
+                System.out.println("host course: " + hostCourse);
                 courseService.addHostCourse(hostCourse);
             }
 
