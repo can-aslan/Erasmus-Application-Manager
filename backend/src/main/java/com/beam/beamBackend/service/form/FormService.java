@@ -238,9 +238,15 @@ public class FormService {
     }
 
     public void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception {
-        PreApprovalForm form = createPreAppFromWishlist(studentId);
-        File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
-        uploadForm(approvalForm, studentId, formType);
+        try {
+            PreApprovalForm form = createPreAppFromWishlist(studentId);
+            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
+            uploadForm(approvalForm, studentId, formType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
     }
 
     public void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception {
@@ -296,6 +302,12 @@ public class FormService {
 
             if (wishlist.get().getStatus() != CourseWishlistStatus.APPROVED ){
                 throw new Exception("Student's wishlist has not been approved!");
+            }
+
+            boolean preApprovalExist = preApprovalRepository.existsByWishlistStudentId(student.get().getUser().getBilkentId());
+
+            if (preApprovalExist) {
+                throw new Exception("pre approval already exists for this student");
             }
             
             // Create instant date object here
