@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.model.Course;
 import com.beam.beamBackend.model.Wishlist;
+import com.beam.beamBackend.request.CoordinatorWishlistApproval;
 import com.beam.beamBackend.response.Response;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -61,14 +62,12 @@ public class CoordinatorController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @PostMapping(path = "/{coordinatorUserId}/wishlist/student/{studentBilkentId}/status/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/wishlist/determineStatus", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> determineWishlistStatus(
-            @Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId,
-            @Valid @PathVariable("studentBilkentId") Long studentBilkentId,
-            @Valid @PathVariable("status") CourseWishlistStatus status) {
+            @Valid @RequestBody CoordinatorWishlistApproval wishlistResult) {
         try {
-            coordinatorWishlistService.determineWishlistStatus(coordinatorUserId, studentBilkentId, status);
-            return Response.create("Wishlist status of students is changed!", HttpStatus.OK);
+            Wishlist wishlist = coordinatorWishlistService.determineWishlistStatus(wishlistResult);
+            return Response.create("Wishlist status of students is changed!", HttpStatus.OK, wishlist);
         } catch (Exception e) {
             return Response.create("Wishlist status of students couldn't changed!", 499);
         }

@@ -38,6 +38,9 @@ public class Wishlist {
     @OneToMany(mappedBy = "ownerWishlist", cascade = CascadeType.ALL) //, orphanRemoval = true)
     private List<WishlistItem> items;
 
+    @Column(name = "feedback")
+    private String feedback;
+
     public Wishlist(
         @JsonProperty("studentId") Long studentId,
         @JsonProperty("status") CourseWishlistStatus status
