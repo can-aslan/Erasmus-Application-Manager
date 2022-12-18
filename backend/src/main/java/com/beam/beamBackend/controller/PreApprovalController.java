@@ -27,7 +27,7 @@ public class PreApprovalController {
     public ResponseEntity<Object> getCoordinatorPreApprovals(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId) {
         try {
             ArrayList<PreApprovalForm> preApprovalForms = preApprovalService.getCoordinatorPreApprovals(coordinatorUserId);
-            return Response.create("PreApprovals are fetched!", HttpStatus.OK,preApprovalForms);
+            return Response.create("PreApprovals are fetched!", HttpStatus.OK, preApprovalForms);
         }
         catch (Exception e) {
             return Response.create("PreApprovals could not fetched!", 499);

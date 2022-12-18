@@ -82,7 +82,7 @@ const RegisterCoordinator = () => {
                 placeholder="Departments"
                 data={DEPARTMENTS}
                 value={department}
-                onChange={(value) => setFaculty(value!)}
+                onChange={(value) => setDepartment(value!)}
             />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>
