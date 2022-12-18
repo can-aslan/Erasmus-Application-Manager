@@ -299,8 +299,12 @@ public class FormService {
             }
             
             // Create instant date object here
-            String date = "a";
-            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date, PreApprovalStatus.PENDING));
+            String date = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
+            Wishlist wishlistObj = wishlist.get();
+            Student studentObj = student.get();
+            PreApprovalForm newForm = new PreApprovalForm(UUID.randomUUID(), studentObj, wishlistObj, date, PreApprovalStatus.PENDING);
+
+            return preApprovalRepository.save(newForm);
         
         } catch(Exception e){
             e.printStackTrace();
@@ -315,7 +319,7 @@ public class FormService {
             throw new Exception("Student is not found!");
         } else {
             try{
-                Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentId(bilkentId);
+                Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentUserBilkentId(bilkentId);
 
                 if (!preApprovalForm.isPresent()){
                     throw new Exception("PreApproval form for the student is not present!");
@@ -327,5 +331,14 @@ public class FormService {
                 throw e;
             }
         }
+    }
+
+    public PreApprovalStatus getPreApprovalStatus(Long studentId) {
+        Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentUserBilkentId(studentId);
+        if (!preApprovalForm.isPresent()) {
+            return PreApprovalStatus.WAITING;
+        }
+
+        return preApprovalForm.get().getPreApprovalStatus();
     }
 }
