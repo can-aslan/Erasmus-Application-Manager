@@ -11,10 +11,13 @@ import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseRequest;
+import com.beam.beamBackend.model.EvaluationForm;
+import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
+import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IInstructorCourseRepository;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class InstructorCourseService {
     private final IInstructorCourseRepository instructorCourseRepo;
     private final IBilkentCourseRepository bilkentCourseRepo;
+    private final ICourseService courseService;
     private final IAccountRepository userRepo;
     // private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
@@ -128,7 +132,19 @@ public class InstructorCourseService {
     
             requestedCourse.get().setStatus(requestResult.getCourseStatus());
             requestedCourse.get().setFeedback(requestResult.getFeedback());
-            return courseRequestRepo.save(requestedCourse.get());
+
+            CourseRequest request = requestedCourse.get();
+
+            if (requestResult.getCourseStatus() == CourseRequestStatus.APPROVED) {
+                
+                HostCourse hostCourse = new HostCourse(UUID.randomUUID(), request.getHostCode(), request.getName(), request.getHostEcts(),
+                    request.getSyllabusLink(), request.getWebpage(), request.getHostUniName());
+
+                System.out.println("host course: " + hostCourse);
+                courseService.addHostCourse(hostCourse);
+            }
+
+            return courseRequestRepo.save(request);
         } catch (Exception e) {
             e.getStackTrace();
             throw e;

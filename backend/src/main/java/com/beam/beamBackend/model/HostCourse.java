@@ -28,12 +28,7 @@ import com.beam.beamBackend.enums.*;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "host_course")
 public class HostCourse extends Course {
-    //maybe allow null?
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "course_approval", nullable = false)
-    private CourseApproval courseApproval;
-
+    
     @NotBlank
     @Column(name = "syllabus", nullable = false)
     private String syllabus;
@@ -43,11 +38,8 @@ public class HostCourse extends Course {
     private String webPage;
 
     @NotNull
-    @Column(name = "university_id", nullable = false)
-    private UUID universityId;
-
-    @ManyToMany(mappedBy = "approvedCourses")
-    private Set<BilkentCourse> bilkentCourses;
+    @Column(name = "uni_name", nullable = false)
+    private String uniName;
     
     public HostCourse(
         @JsonProperty("id") UUID id,
@@ -56,13 +48,11 @@ public class HostCourse extends Course {
         @JsonProperty("ects") Double ects,
         @JsonProperty("syllabus") String syllabus,
         @JsonProperty("webPage") String webPage,
-        @JsonProperty("universityId") UUID universityId,
-        @JsonProperty("courseApproval") CourseApproval courseApproval) {
+        @JsonProperty("uniName") String uniName) {
         
         super(id, courseCode, courseName, ects);
         this.syllabus = syllabus;
         this.webPage = webPage;
-        this.universityId = universityId;
-        this.courseApproval = courseApproval;
+        this.uniName = uniName;
     }
 }

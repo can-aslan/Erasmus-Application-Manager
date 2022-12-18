@@ -4,13 +4,14 @@ import {
 } from '@tanstack/react-query'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
-import PersistentLogin from './components/auth/PersistentLogin'
-import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
+import PersistentLogin from './components/auth/PersistentLogin'
+import RequireAuth from './components/auth/RequireAuth'
 import './index.css'
+import PlacementPage from './pages/Admin/PlacementPage'
 import RegisterPage from './pages/Admin/RegisterPage'
 import ApproveLearningAgreementPage from './pages/Coordinator/ApproveLearningAgreementPage'
 import CoordinatorApprovePreApprovalsPage from './pages/Coordinator/ApprovePreApprovalsPage'
@@ -79,7 +80,7 @@ const router = createBrowserRouter([
           UserEnum.OutgoingStudent, 
           UserEnum.Instructor, 
           UserEnum.ExperiencedStudent,
-          UserEnum.OISEPStaff,
+          UserEnum.ISOStaff,
         ]} />,
         children: [
           {
@@ -155,6 +156,10 @@ const router = createBrowserRouter([
                   {
                     path: '/admin/register-page',
                     element: <RegisterPage />
+                  },
+                  {
+                    path: '/admin/placement-page',
+                    element: <PlacementPage />
                   }
                 ]
               },
@@ -184,7 +189,7 @@ const router = createBrowserRouter([
                 ]
               },
               {
-                element: <RequireAuth allowedUsers={[UserEnum.OISEPStaff]} />,
+                element: <RequireAuth allowedUsers={[UserEnum.ISOStaff]} />,
                 children: [
                   ...defaultPaths,
                   {

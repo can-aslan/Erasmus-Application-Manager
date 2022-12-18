@@ -34,7 +34,8 @@ public class StudentCourseRequestServiceTests {
             "www.syllabus.com",
             CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING,
-            "Host University"
+            "Host University",
+            "feedback"
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(true); // saveRequest() does not exist for ICourseRequestRepository
@@ -55,7 +56,8 @@ public class StudentCourseRequestServiceTests {
             "www.syllabus.com",
             CourseRequestDestination.COORDINATOR,
             CourseRequestStatus.PENDING,
-            "Host University"
+            "Host University",
+            "feedback"
         );
 
         // Mockito.when(courseRequestRepository.saveRequest(courseRequest)).thenReturn(false); // saveRequest() does not exist for ICourseRequestRepository

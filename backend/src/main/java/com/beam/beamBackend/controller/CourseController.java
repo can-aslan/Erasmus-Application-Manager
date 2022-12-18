@@ -95,16 +95,16 @@ public class CourseController {
         }        
     }
     
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("host/uni/{uniId}")
-    public ResponseEntity<Object> getHostCourseByUniId(@Valid @PathVariable("uniId") UUID uniId) {
-        try {
-            List<HostCourse> hostCourses = courseService.getHostCourseByUniId(uniId);
-            return Response.create("ok", HttpStatus.OK, hostCourses);
-        } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
-        }        
-    }
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @GetMapping("host/uni/{uniId}")
+    // public ResponseEntity<Object> getHostCourseByUniId(@Valid @PathVariable("uniId") UUID uniId) {
+    //     try {
+    //         List<HostCourse> hostCourses = courseService.getHostCourseByUniId(uniId);
+    //         return Response.create("ok", HttpStatus.OK, hostCourses);
+    //     } catch (Exception e) {
+    //         return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+    //     }        
+    // }
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("bilkent/depatment/{department}")
@@ -117,26 +117,26 @@ public class CourseController {
         }        
     }
 
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "approvedCourse")
-    public ResponseEntity<Object> addHostCourse(@Valid @RequestBody ApprovedCourse approvedCourse) {
-        try {
-            System.out.println(approvedCourse);
-            BilkentCourse course = courseService.addApprovedCourse(approvedCourse);
-            return Response.create("course is saved", HttpStatus.OK, course);
-        } catch (Exception e) {
-            return Response.create("course add failed", 499);
-        }        
-    }
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "approvedCourse")
+    // public ResponseEntity<Object> addHostCourse(@Valid @RequestBody ApprovedCourse approvedCourse) {
+    //     try {
+    //         System.out.println(approvedCourse);
+    //         BilkentCourse course = courseService.addApprovedCourse(approvedCourse);
+    //         return Response.create("course is saved", HttpStatus.OK, course);
+    //     } catch (Exception e) {
+    //         return Response.create("course add failed", 499);
+    //     }        
+    // }
 
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("approvedCourse/{hostUniId}")
-    public ResponseEntity<Object> getAllApprovedCoursesInUni(@Valid @PathVariable("hostUniId") UUID hostUniId) {
-        try {
-            List<Object> courses = courseService.getAllApprovedCoursesInUni(hostUniId);
-            return Response.create("course is saved", HttpStatus.OK, courses);
-        } catch (Exception e) {
-            return Response.create("course add failed", 499);
-        }        
-    }
+    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    // @GetMapping("approvedCourse/{hostUniId}")
+    // public ResponseEntity<Object> getAllApprovedCoursesInUni(@Valid @PathVariable("hostUniId") UUID hostUniId) {
+    //     try {
+    //         List<Object> courses = courseService.getAllApprovedCoursesInUni(hostUniId);
+    //         return Response.create("course is saved", HttpStatus.OK, courses);
+    //     } catch (Exception e) {
+    //         return Response.create("course add failed", 499);
+    //     }        
+    // }
 }

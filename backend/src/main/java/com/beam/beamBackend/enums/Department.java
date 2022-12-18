@@ -4,5 +4,22 @@ public enum Department {
     CS,
     EEE,
     IE,
-    ME
+    ME,
+    ARCH,
+    COMD,
+    GRA,
+    IAED,
+    CTIS,
+    THM,
+    FA,
+    LAUD,
+    ECON,
+    HIST,
+    MAN,
+    IR,
+    POLS,
+    PSYC,
+    ES,
+    AMER,
+    ELIT
 }

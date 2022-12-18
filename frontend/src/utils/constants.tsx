@@ -8,6 +8,7 @@ import {
     IconLicense,
     IconList,
     IconRegistered,
+    IconReplace,
     IconSchool,
     IconSignature,
     IconUpload
@@ -45,7 +46,7 @@ export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> 
     [UserEnum.Admin]: [],
     [UserEnum.Instructor]: [],
     [UserEnum.ExperiencedStudent]: [],
-    [UserEnum.OISEPStaff]: []
+    [UserEnum.ISOStaff]: []
 }
 
 const DEFAULT_NAVBAR_LINK_OBJECTS: Array<NavbarLink> = [
@@ -135,10 +136,14 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     ],
     [UserEnum.Admin]: [
         {
-            // TODO: Admin pages are not determined
             label: 'Register User',
             to: '/admin/register-page',
             icon: <IconRegistered />
+        },
+        {
+            label: "Place Students",
+            to: '/admin/placement-page',
+            icon: <IconReplace />
         }
     ],
     [UserEnum.Instructor]: [
@@ -161,7 +166,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             icon: <IconBook />
         }
     ],
-    [UserEnum.OISEPStaff]: [
+    [UserEnum.ISOStaff]: [
         ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Upload Transcript',
@@ -173,51 +178,47 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
 }
 
 export const DEPARTMENTS = [
-    "Information Systems and Technologies",
-    "Tourism and Hotel Management",
-    "Department of Architecture",
-    "Department of Communication and Design",
-    "Department of Fine Arts",
-    "Department of Graphic Design",
-    "Department of Interior Architecture and Environmental Design",
-    "Department of Urban Design and Landscape Architecture",
-    "Department of Management",
-    "Department of Economics",
-    "Department of History",
-    "Department of International Relations",
-    "Department of Political Science and Public Administration",
-    "Department of Psychology",
-    "Education Sciences",
-    "Teacher Education",
-    "M.A. in Teaching English as a Foreign Language",
-    "Department of Computer Engineering",
-    "Department of Electrical and Electronics Engineering",
-    "Department of Industrial Engineering",
-    "Department of Mechanical Engineering",
-    "Department of American Culture and Literature",
-    "Department of Archaeology",
-    "Department of English Language and Literature",
-    "Department of Philosophy",
-    "Department of Translation and Interpretation",
-    "Department of Turkish Literature",
-    "Department of Law",
-    "Department of Chemistry",
-    "Department of Mathematics",
-    "Department of Molecular Biology and Genetics",
-    "Department of Physics",
-    "Department of Music",
-    "Department of Performing Arts",
+    {value: "CS" , label: 'Computer Science'},
+    {value: "EEE", label: "Electrical & Electronics Engineering"},
+    {value: "IE", label: "Industrial Engineering"},
+    {value: "ME", label: "Mechanical Engineering"},
+    {value: "ARCH", label: "Architecture"},
+    {value: "COMD", label: "Communication and Design"},
+    {value: "GRA", label: "Graphic Design"},
+    {value: "IAED", label: "Interior Architecture and Environmental Design"},
+    {value: "CTIS", label: "Information Systems and Technologies"},
+    {value: "THM", label: "Tourism and Hotel Management",},
+    {value: "FA", label: "Fine Arts",},
+    {value: "LAUD", label: "Urban Design and Landscape Architecture",},
+    {value: "ECON", label: "Economics"},
+    {value: "HIST", label: "History"},
+    {value: "MAN", label: "Management"},
+    {value: "IR", label: "International Relations"},
+    {value: "POLS", label: "Political Science and Public Administration"},
+    {value: "PSYC", label: "Psychology"},
+    {value: "ES", label: "Education Sciences",},
+    {value: "AMER", label: "American Culture and Literature"},
+    {value: "ELIT", label: "English Language and Literature"},
+    {value: "PHIL", label: "Philosophy"},
+    {value: "FRP", label: "Translation and Interpretation"},
+    {value: "EDEB", label: "Turkish Literature"},
+    {value: "LAW", label: "Law"},
+    {value: "CHEM", label: "Chemistry"},
+    {value: "MATH", label: "Mathematics"},
+    {value: "MBG", label: "Molecular Biology and Genetics"},
+    {value: "PHYS", label: "Physics"},
+    {value: "MSC", label: "Music and Performing Arts"},
 ]
 
 export const FACULTIES = [
-    "Faculty of Applied Sciences",
-    "Faculty of Art, Design, and Architecture",
-    "Faculty of Business Administration",
-    "Faculty of Economics, Administrative, and Social Sciences",
-    "Faculty of Education",
-    "Faculty of Engineering",
-    "Faculty of Humanities and Letters",
-    "Faculty of Law",
-    "Faculty of Science",
-    "Faculty of Music and Performing Arts"
+    {value: "APPLIED_SCIENCES_FAC" , label: 'Faculty of Applied Sciences'},
+    {value: "ART_DESIGN_AND_ARCH_FAC" , label: 'Faculty of Art, Design, and Architecture'},
+    {value: "BUSSINESS_ADMINISTRATION_FAC" , label: 'Faculty of Business Administration'},
+    {value: "ECON_ADMIN_AND_SOCIAL_SCIENCES_FAC" , label: 'Faculty of Economics, Administrative, and Social Sciences'},
+    {value: "EDUCATION_FAC" , label: 'Faculty of Education'},
+    {value: "ENGINEERING_FAC" , label: 'Faculty of Engineering'},
+    {value: "HUM_AND_LETTERS_FAC" , label: 'Faculty of Humanities and Letters'},
+    {value: "LAW_FAC" , label: 'Faculty of Law'},
+    {value: "SCIENCE_FAC" , label: 'Faculty of Science'},
+    {value: "MUSIC_FAC" , label: 'Faculty of Music and Performing Arts'},
 ]
