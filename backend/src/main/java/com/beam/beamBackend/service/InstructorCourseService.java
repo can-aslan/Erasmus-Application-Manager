@@ -14,11 +14,13 @@ import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.EvaluationForm;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.InstructorCourse;
+import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
 import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IInstructorCourseRepository;
+import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
@@ -33,6 +35,7 @@ public class InstructorCourseService {
     private final IAccountRepository userRepo;
     // private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
+    private final IUniversityRepository uniRepo;
 
     public RInstructorCourseAdd addCourseToInstructor(InstructorCourseAdd instructorCourses) throws Exception {
         try {
@@ -136,9 +139,10 @@ public class InstructorCourseService {
             CourseRequest request = requestedCourse.get();
 
             if (requestResult.getCourseStatus() == CourseRequestStatus.APPROVED) {
+                University uni = uniRepo.findUniByName(request.getHostUniName());
                 
                 HostCourse hostCourse = new HostCourse(UUID.randomUUID(), request.getHostCode(), request.getName(), request.getHostEcts(),
-                    request.getSyllabusLink(), request.getWebpage(), request.getHostUniName());
+                    request.getSyllabusLink(), request.getWebpage(), uni);
 
                 System.out.println("host course: " + hostCourse);
                 courseService.addHostCourse(hostCourse);
