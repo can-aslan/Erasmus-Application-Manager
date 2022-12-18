@@ -1,9 +1,7 @@
 package com.beam.beamBackend.controller;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.HashSet;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
@@ -25,7 +22,7 @@ import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.AccountService;
+import com.beam.beamBackend.service.IAccountService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,7 +30,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/auth")
 public class AccountController {
-    private final AccountService accountService;
+    private final IAccountService accountService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
@@ -86,7 +83,7 @@ public class AccountController {
         @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
 
         try {
-            boolean isPasswordChanged = accountService.changePassword(auth, userInfo);
+            accountService.changePassword(auth, userInfo);
             return Response.create("password is changed", HttpStatus.OK);
         } catch (Exception e) {
             return Response.create("password cannot be changed", HttpStatus.BAD_REQUEST); // might change later

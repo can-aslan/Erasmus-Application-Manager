@@ -1,16 +1,11 @@
 package com.beam.beamBackend.request;
 
 import java.util.UUID;
-
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.enums.Faculty;
 import com.beam.beamBackend.enums.Semester;
 import com.beam.beamBackend.enums.Sex;
 import com.beam.beamBackend.enums.StudyType;
-import com.beam.beamBackend.model.Student;
-import com.beam.beamBackend.model.University;
-import com.beam.beamBackend.model.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,12 +29,4 @@ public class StudentRequest {//maybe add not null vs
     private String academicYear;
     private Semester semester;
     private UUID coordinatorId;
-
-    // @Deprecated
-    // public Student toStudent(StudentRequest sReq, User u, University homeUni, University hostUni) {
-    //     return new Student(null, u, sReq.getDepartment1(), sReq.getFaculty1(),
-    //                         sReq.getDepartment2(), sReq.getFaculty2(), sReq.getTelephoneNo(),
-    //                         sReq.getStudyType(), sReq.getNationality(), sReq.getDateOfBirth(),
-    //                         sReq.getSex(), homeUni, hostUni, sReq.getAcademicYear(), sReq.getSemester());
-    // }
 }

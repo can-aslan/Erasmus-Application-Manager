@@ -5,16 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.UserType;
-import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.User;
@@ -31,12 +26,11 @@ import com.beam.beamBackend.response.RRefreshToken;
 import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.security.JWTFilter;
 import com.beam.beamBackend.security.JWTUtils;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class AccountService {
+public class AccountService implements IAccountService {
     public static int hashStrength = 10;
 
     @Autowired
@@ -45,14 +39,13 @@ public class AccountService {
     // @Autowired
     private final IAccountRepository accountRepository;
     private final IStaffRepository staffRepository;
-
     private final InstructorCourseService instructorCourseService;
-
-    private final JWTUserService jwtUserService;
+    private final IJWTUserService jwtUserService;
 
     @Autowired
     private final JWTUtils jwtUtils;
 
+    @Override
     public RLoginUser login(UserLogin user) throws Exception {
         try {
             User dbUser = accountRepository.findUserByBilkentId(Long.parseLong(user.getBilkentId()));
@@ -84,6 +77,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public RRefreshToken refreshToken(String auth) throws Exception {
         try {
             String username = jwtUtils.extractRefreshUsername(JWTFilter.getTokenWithoutBearer(auth));
@@ -101,6 +95,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public boolean changePassword(String auth, ChangePassword passwords) throws Exception {
         try {
             String username = jwtUtils.extractAccessUsername(JWTFilter.getTokenWithoutBearer(auth));
@@ -140,6 +135,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public User addUser(User user) throws Exception {
         try {
             System.out.println("user that will be saved: " + user);
@@ -164,6 +160,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public RRegisterStaff addStaff(RegisterStaff staff) throws Exception {
         try {
             String generatedPassword = StudentPlacementService.generatePsw();
@@ -206,6 +203,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public User addUserWithUserRequest(UserRequest userRequest) throws Exception {
         try {
             // Convert the User request to User
@@ -228,6 +226,7 @@ public class AccountService {
         
     }
 
+    @Override
     public HashSet<User> addUserChunk(User[] users) throws Exception {
         HashSet<User> usersSet = new HashSet<>(Arrays.asList(users));
         HashSet<User> removedUsers = new HashSet<>();
@@ -259,19 +258,20 @@ public class AccountService {
         return usersSet;
     }
 
-    private String encodePassword(String plainPassword) {
-        try {
-            return bCryptPasswordEncoder.encode(plainPassword);
-        } catch (Exception e) {
-            throw e;
-        }       
-    }
-
+    @Override
     public List<User> getUsers() {
         try {
             return accountRepository.findAll();
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private String encodePassword(String plainPassword) {
+        try {
+            return bCryptPasswordEncoder.encode(plainPassword);
+        } catch (Exception e) {
+            throw e;
+        }       
     }
 }

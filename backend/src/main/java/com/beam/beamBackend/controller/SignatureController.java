@@ -2,10 +2,8 @@ package com.beam.beamBackend.controller;
 
 import java.io.IOException;
 import java.util.UUID;
-
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.form.SignatureService;
-
+import com.beam.beamBackend.service.form.ISignatureService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/signature")
 public class SignatureController {
-
-    private SignatureService signatureService;
+    private ISignatureService signatureService;
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @RequestMapping(path = "user/{userId}", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})

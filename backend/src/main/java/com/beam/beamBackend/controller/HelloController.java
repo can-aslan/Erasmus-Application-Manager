@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.response.Response;
 import lombok.AllArgsConstructor;
 
@@ -14,7 +13,6 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("hello")
 public class HelloController {
-    
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping
     public ResponseEntity<Object> testAuth() {
