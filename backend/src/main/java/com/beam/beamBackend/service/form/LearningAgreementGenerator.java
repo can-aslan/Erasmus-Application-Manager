@@ -258,9 +258,9 @@ public class LearningAgreementGenerator {
         // No bottom
         if (sideChoice == 0){
             cell.setBorder(PdfPCell.TOP | PdfPCell.LEFT | PdfPCell.RIGHT);
-        } else if(sideChoice == 1){
+        } else if (sideChoice == 1){
             cell.setBorder(PdfPCell.BOTTOM | PdfPCell.LEFT | PdfPCell.RIGHT); // No top
-        }else if(sideChoice < 0){
+        } else if (sideChoice < 0){
             cell.setBorder(0);
         }
         table.addCell(cell);
