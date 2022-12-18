@@ -25,7 +25,6 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/wishlist")
 public class WishlistController {
-    
     private final IWishlistService wishlistService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")

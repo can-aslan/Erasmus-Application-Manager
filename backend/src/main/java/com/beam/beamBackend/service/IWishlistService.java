@@ -2,7 +2,6 @@ package com.beam.beamBackend.service;
 
 import java.util.List;
 import java.util.UUID;
-
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.model.WishlistItemMapping;

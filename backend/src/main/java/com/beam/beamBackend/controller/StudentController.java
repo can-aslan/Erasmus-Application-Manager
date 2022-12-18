@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.request.StudentRequest;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.StudentService;
-
+import com.beam.beamBackend.service.IStudentService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -27,8 +25,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/student")
 public class StudentController {
-
-    private final StudentService studentService;
+    private final IStudentService studentService;
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "")
