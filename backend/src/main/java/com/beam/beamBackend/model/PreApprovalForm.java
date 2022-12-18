@@ -33,7 +33,7 @@ public class PreApprovalForm {
     
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "preApp_id", nullable = false)
+    @Column(name = "id", nullable = false)
     private UUID id;
 
     @NotNull
