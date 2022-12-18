@@ -49,8 +49,13 @@ import lombok.RequiredArgsConstructor;
 public class FileGenerator {
 
 
-    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws BadElementException, MalformedURLException, IOException{
-        Image signature = Image.getInstance(bufferedSignature);
+    public File generatePreApprovalForm(PreApprovalForm preApprovalForm, byte[] bufferedSignature) throws Exception{
+        Image signature = null;
+        if (bufferedSignature != null && bufferedSignature.length != 0) {
+            signature = Image.getInstance(bufferedSignature);
+        }
+
+        signature = Image.getInstance(bufferedSignature);
         
         Document document = new Document();
 
@@ -130,8 +135,9 @@ public class FileGenerator {
 
             document.close();
             
-        }catch(Exception e){
-            System.out.println(e);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
         }
         System.out.println("PDF generated!");
 
