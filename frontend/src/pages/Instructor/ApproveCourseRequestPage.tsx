@@ -1,5 +1,5 @@
 import { Center, Box, Stack} from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWaitingRequestedCourses } from "../../api/Instructor/CourseRequestService";
 import ApproveRequestedCoursesGrid from "../../components/grids/ApproveRequestedCoursesGrid";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -12,7 +12,7 @@ import LoadingPage from "../Feedback/LoadingPage";
 const ApproveCourseRequestPage = () => {
     const axiosSecure = useAxiosSecure();
     const { user } = useUser();
-    
+    const queryClient = useQueryClient();
     const { data: dataRequests, isError: isRequestsError, isLoading: isRequestsLoading } = useQuery({
         queryFn: () => getWaitingRequestedCourses(axiosSecure, user.id),
         queryKey: ["getWaitingRequests"],

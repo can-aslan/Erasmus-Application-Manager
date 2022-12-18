@@ -1,14 +1,13 @@
-import { SimpleGrid, Card, Flex, TextInput, Button, Modal, Space } from "@mantine/core";
+import { SimpleGrid, Card, Flex, Text, TextInput, Button, Modal, Space, Anchor, Center, Stack } from "@mantine/core";
 import { IconBook2, IconWorld } from "@tabler/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
 import { axiosSecure } from "../../api/axios";
 import { changeRequestStatus } from "../../api/Instructor/CourseRequestService";
-import { getStudent } from "../../api/StudentService";
 import { useUser } from "../../provider/UserProvider";
 import { CourseRequest, InstructorCourseRequestChange } from "../../types";
-import RejectionFeedbackModal from "../modals/RejectionFeedbackModal";
+import CapybaraLottie from "../Loader/CapybaraLottie";
 
 interface ApproveRequestedCoursesGridProps {
     waitingCourses: CourseRequest[];
@@ -19,11 +18,14 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
     const [rejectionFeedbackOpened, setRejectionFeedbackOpened] = useState(false);
     const [selectedRequestId, setSelectedRequestId] = useState("");
     const { user } = useUser();
-
+    const queryClient = useQueryClient();
     const { mutate: mutateChangeRequestStatus, data: courseRequestData, isLoading: isChaneStatusLoading } = useMutation({
         mutationKey: ['changeRequestStatus'],
         mutationFn: (requestBody: InstructorCourseRequestChange) => changeRequestStatus(axiosSecure, requestBody),
-        onSuccess: () => toast.success(`Course request status successfully changed.`),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['getWaitingRequests']);
+            toast.success(`Course request status successfully changed.`);
+        },
         onError: () => toast.error("Course request status change failed.")
     })
 
@@ -56,18 +58,27 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
                 </Flex>
 
             </Modal>
+            {waitingCourses.length === 0 && <Center sx={{ height: '100vh' }}>
+                <Stack align='center'>
+                    <CapybaraLottie />  
+                    <Text size={22} color='blue'>
+                        
+                         You do not have any pending requests!</Text>
+                </Stack>
+            </Center>}
+            
             <SimpleGrid cols={2}>
                 {waitingCourses.map(course => (
                     <Card>
                         <Flex direction={"row"} gap={"sm"}>
                             <Flex direction={"column"} gap={"sm"}>
                                 <TextInput disabled label={"asd"} value={course.name + ` ${course.hostCode}`}></TextInput>
-                                <Button leftIcon={<IconBook2 />} color={'blue'} onClick={() => { }}>Course Syllabus</Button>
-                                <Button color={'red'} onClick={() => { setRejectionFeedbackOpened(true); setSelectedRequestId(course.requestId!)}}>Reject</Button>
+                                <Button leftIcon={<IconBook2 />} color={'blue'}><Anchor target="_blank" href={course.syllabusLink} span>{"Course Syllabus"}</Anchor></Button>
+                                <Button color={'red'} onClick={() => { setRejectionFeedbackOpened(true); setSelectedRequestId(course.requestId!) }}>Reject</Button>
                             </Flex>
                             <Flex direction={"column"} gap={"sm"} >
                                 <TextInput disabled label={"Bilkent"} value={course.bilkentCode}></TextInput>
-                                <Button leftIcon={<IconWorld />} color={'blue'} onClick={() => { }}>Course Webpage</Button>
+                                <Button leftIcon={<IconWorld />} color={'blue'}><Anchor target="_blank" href={course.webpage} span>{"Course Webpage"}</Anchor></Button>
                                 <Button color={'green'} onClick={() => { changeRequest("APPROVED", course.requestId!) }}>Approve</Button>
                             </Flex>
 
