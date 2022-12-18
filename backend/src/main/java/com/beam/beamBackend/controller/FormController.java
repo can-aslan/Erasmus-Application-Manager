@@ -98,14 +98,14 @@ public class FormController {
     }
     
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @RequestMapping(path = "form/generate/download/student/{studentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(path = "form/generate/download/student/{studentId}/{formType}", method = RequestMethod.POST, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Object> generateAndDownloadPreApproval(@PathVariable(value = "studentId") UUID studentId,
                                                                     @PathVariable(value = "formType") FormEnum formType) {
         try {
-            ByteArrayResource resource = formService.generateAndDownloadPreApproval(studentId);
+            byte[]  resource = formService.generateAndDownloadPreApproval(studentId);
             return ResponseEntity
                     .ok()
-                    .body(resource);
+                    .body(new String(resource));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later

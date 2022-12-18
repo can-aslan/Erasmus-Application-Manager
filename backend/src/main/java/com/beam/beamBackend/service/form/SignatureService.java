@@ -42,7 +42,7 @@ public class SignatureService implements ISignatureService {
     final String FILE_PREFIX = "SIGNATURE";
     
     @Override
-    public boolean uploadSignature(UUID userId, MultipartFile file) throws FileSizeLimitExceededException {
+    public boolean uploadSignature(UUID userId, MultipartFile file) throws FileSizeLimitExceededException, Exception {
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
         if (file.getSize() > FILE_SIZE_LIMIT) {
@@ -52,12 +52,13 @@ public class SignatureService implements ISignatureService {
 
         Optional<User> user = accountRepository.findById(userId);
         if (!user.isPresent()) {
-            return false; // TODO: Throw usernotfoundexception
+            throw new Exception("User is not present"); // TODO: Throw usernotfoundexception
         }
 
         Optional<Signature> signature = signatureRepository.findSignatureByUserId(userId);
         if (signature.isPresent()) {
-            return false;
+            signatureRepository.delete(signature.get());
+            deleteSignature(userId);
         }
 
         User u = user.get();
