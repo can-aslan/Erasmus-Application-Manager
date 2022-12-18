@@ -10,8 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.beam.beamBackend.enums.Department;
-import com.beam.beamBackend.enums.Semester;
 import com.beam.beamBackend.model.PreApprovalForm;
 
 @Transactional

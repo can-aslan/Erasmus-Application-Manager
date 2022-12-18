@@ -1,14 +1,24 @@
 import { Button, Center, Flex, Group, Modal, Select, Space, Table, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { PreApprovalForm, PreApprovalFormItemType } from "../../types";
+import { approveSubmittedPreApprovalCoord, rejectSubmittedPreApprovalCord } from "../../api/Coordinator/PreapprovalService";
+import { downloadForm } from "../../api/FileService";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useUser } from "../../provider/UserProvider";
+import { Form, PreApprovalForm, PreApprovalFormItemType } from "../../types";
+import { downloadBlobFile } from "../../utils/helpers";
 import RejectionFeedbackModal from "../modals/RejectionFeedbackModal";
 
 interface ApprovePreApprovalsTableProps {
     preApprovals: Array<PreApprovalForm>
 }
 const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps) => {   
+    const axiosSecure = useAxiosSecure()
+    const { user } = useUser()
+    const queryClient = useQueryClient()
+
     const [preApprovalDetailsOpened, setPreApprovalDetailsOpened] = useState(false);
     const [rejectionFeedbackOpened, setRejectionFeedbackOpened] = useState(false);
 
@@ -23,22 +33,46 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [searchPreAppInput, setSearchPreAppInput] = useState('');
     const [selectedPreApproval, setSelectedPreApproval] = useState<Array<PreApprovalFormItemType>>();
 
+    const { mutate: approvePreApprovalMutate } = useMutation({
+        mutationKey: ['approvePreApprovalMutation'],
+        mutationFn: (studentId: string) => approveSubmittedPreApprovalCoord(axiosSecure, user.id, ""),
+        onSuccess: () =>{
+            queryClient.invalidateQueries(['getPreApprovalsCoord'])
+        }
+    })
+
+    const { mutate: rejectPreApprovalMutate } = useMutation({
+        mutationKey: ['rejectPreApprovalMutation'],
+        mutationFn: (studentId: string) => rejectSubmittedPreApprovalCord(axiosSecure, user.id, ""),
+        onSuccess: () =>{
+            queryClient.invalidateQueries(['getPreApprovalsCoord'])
+        }
+    })
+
+    const { mutate: downloadPreApprovalMutate } = useMutation({
+        mutationKey: ['coordinatorDownloadPreApproval'],
+        mutationFn: (studentId: string) => downloadForm(axiosSecure, studentId, Form.PRE_APPROVAL),
+        onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}`)
+    })
+
     const viewPreApproval = (formID: string) => {
         setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems);
         setPreApprovalDetailsOpened(true);
     }
     const approvePreApproval = (formID: string) => {
         //Approve the selected student's wishlist
+        approvePreApprovalMutate("") // TODO:
+
         // Close pop-up
         setPreApprovalDetailsOpened(false);
-        // TODO: Add approve mutation, invalidate query
     }
     const rejectPreApproval = (formID: string) => {
         // Reject the selected student's wishlist
+        rejectPreApprovalMutate("")
+
         // Close pop-up
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
-        // TODO: Add reject mutation, invalidate query
     }
 
     // Below are mock data, they will be changed.
@@ -85,8 +119,8 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         }
     }
 
-    const downloadPreApproval = () => {
-        //TODO: download selected pre approval
+    const downloadPreApproval = (studentId: string) => {
+        downloadPreApprovalMutate(studentId)
     }
 
     return (
@@ -173,35 +207,39 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
 
     function getPendingApprovalRows() {
         return tempPendingApprovalList.map((element) => (
-            <tr key={element.studentName}>
-                <td>{element.studentName}</td>
-                <td>{element.studentID}</td>
-                <td>{""}
-                    <Center>
-                        <Button sx={{ width: "99%" }} 
-                            leftIcon={element.status == "Approved" ? <IconCheck /> : element.status == "Pending" ? <IconSearch /> : <IconX />} 
-                            color={element.status == "Approved" ? "green" : element.status == "Pending" ? "blue" : "red"} 
-                            onClick={() => {
-                                setSelectedStudentName(element.studentName);
-                                setSelectedStudentID(element.studentID);
-                                viewPreApproval(element.formUuid);
-                                setShowApprove(element.status == "Pending" || element.status == "Rejected");
-                                setShowReject(element.status == "Approved" || element.status == "Pending");
-                            }}
+            <>
+                <tr key={element.studentName}>
+                    <td>{element.studentName}</td>
+                    <td>{element.studentID}</td>
+                    <td>{""}
+                        <Center>
+                            <Button sx={{ width: "99%" }} 
+                                leftIcon={element.status == "Approved" ? <IconCheck /> : element.status == "Pending" ? <IconSearch /> : <IconX />} 
+                                color={element.status == "Approved" ? "green" : element.status == "Pending" ? "blue" : "red"} 
+                                onClick={() => {
+                                    setSelectedStudentName(element.studentName);
+                                    setSelectedStudentID(element.studentID);
+                                    viewPreApproval(element.formUuid);
+                                    setShowApprove(element.status == "Pending" || element.status == "Rejected");
+                                    setShowReject(element.status == "Approved" || element.status == "Pending");
+                                }}
                             >
-                            {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
-                        </Button>
-                    </Center>
-                </td>
-                <td>{""} 
-                    <Center>
-                        <Button onClick={()=>{downloadPreApproval()}}>Download</Button>    
-                    </Center>
-                </td>
-                <td>
-                    {element.rejectionFeedback}
-                </td>
-            </tr>
+                                {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
+                            </Button>
+                        </Center>
+                    </td>
+                    <td>
+                        <Center>
+                            <Button onClick={(e) => downloadPreApproval(element.studentID) }>
+                                Download
+                            </Button>    
+                        </Center>
+                    </td>
+                    <td>
+                        {element.rejectionFeedback}
+                    </td>
+                </tr>
+            </>
         ));
     }
 

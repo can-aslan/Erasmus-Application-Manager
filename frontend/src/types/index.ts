@@ -1,4 +1,6 @@
+
 import React from "react";
+import { DEPARTMENTS, FACULTIES } from "../utils/constants";
 
 export type ApprovalStatus = 'WAITING' | 'PENDING' | 'APPROVED' | 'REJECTED'
 export type EvaluationStatus = 'EMPTY' | 'SUBMITTED' | 'SAVED'
@@ -18,18 +20,18 @@ export enum UserEnum {
     Admin = 'ADMIN',
     Instructor = 'INSTRUCTOR',
     ExperiencedStudent = 'EXPERIENCED_STUDENT',
-    OISEPStaff = 'OISEP_STAFF'
+    ISOStaff = 'ISO_STAFF'
 }
 
-export type NewUser = {
+export type NewStaff = {
     name: string,
     surname: string,
-    email: string,
     bilkentId: string,
-    department?: string,
-    faculty?: string,
-    userType?: UserEnum,
-    password?: string
+    email: string,
+    userType: UserEnum,
+    department?: typeof DEPARTMENTS[number]['value'],
+    faculty?: typeof FACULTIES[number]['value'],
+    bilkentCourseCodes?: Array<string>
 }
 
 export type User = {

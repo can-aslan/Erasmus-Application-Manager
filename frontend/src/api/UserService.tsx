@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../hooks/useAxiosSecure"
-import { NewUser, User } from "../types"
+import { NewStaff, User } from "../types"
 import { ResponseUser } from "../types/responseTypes"
 import axios from "./axios"
 
@@ -23,17 +23,17 @@ export const logout = async (userUuid: string) => {
     return response.data
 }
 
-export const registerUser = async (axios: AxiosInstance, newUser: NewUser) => {
-    const response = await axios.post<NewUser>('/auth/register', newUser)
+export const registerUser = async (axios: AxiosInstance, newUser: NewStaff) => {
+    const response = await axios.post<NewStaff>('/auth/register', newUser)
     return response.data
 }
 
-export const registerStaff = async (axios: AxiosInstance, newUser: NewUser) => {
-    const response = await axios.post<NewUser>('auth/register/staff', newUser)
+export const registerStaff = async (axios: AxiosInstance, newUser: NewStaff) => {
+    const response = await axios.post<NewStaff>('auth/register/staff', newUser)
     return response.data
 }
 
-export const registerInstructor = async (axios: AxiosInstance, newUser: NewUser) => {
-    const response = await axios.post<NewUser>('auth/register/instructor', newUser)
+export const registerInstructor = async (axios: AxiosInstance, newUser: NewStaff) => {
+    const response = await axios.post<NewStaff>('auth/register/instructor', newUser)
     return response.data
 }
