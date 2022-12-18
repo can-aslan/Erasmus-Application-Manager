@@ -1,6 +1,7 @@
 package com.beam.beamBackend.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,12 +26,19 @@ public class PreApprovalService {
     private final FormService formService;
     public ArrayList<PreApprovalForm> getCoordinatorPreApprovals(@Valid UUID coordinatorUserId) {
         try {
-            // How to get preApprovalForm with coordinatorId
-            // Maybe add related functions to repositor all bring all Preapprovals and sort among them(StudentId -> coordinatorId comparison)
-        } catch(Exception e) {
+            List<PreApprovalForm> preApprovalForms = preApprovalRepository.findAll();
+            ArrayList<PreApprovalForm> coordinatorPreApprovals = new ArrayList<>();
 
+            for (int i = 0; i < preApprovalForms.size(); i++) {
+                if ( coordinatorUserId == preApprovalForms.get(i).getStudent().getCoordinator().getUser().getId()){
+                    coordinatorPreApprovals.add(preApprovalForms.get(i));
+                }
+            }
+            return coordinatorPreApprovals;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 
     public boolean approvePreApprovals(@Valid UUID coordinatorUserId, @Valid Long studentId) throws Exception {
