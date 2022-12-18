@@ -40,7 +40,7 @@ export const submitWishlist = async (axios: AxiosInstance, bilkentId: string) =>
 }
     
 export const deleteWishItem = async (axios: AxiosInstance, bilkentId: string, wishItemId: string) => {
-    const response = await axios.delete(`/delete/${bilkentId}/${wishItemId}`)
+    const response = await axios.delete(`/wishlist/delete/${bilkentId}/${wishItemId}`)
     return response.data
 }
 
