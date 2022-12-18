@@ -19,11 +19,14 @@ import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
+import com.beam.beamBackend.model.WaitingListStudent;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IPreferencesRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
+import com.beam.beamBackend.repository.IWaitingListStudentRepository;
+
 import lombok.RequiredArgsConstructor;
 import java.io.BufferedReader;
 import java.io.FileReader;  
@@ -45,7 +48,7 @@ public class StudentPlacementService implements IStudentPlacementService {
     private final IPreferencesRepository preferencesRepository;
     private final IAccountRepository accountRepository;
     private final IStaffRepository staffRepository;
-
+    private final IWaitingListStudentRepository waitingListStudentRepository;
     @Override
     public ArrayList<Student> placeStudents(String department) throws Exception {
         // Get List of coordinators
@@ -89,10 +92,12 @@ public class StudentPlacementService implements IStudentPlacementService {
         System.out.println("-----------------------------------------------------------------------------------------");
         // Waiting list creation 
         // If a registeredstudent's hostUn property is null that means they are in the waiting list
+        int waitingListIndex = 0;
         for (int i = 0; i < registeredStudents.size(); i++){
             Student currentStudent = registeredStudents.get(i);
             if (currentStudent.getHostUni() == null) {
-                waitingList.add(currentStudent);
+                WaitingListStudent waitingListStudent = new WaitingListStudent(UUID.randomUUID(), currentStudent, waitingListIndex);
+                waitingListStudentRepository.save(waitingListStudent);
             }
         }
 
