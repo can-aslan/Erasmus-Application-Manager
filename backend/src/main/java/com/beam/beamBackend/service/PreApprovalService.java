@@ -44,7 +44,7 @@ public class PreApprovalService {
     public boolean approvePreApprovals(@Valid UUID coordinatorUserId, @Valid Long studentId) throws Exception {
         try {
             Optional<User> coordinator = accountRepository.findById(coordinatorUserId);
-            Optional<PreApprovalForm> preApproval = preApprovalRepository.findByStudentId(studentId);
+            Optional<PreApprovalForm> preApproval = preApprovalRepository.findByStudentUserBilkentId(studentId);
 
             if (!preApproval.isPresent()){
                 throw new Exception("PreApproval for the student is not found!");
@@ -65,7 +65,7 @@ public class PreApprovalService {
     public boolean rejectPreApprovals(@Valid UUID coordinatorUserId, @Valid Long studentId) throws Exception {
         try {
             Optional<User> coordinator = accountRepository.findById(coordinatorUserId);
-            Optional<PreApprovalForm> preApproval = preApprovalRepository.findByStudentId(studentId);
+            Optional<PreApprovalForm> preApproval = preApprovalRepository.findByStudentUserBilkentId(studentId);
 
             if (!preApproval.isPresent()){
                 throw new Exception("PreApproval for the student is not found!");

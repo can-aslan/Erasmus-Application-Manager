@@ -43,8 +43,8 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class StudentPlacementService {
-    private Hashtable<University, Integer> quotas;
-    ArrayList<Student> regiteredStudents = new ArrayList<>();
+    private Hashtable<University, Integer> quotas = new Hashtable<>();
+    ArrayList<Student> registeredStudents = new ArrayList<>();
     ArrayList<Student> waitingList = new ArrayList<>();
 
     @Autowired
@@ -64,9 +64,9 @@ public class StudentPlacementService {
         getAllUniversitiesQuota(department);
         
         //Assign coordinator to students
-        for (int i = 0; i < regiteredStudents.size(); i++) {
+        for (int i = 0; i < registeredStudents.size(); i++) {
             ArrayList<String> preferenceList = new ArrayList<>();
-            Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(regiteredStudents.get(i).getUser().getBilkentId());
+            Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(registeredStudents.get(i).getUser().getBilkentId());
             preferenceList.add(preferences.get().getPref1());
             preferenceList.add(preferences.get().getPref2());
             preferenceList.add(preferences.get().getPref3());
@@ -75,16 +75,19 @@ public class StudentPlacementService {
 
             for (int j = 0; j < preferenceList.size(); j++) {
 
-                if (preferenceList.get(j) != null) {
+                if (preferenceList.get(j) != null && preferenceList.get(j) != "") {
                     University currentUni = universityRepository.findUniByName(preferenceList.get(j));
 
+                    System.out.println(currentUni);
                     if(quotas.get(currentUni) > 0) {
-                        regiteredStudents.get(i).setHostUni(currentUni);
+                        registeredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1);
-
+                        
+                        System.out.println("==========================================================");
                         //Assign coordinator to students
                         Staff currentCoordinator = coordinators.get( assignedCoordinators % coordinators.size());
-                        regiteredStudents.get(i).setCoordinator(currentCoordinator);
+                        System.out.println(currentCoordinator);
+                        registeredStudents.get(i).setCoordinator(currentCoordinator);
 
                         break;  
                     }
@@ -92,16 +95,23 @@ public class StudentPlacementService {
             }
         }
 
+        System.out.println("-----------------------------------------------------------------------------------------");
         // Waiting list creation 
         // If a registeredstudent's hostUn property is null that means they are in the waiting list
-        for (int i = 0; i < regiteredStudents.size(); i++){
-            Student currentStudent = regiteredStudents.get(i);
+        for (int i = 0; i < registeredStudents.size(); i++){
+            Student currentStudent = registeredStudents.get(i);
             if (currentStudent.getHostUni() == null) {
                 waitingList.add(currentStudent);
             }
         }
+
+        for (Student s: registeredStudents) {
+            studentRepository.save(s);
+        }
+
+        System.out.println("---------------------------------------------------------");
         
-        return regiteredStudents;
+        return registeredStudents;
     }
 
 
@@ -113,7 +123,7 @@ public class StudentPlacementService {
 
             boolean isHeader = true;
             //parsing a CSV file into BufferedReader class constructor  
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/sortedStudents"+ department + ".csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/sortedStudents"+ department + ".csv"));  
             while ((line = br.readLine()) != null)   //returns a Boolean value  
             {  
                 // Skip the first line of the table while registering students
@@ -174,22 +184,29 @@ public class StudentPlacementService {
                 String hashedpassword = encodePassword(password);
 
                 User newUser = new User(UUID.randomUUID(), name, surname, email, bilkentId, hashedpassword, UserType.OUTGOING_STUDENT);
-                //University homeUni = universityRepository.findUniByName("Bilkent University");
-                University homeUni = null;
-                accountRepository.save(newUser);
+                University homeUni = universityRepository.findUniByName("Bilkent University");
+                if (!accountRepository.existsByBilkentId(bilkentId)) {
+                    accountRepository.save(newUser);
+                } else {
+                    throw new Exception("The user already exists!");
+                }
                 newUser = accountRepository.findUserByBilkentId(bilkentId);
                 Student newStudent = new Student(UUID.randomUUID(), newUser, d, f, d2, f2, telephoneNo, st, nationality, dateOfBirth, sex, homeUni, null, academicYear, semester, null);
-                studentRepository.save(newStudent);
 
-                regiteredStudents.add(newStudent);
+                registeredStudents.add(newStudent);
 
                 String pref1 = lineSplitted[22];
                 String pref2 = lineSplitted[23];    
                 String pref3 = lineSplitted[24];
                 String pref4 = lineSplitted[25];
                 String pref5 = lineSplitted[26]; 
-                Preferences preferences = new Preferences(UUID.randomUUID(), newStudent.getUser().getBilkentId(), pref1, pref2, pref3, pref4, pref5);
-                preferencesRepository.save(preferences);
+
+                Optional<Preferences> p = preferencesRepository.findByStudentBilkentId(bilkentId);
+                if (!p.isPresent()) {
+                    Preferences preferences = new Preferences(UUID.randomUUID(), newStudent.getUser().getBilkentId(), pref1, pref2, pref3, pref4, pref5);
+                    preferencesRepository.save(preferences);
+                }
+                
                 newUser.setPassword(password);
             }  
 
@@ -200,8 +217,7 @@ public class StudentPlacementService {
             throw e;
         }
 
-        System.out.println(regiteredStudents);
-        return regiteredStudents;
+        return registeredStudents;
     }
 
     /**
@@ -216,7 +232,7 @@ public class StudentPlacementService {
             String splitBy = ",";  
 
             boolean isHeader = true;
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas " + department + ".csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/UniQuotas" + department + ".csv"));  
 
             while ((line = br.readLine()) != null) {
                 // Skip the first line of the table while registering students
@@ -267,7 +283,7 @@ public class StudentPlacementService {
             String line = "";  
             String splitBy = ",";  
     
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/backend/src/main/resources/UniQuotas.csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/UniQuotas.csv"));  
             while ((line = br.readLine()) != null){
                 String[] lineSplitted = line.split(splitBy);    // use comma as separator
                 

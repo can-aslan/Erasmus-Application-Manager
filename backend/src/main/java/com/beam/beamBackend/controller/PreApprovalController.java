@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +39,7 @@ public class PreApprovalController {
 
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("coordinator/{coordinatorUserId}/student/{studentId}/approve")
+    @PostMapping("coordinator/{coordinatorUserId}/student/{studentId}/approve")
     public ResponseEntity<Object> approvePreApproval(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentId") Long studentId){
         try {
             boolean isSuccessfull = preApprovalService.approvePreApprovals(coordinatorUserId, studentId);
@@ -49,7 +50,7 @@ public class PreApprovalController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("coordinator/{coordinatorUserId}/student/{studentId}/reject")
+    @PostMapping("coordinator/{coordinatorUserId}/student/{studentId}/reject")
     public ResponseEntity<Object> rejectPreApproval(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId, @Valid @PathVariable("studentId") Long studentId){
         try {
             boolean isSuccessfull = preApprovalService.rejectPreApprovals(coordinatorUserId, studentId);
