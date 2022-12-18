@@ -299,7 +299,12 @@ export enum Form {
     SIGNATURE="SIGNATURE",
 }
 
+export type InstructorCourseRequestChange = {
+    courseStatus: string;
+    instructorId: string;
+    courseRequestId: string;
 
+}
 // export type LearningAgreement = {
 //     formUuid: string,
 //     studentId: string,
