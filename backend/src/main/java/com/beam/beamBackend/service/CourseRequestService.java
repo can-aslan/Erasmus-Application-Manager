@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class StudentCourseRequestService implements IStudentCourseRequestService {
+public class CourseRequestService implements ICourseRequestService {
 
     private final ICourseRequestRepository courseRequestRepository;
 

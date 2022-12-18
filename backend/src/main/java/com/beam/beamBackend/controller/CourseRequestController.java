@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.IStudentCourseRequestService;
+import com.beam.beamBackend.service.ICourseRequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -22,15 +22,15 @@ import lombok.RequiredArgsConstructor;
 // @Secured({"OUTGOING"}) // Temporary user role for outgoing student
 @RequestMapping("api/v1/course/student")
 @RequiredArgsConstructor
-public class StudentCourseRequestController {
-    private final IStudentCourseRequestService studentCourseRequestService;
+public class CourseRequestController {
+    private final ICourseRequestService courseRequestService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
     {
         try {
-            boolean responseResult = studentCourseRequestService.requestCourse(courseRequest);
+            boolean responseResult = courseRequestService.requestCourse(courseRequest);
 
             return 
             responseResult ?
@@ -48,7 +48,7 @@ public class StudentCourseRequestController {
     @GetMapping("/fetch")
     public ResponseEntity<Object> getAllCourseRequests() {
         try {
-            List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequests();
+            List<CourseRequest> responseResult = courseRequestService.getAllCourseRequests();
             
             return 
             responseResult != null ?
@@ -66,7 +66,7 @@ public class StudentCourseRequestController {
     @GetMapping("/fetch/{studentId}")
     public ResponseEntity<Object> getAllCourseRequestsOfStudent(@PathVariable("studentId") Long studentId) {
         try {
-            List<CourseRequest> responseResult = studentCourseRequestService.getAllCourseRequestsOfStudent(studentId);
+            List<CourseRequest> responseResult = courseRequestService.getAllCourseRequestsOfStudent(studentId);
             
             return 
             responseResult != null ?
