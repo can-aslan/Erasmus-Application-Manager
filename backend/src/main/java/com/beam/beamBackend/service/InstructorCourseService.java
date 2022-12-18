@@ -143,6 +143,7 @@ public class InstructorCourseService {
             }
     
             requestedCourse.get().setStatus(requestResult.getCourseStatus());
+            requestedCourse.get().setFeedback(requestResult.getFeedback());
             return courseRequestRepo.save(requestedCourse.get());
         } catch (Exception e) {
             e.getStackTrace();
