@@ -27,7 +27,6 @@ public class PreApprovalController {
     @GetMapping("/coordinator/{coordinatorUserId}")
     public ResponseEntity<Object> getCoordinatorPreApprovals(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId) {
         try {
-            System.out.println("lao tst");
             List<PreApprovalForm> preApprovalForms = preApprovalService.getCoordinatorPreApprovals(coordinatorUserId);
             return Response.create("PreApprovals are fetched!", HttpStatus.OK, preApprovalForms);
         }
