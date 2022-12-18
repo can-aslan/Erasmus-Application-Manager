@@ -63,7 +63,7 @@ const CourseRequestPage = () => {
         )
     }
         
-    const allCoursesBilkent = courses.data.map(c => c.courseName);
+    const allCoursesBilkent = courses.data.map(c => c.courseCode);
     
     const handleRequestCourse = () => {
         const validate = form.validate();

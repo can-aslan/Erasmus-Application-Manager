@@ -65,7 +65,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/determineStatus")
+    @PostMapping("/course/determineStatus")
     public ResponseEntity<Object> decideCourseRequestStatus(@Valid @RequestBody InstructorCourseApproval requestResult) {
         try {
             CourseRequest result = instructorService.determineRequestedCourseStatus(requestResult);
