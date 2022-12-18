@@ -19,7 +19,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
     const [opened, setOpened] = useState(false);
     const [selectedStudentID, setSelectedStudentID] = useState("");
     const [selectedIsApproved, setSelectedIsApproved] = useState(false);
-    const [wishlistDetails, setWishlistDetails] = useState();
+    const [wishlistDetails, setWishlistDetails] = useState<Array<WishlistItemsInterface>>();
     const queryClient = useQueryClient()
 
     const { mutate: mutateGetWishlist, data:dataWishlistDetails } = useMutation({
@@ -27,7 +27,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
         mutationFn: (studentBilkentId: string) => getStudentWishlist(axiosSecure, user!.id, studentBilkentId),
         onSuccess: (dataWishlistDetails) => {
             
-            setWishlistDetails(dataWishlistDetails.data);
+            setWishlistDetails(dataWishlistDetails.data.items);
         }
     })
 
@@ -92,10 +92,10 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
 
     //------------------------------------------ Mock Data Ends ----------------------------------------------------------------
 
-    const wishlistRows = wishlistDetails.map((element) => (
-        <tr key={element.courseCode}>
-            <td>{element.courseCode}</td>
-            <td>{element.courseName}</td>
+    const wishlistRows = wishlistDetails!.map((element) => (
+        <tr key={element.mappings[0].hostCourse}>
+            <td>{element.mappings[0].hostCourse}</td>
+            <td>{element.mappings[0].hostName}</td>
             <td>{element.ects}</td>
             <td>{""}
                 <Center>
