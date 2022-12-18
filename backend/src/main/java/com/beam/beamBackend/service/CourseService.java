@@ -68,7 +68,7 @@ public class CourseService implements ICourseService {
 
         try {
             boolean universityExists = uniRepo.existsByName(hostCourse.getUniName());
-            System.out.println("is univiersity valid: " + universityExists);
+            System.out.println("is university valid: " + universityExists);
 
             // if university does not exist don't save course
             if (!universityExists) {
