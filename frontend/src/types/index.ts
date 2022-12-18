@@ -80,12 +80,14 @@ export type Course = {
 
 export type BilkentCourse = Course & {
     bilkentName: string,
-    bilkentCredits: number,
-    elective?: boolean
+    bilkentCredit: number,
+    elective?: boolean,
+    courseName?: string
 }
 
 export type HostCourse = Course & {
     hostName: string,
+    courseName?: string,
     courseApproval?: ApprovalStatus
 }
 
