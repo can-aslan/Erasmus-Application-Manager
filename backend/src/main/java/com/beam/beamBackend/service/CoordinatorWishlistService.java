@@ -44,7 +44,7 @@ public class CoordinatorWishlistService {
                     if (!aStudent.isPresent()){
                         throw new Exception("The student is not found!");
                     }
-                    if (aStudent.get().getCoordinator().getId() == coordinator.get().getId()){
+                    if (aStudent.get().getCoordinator().getUser().getId() == coordinator.get().getUser().getId()){
                         coordinatorsWishLists.add(wishlists.get(i));
                     }
                 }
