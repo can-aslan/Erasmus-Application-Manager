@@ -9,7 +9,6 @@ import com.beam.beamBackend.model.CourseWishlistItem;
 import com.beam.beamBackend.model.LearningAgreementForm;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.service.StudentPlacementService;
-import com.beam.beamBackend.service.form.LearningAgreementGenerator;
 
 @SpringBootApplication
 @EntityScan(basePackageClasses = {
@@ -21,8 +20,6 @@ import com.beam.beamBackend.service.form.LearningAgreementGenerator;
 public class BeamBackendApplication {
 
 	public static void main(String[] args) {
-		//SpringApplication.run(BeamBackendApplication.class, args);
-		LearningAgreementGenerator lag = new LearningAgreementGenerator();
-		lag.generateLearningAgreementForm();
+		SpringApplication.run(BeamBackendApplication.class, args);
 	}
 }
