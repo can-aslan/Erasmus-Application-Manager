@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.beam.beamBackend.exception.NoStudentException;
+import com.beam.beamBackend.exception.NoUniversityException;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.request.CourseRequestRequestBody;
 import com.beam.beamBackend.response.Response;
@@ -38,6 +40,26 @@ public class CourseRequestController {
                 Response.create("course requested", HttpStatus.OK)
                 :
                 Response.create("course request failed", HttpStatus.BAD_REQUEST);
+        }
+        catch (NoStudentException noStudentException) {
+            noStudentException.printStackTrace();
+            return Response.create(
+                "course request failed: "
+                + noStudentException.getLocalizedMessage()
+                + ", "
+                + noStudentException.getMessage()
+                , HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+        catch (NoUniversityException noUniversityException) {
+            noUniversityException.printStackTrace();
+            return Response.create(
+                "course request failed: "
+                + noUniversityException.getLocalizedMessage()
+                + ", "
+                + noUniversityException.getMessage()
+                , HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -74,6 +96,26 @@ public class CourseRequestController {
                 Response.create("course requests fetch successful", HttpStatus.OK, responseResult)
                 :
                 Response.create("course requests fetch unsuccessful", HttpStatus.BAD_REQUEST);
+        }
+        catch (NoStudentException noStudentException) {
+            noStudentException.printStackTrace();
+            return Response.create(
+                "course request failed: "
+                + noStudentException.getLocalizedMessage()
+                + ", "
+                + noStudentException.getMessage()
+                , HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+        catch (NoUniversityException noUniversityException) {
+            noUniversityException.printStackTrace();
+            return Response.create(
+                "course request failed: "
+                + noUniversityException.getLocalizedMessage()
+                + ", "
+                + noUniversityException.getMessage()
+                , HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
         catch (Exception e) {
             e.printStackTrace();
