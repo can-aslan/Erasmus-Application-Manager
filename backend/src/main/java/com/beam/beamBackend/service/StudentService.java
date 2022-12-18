@@ -1,5 +1,6 @@
 package com.beam.beamBackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.StudentRequest;
+import com.beam.beamBackend.response.RHostCourse;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -69,12 +72,19 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public List<HostCourse> getHostCoursesOfStudentHostUni(Long bilkentId) throws Exception {
+    public List<RHostCourse> getHostCoursesOfStudentHostUni(Long bilkentId) throws Exception {
         try {
             Student student = getStudentByBilkentId(bilkentId);
             String hostUniName = student.getHostUni().getName();
 
-            return hostCourseRepo.findByUniName(hostUniName);
+            List<HostCourse> hostCourses = hostCourseRepo.findByUniversityName(hostUniName);
+            List<RHostCourse> responseList = new ArrayList<RHostCourse>();
+
+            for (HostCourse h : hostCourses) {
+                responseList.add(new RHostCourse(h));
+            }
+
+            return responseList;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

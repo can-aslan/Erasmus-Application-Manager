@@ -7,6 +7,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
+import com.beam.beamBackend.request.HostCourseRequestBody;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -22,7 +23,8 @@ import jakarta.persistence.GeneratedValue;
 @JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = BilkentCourse.class, name = "bilkent_course"),
-    @JsonSubTypes.Type(value = HostCourse.class, name = "host_course")
+    @JsonSubTypes.Type(value = HostCourse.class, name = "host_course"),
+    @JsonSubTypes.Type(value = HostCourseRequestBody.class, name = "host_course")
 })
 
 @Data

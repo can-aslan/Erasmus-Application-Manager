@@ -16,11 +16,13 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Column;
 import com.beam.beamBackend.enums.*;
+import com.beam.beamBackend.request.HostCourseRequestBody;
 
 @Entity
 @Data
@@ -38,8 +40,9 @@ public class HostCourse extends Course {
     private String webPage;
 
     @NotNull
-    @Column(name = "uni_name", nullable = false)
-    private String uniName;
+    @OneToOne
+    @JoinColumn(name = "uni_name", nullable = false)
+    private University university;
     
     public HostCourse(
         @JsonProperty("id") UUID id,
@@ -48,11 +51,15 @@ public class HostCourse extends Course {
         @JsonProperty("ects") Double ects,
         @JsonProperty("syllabus") String syllabus,
         @JsonProperty("webPage") String webPage,
-        @JsonProperty("uniName") String uniName) {
+        @JsonProperty("uniName") University university) {
         
         super(id, courseCode, courseName, ects);
         this.syllabus = syllabus;
         this.webPage = webPage;
-        this.uniName = uniName;
+        this.university = university;
+    }
+
+    public static HostCourse toHostCourse(HostCourseRequestBody hostReq, University uni) {
+        return new HostCourse(null, hostReq.getCourseCode(), hostReq.getCourseName(), hostReq.getEcts(), hostReq.getSyllabus(), hostReq.getWebPage(), uni);
     }
 }
