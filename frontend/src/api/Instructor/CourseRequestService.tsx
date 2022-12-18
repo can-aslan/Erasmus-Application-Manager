@@ -3,7 +3,7 @@ import { InstructorCourseRequestChange } from "../../types"
 import { ResponseCourseRequest, ResponsePreviousCourseRequests } from "../../types/responseTypes"
 
 export const getWaitingRequestedCourses = async (axios: AxiosInstance, instructorId: string) => {
-    const response = await axios.get<ResponsePreviousCourseRequests>(`/instructor/course/${instructorId}/requested`)
+    const response = await axios.get<ResponsePreviousCourseRequests>(`/instructor/${instructorId}/course/requested`)
     return response.data
 }
 
