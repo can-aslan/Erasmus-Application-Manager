@@ -96,7 +96,7 @@ const EvaluateCoursesPage = () => {
     const courses = dataCourses.data;
 
     const availableCourseNames: Array<string> = courses.map((course) => {
-        return course.courseName;
+        return course.courseName!;
     });
 
     return (
