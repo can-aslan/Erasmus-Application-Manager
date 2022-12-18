@@ -39,6 +39,8 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.Wishlist;
+
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -211,16 +213,16 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public ByteArrayResource generateAndDownloadPreApproval(UUID studentId) throws Exception {
+    public byte[] generateAndDownloadPreApproval(UUID studentId) throws Exception {
         try {
-            PreApprovalForm preApprovalForm = createPreAppFromWishlist(studentId);
+            PreApprovalForm preApprovalForm = createPreAppFromWishlist(studentId, false);
             File approvalForm = fileGenerator.generatePreApprovalForm(preApprovalForm, null);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] form = fis.readAllBytes();
-            ByteArrayResource resource = new ByteArrayResource(form);
             fis.close();
 
-            return resource;
+            byte[] encoded = Base64.getEncoder().encode(form);
+            return encoded;
         } catch (Exception e) {
             throw e;
         }
@@ -229,7 +231,7 @@ public class FormService implements IFormService {
     @Override
     public void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception {
         try {
-            PreApprovalForm form = createPreAppFromWishlist(studentId);
+            PreApprovalForm form = createPreAppFromWishlist(studentId, true);
             File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
             uploadForm(approvalForm, studentId, formType);
         } catch (Exception e) {
@@ -279,7 +281,7 @@ public class FormService implements IFormService {
      * @throws Exception
      */
     @Override
-    public PreApprovalForm createPreAppFromWishlist(UUID studentId) throws Exception {
+    public PreApprovalForm createPreAppFromWishlist(UUID studentId, boolean isSavedToDatabase) throws Exception {
         try{
             Optional<Student> student = studentRepository.findByUserId(studentId);
             if (!student.isPresent()){
@@ -297,7 +299,6 @@ public class FormService implements IFormService {
             }
 
             boolean preApprovalExist = preApprovalRepository.existsByWishlistStudentId(student.get().getUser().getBilkentId());
-
             if (preApprovalExist) {
                 throw new Exception("pre approval already exists for this student");
             }
@@ -308,7 +309,11 @@ public class FormService implements IFormService {
             Student studentObj = student.get();
             PreApprovalForm newForm = new PreApprovalForm(UUID.randomUUID(), studentObj, wishlistObj, date, PreApprovalStatus.PENDING);
 
-            return preApprovalRepository.save(newForm);
+            if (isSavedToDatabase) {
+                preApprovalRepository.save(newForm);
+            }
+
+            return newForm;
         
         } catch(Exception e){
             e.printStackTrace();

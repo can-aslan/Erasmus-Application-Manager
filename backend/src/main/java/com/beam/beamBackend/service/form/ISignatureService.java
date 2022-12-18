@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.beam.beamBackend.model.Signature;
 
 public interface ISignatureService {
-    boolean uploadSignature(UUID userId, MultipartFile file) throws FileSizeLimitExceededException;
+    boolean uploadSignature(UUID userId, MultipartFile file) throws FileSizeLimitExceededException, Exception;
     byte[] downloadSignature(UUID userId) throws IOException;
     ByteArrayInputStream getSignatureFile(UUID userId) throws IOException;
     void deleteSignature(UUID userId);

@@ -16,10 +16,10 @@ public interface IFormService {
     boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException;
     byte[] downloadForm(UUID userId, FormEnum formType) throws IOException, Exception;
     boolean deleteFile(UUID userId, FormEnum formType);
-    ByteArrayResource generateAndDownloadPreApproval(UUID studentId) throws Exception;
+    byte[] generateAndDownloadPreApproval(UUID studentId) throws Exception;
     void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception;
     void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception;
-    PreApprovalForm createPreAppFromWishlist(UUID studentId) throws Exception;
+    PreApprovalForm createPreAppFromWishlist(UUID studentId, boolean isSavedToDatabase) throws Exception;
     PreApprovalForm getPreApprovalForm(Long bilkentId) throws Exception;
     PreApprovalStatus getPreApprovalStatus(Long studentId);
 }
