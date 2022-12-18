@@ -20,7 +20,7 @@ import com.beam.beamBackend.model.HostCourse;
 public interface IBilkentCourseRepository extends JpaRepository<BilkentCourse, UUID> {
     Optional<BilkentCourse> findByCourseId(UUID courseId);
     List<BilkentCourse> findByDepartment(Department department);
-    List<Object> findByApprovedCoursesUniversityId(UUID universityId);
+    // List<Object> findByApprovedCoursesUniversityId(UUID universityId);
     boolean existsByCourseCode(String courseCode);
     Optional<BilkentCourse> findByCourseCode(String courseCode);
 
@@ -51,13 +51,13 @@ public interface IBilkentCourseRepository extends JpaRepository<BilkentCourse, U
     // + " WHERE h.universityId = :uniId", nativeQuery = false)
     // List<Object> findApprovedByUniId(@Param("uniId") UUID uniId);
     
-    @Query(value = "SELECT h"
-    + " FROM BilkentCourse b"
-    + " JOIN b.approvedCourses h"
-    // + " ON a.bilkent_course_id = b.courseId"
-    // + " JOIN h.universityId"
-    // + " ON a.host_course_id = h.courseId"
-    + " WHERE h.universityId = :uniId", nativeQuery = false)
-    List<Object> findApprovedByUniId(@Param("uniId") UUID uniId);
+    // @Query(value = "SELECT h"
+    // + " FROM BilkentCourse b"
+    // + " JOIN b.approvedCourses h"
+    // // + " ON a.bilkent_course_id = b.courseId"
+    // // + " JOIN h.universityId"
+    // // + " ON a.host_course_id = h.courseId"
+    // + " WHERE h.universityId = :uniId", nativeQuery = false)
+    // List<Object> findApprovedByUniId(@Param("uniId") UUID uniId);
 
 }
