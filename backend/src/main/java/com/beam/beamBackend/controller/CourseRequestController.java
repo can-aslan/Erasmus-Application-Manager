@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.model.CourseRequest;
+import com.beam.beamBackend.request.CourseRequestRequestBody;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.ICourseRequestService;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class CourseRequestController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/request", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> requestCourse(@Valid @RequestBody CourseRequest courseRequest)
+    public ResponseEntity<Object> requestCourse(@Valid @RequestBody CourseRequestRequestBody courseRequest)
     {
         try {
             boolean responseResult = courseRequestService.requestCourse(courseRequest);

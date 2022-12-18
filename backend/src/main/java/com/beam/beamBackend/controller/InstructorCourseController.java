@@ -43,7 +43,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/{instructorId}")
+    @GetMapping("{instructorId}/course")
     public ResponseEntity<Object> getInstructorCourses(@Valid @PathVariable("instructorId") UUID instructorId) {
         try {
             List<BilkentCourse> courseList = instructorService.getInstructorCourses(instructorId);
@@ -54,7 +54,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/{instructorId}/requested")
+    @GetMapping("/{instructorId}/course/requested")
     public ResponseEntity<Object> getInstructorRequestedCourses(@Valid @PathVariable("instructorId") UUID instructorId) {
         try {
             List<CourseRequest> courseList = instructorService.getInstructorRequestedCourses(instructorId);
