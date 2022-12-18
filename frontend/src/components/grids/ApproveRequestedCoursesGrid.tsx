@@ -72,7 +72,7 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
                     <Card>
                         <Flex direction={"row"} gap={"sm"}>
                             <Flex direction={"column"} gap={"sm"}>
-                                <TextInput disabled label={"asd"} value={course.name + ` ${course.hostCode}`}></TextInput>
+                                <TextInput disabled label={course.hostUniName} value={course.name + ` ${course.hostCode}`}></TextInput>
                                 <Button leftIcon={<IconBook2 />} color={'blue'}><Anchor target="_blank" href={course.syllabusLink} span>{"Course Syllabus"}</Anchor></Button>
                                 <Button color={'red'} onClick={() => { setRejectionFeedbackOpened(true); setSelectedRequestId(course.requestId!) }}>Reject</Button>
                             </Flex>

@@ -90,7 +90,7 @@ export type BilkentCourse = Course & {
 export type HostCourse = Course & {
     hostName: string,
     courseName?: string,
-    courseApproval?: ApprovalStatus
+    courseApproval?: ApprovalStatus | null
 }
 
 export type CourseWishlist = {
@@ -163,8 +163,10 @@ export type CourseRequest = {
     hostEcts: string,
     destination?: CourseRequestDestination | null,
     status?: ApprovalStatus | null
-
+    feedback?: string,
+    hostUniName: string
 }
+
 export type StudentAssociatedCourse = Course & {
     studentUuid: string,
     studentName: string,
