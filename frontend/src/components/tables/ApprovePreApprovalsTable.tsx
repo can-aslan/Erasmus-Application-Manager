@@ -31,12 +31,14 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         //Approve the selected student's wishlist
         // Close pop-up
         setPreApprovalDetailsOpened(false);
+        // TODO: Add approve mutation, invalidate query
     }
     const rejectPreApproval = (formID: string) => {
         // Reject the selected student's wishlist
         // Close pop-up
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
+        // TODO: Add reject mutation, invalidate query
     }
 
     // Below are mock data, they will be changed.
@@ -114,7 +116,6 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                 </Flex>
                 <Center>
                     <Table striped withBorder withColumnBorders>
-
                         <thead>
                             <tr>
                                 <th></th>
@@ -139,7 +140,20 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
             </Modal>
             <Flex direction="column" gap={"sm"}>
                 <Flex direction="row" gap={"xl"}>
-                    <TextInput placeholder="Seach by name or ID" value={searchPreAppInput} onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}></TextInput><Select placeholder="Filter by status" value={selectedApprovalStatusFilter} onChange={(value) => { changeFilter(value, searchPreAppInput) }} clearable allowDeselect data={["Approved", "Pending", "Rejected"]}></Select>
+                    <TextInput 
+                        placeholder="Seach by name or ID" 
+                        value={searchPreAppInput} 
+                        onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}
+                        />
+                    <Select 
+                        placeholder="Filter by status" 
+                        value={selectedApprovalStatusFilter} 
+                        onChange={(value) => { changeFilter(value, searchPreAppInput) }} 
+                        clearable 
+                        allowDeselect 
+                        data={["Approved", "Pending", "Rejected"]}
+                    />
+
                 </Flex>
                 <Table striped withBorder withColumnBorders>
                     <thead>
@@ -153,7 +167,9 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                     </thead>
                     <tbody>{pendingApprovalRows}</tbody>
                 </Table>
-            </Flex></>);
+            </Flex>
+        </>
+    );
 
     function getPendingApprovalRows() {
         return tempPendingApprovalList.map((element) => (
@@ -175,12 +191,16 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                             >
                             {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
                         </Button>
-                    </Center></td>
-                    <td>{""} 
+                    </Center>
+                </td>
+                <td>{""} 
                     <Center>
                         <Button onClick={()=>{downloadPreApproval()}}>Download</Button>    
-                    </Center></td>
-                <td>{element.rejectionFeedback}</td>
+                    </Center>
+                </td>
+                <td>
+                    {element.rejectionFeedback}
+                </td>
             </tr>
         ));
     }
