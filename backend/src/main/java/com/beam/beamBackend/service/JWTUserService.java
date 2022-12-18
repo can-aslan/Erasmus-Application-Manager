@@ -1,23 +1,18 @@
 package com.beam.beamBackend.service;
 
-import java.util.Collection;
 import java.util.Collections;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.repository.IAccountRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class JWTUserService implements UserDetailsService {
+public class JWTUserService implements IJWTUserService {
     private final IAccountRepository accountRepository;
 
     @Override
@@ -36,6 +31,7 @@ public class JWTUserService implements UserDetailsService {
         }
     }
 
+    @Override
     public UserDetails loadUserByUsername(User appUser) throws UsernameNotFoundException {
         try {
         

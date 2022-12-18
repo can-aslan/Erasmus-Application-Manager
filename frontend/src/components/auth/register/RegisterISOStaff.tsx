@@ -9,12 +9,8 @@ import { useCourses } from "../../../hooks/useCourses"
 import { BilkentCourse, NewStaff, UserEnum } from "../../../types"
 import { DEPARTMENTS, FACULTIES } from "../../../utils/constants"
 
-const RegisterInstructorTab = () => {
+const RegisterISOStaff = () => {
     const axiosSecure = useAxiosSecure()
-    const [department, setDepartment] = useState(DEPARTMENTS[0].label)
-    const [faculty, setFaculty] = useState(FACULTIES[0].label)
-
-    const { data: bilkentCourses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses(axiosSecure)
 
     const form = useForm({
         initialValues: {
@@ -33,12 +29,10 @@ const RegisterInstructorTab = () => {
 
     const handleRegister = () => {
         const validation = form.validate()
-        if (!validation.hasErrors && department && faculty) {
+        if (!validation.hasErrors) {
             const user: NewStaff = {
                 ...form.values,
-                userType: UserEnum.Instructor,
-                department,
-                faculty
+                userType: UserEnum.ISOStaff
             }
             mutateRegister(user)
         }
@@ -72,20 +66,9 @@ const RegisterInstructorTab = () => {
                 label="BilkentID"
                 {...form.getInputProps('bilkentId')}
             />
-            <Select
-                label="Select faculty"
-                placeholder="Faculties"
-                data={FACULTIES}
-                value={faculty}
-            />
-            <Select
-                label="Select department"
-                placeholder="Departments"
-                data={DEPARTMENTS}
-            />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>
     );
 }
  
-export default RegisterInstructorTab;
+export default RegisterISOStaff;

@@ -5,38 +5,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.CourseRequestStatus;
-import com.beam.beamBackend.enums.EvalStatus;
 import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.BilkentCourse;
-import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.model.EvaluationForm;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.InstructorCourse;
-import com.beam.beamBackend.model.Staff;
-import com.beam.beamBackend.model.UniEvaluationForm;
-import com.beam.beamBackend.model.User;
-import com.beam.beamBackend.repository.CourseEvaluationRepository;
 import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
-import com.beam.beamBackend.repository.ICourseEvalRepository;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
 import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IInstructorCourseRepository;
-import com.beam.beamBackend.repository.IStaffRepository;
-import com.beam.beamBackend.repository.IUniversityEvalRepository;
-import com.beam.beamBackend.repository.UniEvaluationRepository;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
-import com.beam.beamBackend.response.RCourseEval;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
-import com.beam.beamBackend.response.RUniEval;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -46,7 +31,7 @@ public class InstructorCourseService implements ICourseService {
     private final IBilkentCourseRepository bilkentCourseRepo;
     private final ICourseService courseService;
     private final IAccountRepository userRepo;
-    private final IStaffRepository staffRepository;
+    // private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
 
     public RInstructorCourseAdd addCourseToInstructor(InstructorCourseAdd instructorCourses) throws Exception {

@@ -3,20 +3,16 @@ package com.beam.beamBackend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.model.Country;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.request.AddUni;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.UniversityCountryService;
-
+import com.beam.beamBackend.service.IUniversityCountryService;
 import jakarta.validation.Valid;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +27,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/general")
 public class UniversityCountryController {
-
-    private final UniversityCountryService uniCountryService;
+    private final IUniversityCountryService uniCountryService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/university")

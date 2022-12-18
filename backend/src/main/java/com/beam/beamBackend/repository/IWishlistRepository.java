@@ -1,5 +1,6 @@
 package com.beam.beamBackend.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,8 @@ public interface IWishlistRepository extends JpaRepository<Wishlist, UUID> {
     
     Optional<Wishlist> findByStudentId(Long studentId);
     boolean existsByStudentId(Long studentId);
+
+    List<Wishlist> findAllByStatusNot(CourseWishlistStatus status);
 
     @Modifying
     @Query("UPDATE Wishlist w SET w.status = :status WHERE w.studentId = :studentId")
