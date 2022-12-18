@@ -186,10 +186,9 @@ export type PreApprovalForm = {
     formUuid: string,
     studentUuid: string,
     studentName: string,
-    studentID: string,
-    file: string,
-    rejectionFeedback: string,
-    status?: 'Rejected' | 'Pending' | 'Approved',
+    bilkentId: string,
+    rejectionFeedback?: string,
+    status?: 'COORDINATOR_APPROVED' | 'COORDINATOR_REJECTED' | 'PENDING' | 'FAC_APPROVED' | 'WAITING',
     preApprovalFormItems: Array<PreApprovalFormItemType>
 }
 
