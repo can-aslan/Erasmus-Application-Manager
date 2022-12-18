@@ -72,7 +72,7 @@ export type Course = {
     ects: number,
     courseId?: string | null,
     department?: string,
-    syllabus?:string,
+    syllabus?: string,
     webPage?: string
     instructorId?: string,
     universityId?: string,
@@ -293,10 +293,10 @@ export type Country = {
 }
 
 export enum Form {
-    PRE_APPROVAL="PRE_APPROVAL",
-    TRANSCRIPT="TRANSCRIPT",
-    LEARNING_AGREEMENT="LEARNING_AGREEMENT",
-    SIGNATURE="SIGNATURE",
+    PRE_APPROVAL = "PRE_APPROVAL",
+    TRANSCRIPT = "TRANSCRIPT",
+    LEARNING_AGREEMENT = "LEARNING_AGREEMENT",
+    SIGNATURE = "SIGNATURE",
 }
 
 export type InstructorCourseRequestChange = {

@@ -10,7 +10,7 @@ export type ResponseUser = Response<User>
 
 // Wishlist
 export type ResponseStudentCourseWishlist = Response<ExistingCourseWishlist>
-export type ResponseAllStudentCourseWishlist = Response<Array<StudentAssociatedCourse>>
+export type ResponseAllStudentCourseWishlist = Response<Array<ExistingCourseWishlist>>
 export type ResponseStudentSpecificCourseWishlist = Response<StudentAssociatedWishlist>
 
 // Preapproval form
