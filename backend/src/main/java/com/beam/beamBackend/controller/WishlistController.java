@@ -24,16 +24,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/wishlist")
-public class CourseWishlistController {
+public class WishlistController {
     
-    private final IWishlistService courseWishlistService;
+    private final IWishlistService wishlistService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping(path = "/fetch")
     public ResponseEntity<Object> getAllWishlists()
     {
         try {
-            List<Wishlist> responseResult = courseWishlistService.getAllWishlists();
+            List<Wishlist> responseResult = wishlistService.getAllWishlists();
             
             return 
             responseResult != null ?
@@ -52,7 +52,7 @@ public class CourseWishlistController {
     public ResponseEntity<Object> getAllWishlistsOfCoordinator(@PathVariable("coordinatorId") UUID coordinatorId)
     {
         try {
-            List<Wishlist> responseResult = courseWishlistService.getAllWishlistsOfCoordinator(coordinatorId);
+            List<Wishlist> responseResult = wishlistService.getAllWishlistsOfCoordinator(coordinatorId);
             
             return 
             responseResult != null ?
@@ -72,9 +72,9 @@ public class CourseWishlistController {
     {
         try {
             // Check if the student has a wishlist, if not open a new wishlist
-            courseWishlistService.createEmptyWishlistIfNew(studentId);
+            wishlistService.createEmptyWishlistIfNew(studentId);
             
-            Wishlist responseResult = courseWishlistService.getWishlistByStudentId(studentId);
+            Wishlist responseResult = wishlistService.getWishlistByStudentId(studentId);
             
             return 
             responseResult != null ?
@@ -88,32 +88,12 @@ public class CourseWishlistController {
         }
     }
 
-    /*
-    @PostMapping(path = "/submit")
-    public ResponseEntity<Object> submitWishlist(@Valid @RequestBody Wishlist courseWishlist)
-    {
-        try {
-            boolean responseResult = courseWishlistService.submitWishlist(courseWishlist);
-            
-            return 
-            responseResult ?
-                Response.create("course wishlist submission successful", HttpStatus.OK, responseResult)
-                :
-                Response.create("course wishlist submission unsuccessful", HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return Response.create("course wishlist submission failed", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    */
-
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/submit/{studentId}")
     public ResponseEntity<Object> submitWishlist(@PathVariable("studentId") Long studentId)
     {
         try {
-            boolean responseResult = courseWishlistService.submitWishlist(studentId);
+            boolean responseResult = wishlistService.submitWishlist(studentId);
             
             return 
             responseResult ?
@@ -133,24 +113,24 @@ public class CourseWishlistController {
     {
         try {
             // Check if the student has a wishlist, if not open a new wishlist
-            courseWishlistService.createEmptyWishlistIfNew(studentId);
+            wishlistService.createEmptyWishlistIfNew(studentId);
             
             // Convert WishlistItemRequest to WishlistItem
-            WishlistItem item = WishlistItem.toWishlistItem(wishlistItemRequest, UUID.randomUUID(), studentId, courseWishlistService.getWishlistByStudentId(studentId));
+            WishlistItem item = WishlistItem.toWishlistItem(wishlistItemRequest, UUID.randomUUID(), studentId, wishlistService.getWishlistByStudentId(studentId));
 
             // Execute addWishlistItem operation
-            boolean responseResult = courseWishlistService.addWishlistItem(studentId, item);
+            boolean responseResult = wishlistService.addWishlistItem(studentId, item);
             
             UUID addedWishlistItemUUID = null;
 
             // If the wishlist item is added successfully
             if (responseResult) {
                 // Get the added wishlist item's UUID
-                addedWishlistItemUUID = courseWishlistService.getWishlistItemUUID(studentId, wishlistItemRequest.getBilkentCourse());
+                addedWishlistItemUUID = wishlistService.getWishlistItemUUID(studentId, wishlistItemRequest.getBilkentCourse());
             
                 // Save Wishlist Item Mappings
                 for (WishlistItemMapping wim : wishlistItemRequest.getMappings()) {
-                    courseWishlistService.addWishlistItemMapping(studentId, item.getBilkentCourse(), wim);
+                    wishlistService.addWishlistItemMapping(studentId, item.getBilkentCourse(), wim);
                 }
             }
 
@@ -171,7 +151,7 @@ public class CourseWishlistController {
     public ResponseEntity<Object> deleteWishlistItem(@PathVariable("studentId") Long studentId, @PathVariable("wishlistItemUUID") UUID wishlistItemUUID)
     {
         try {
-            boolean responseResult = courseWishlistService.removeWishlistItem(studentId, wishlistItemUUID);
+            boolean responseResult = wishlistService.removeWishlistItem(studentId, wishlistItemUUID);
             
             return 
             responseResult ?
