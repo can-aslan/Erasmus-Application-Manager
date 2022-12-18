@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 
-import io.micrometer.common.lang.NonNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CoordinatorWishlistApproval {
-    @NonNull
+    @NotNull
     private UUID coordinatorUserId;
-    @NonNull
+
+    @NotNull
     private Long studentBilkentId;
-    @NonNull
+
+    @NotNull
     private CourseWishlistStatus status;
 
     private String feedback;
