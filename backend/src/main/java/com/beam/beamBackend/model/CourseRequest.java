@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
+import com.beam.beamBackend.request.CourseRequestRequestBody;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -65,6 +66,10 @@ public class CourseRequest {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CourseRequestStatus status;
+    
+    // @NotBlank
+    @Column(name = "hostUniName")
+    private String hostUniName;
 
     public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
@@ -76,17 +81,26 @@ public class CourseRequest {
         @JsonProperty("webpage") String webpage,
         @JsonProperty("syllabusLink") String syllabusLink,
         @JsonProperty("destination") CourseRequestDestination destination,
-        @JsonProperty("status") CourseRequestStatus status
+        @JsonProperty("status") CourseRequestStatus status,
+        @JsonProperty("hostUniName") String hostUniName        
     ) {
+
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
         this.studentId = studentId;
-        this.hostEcts = hostEcts;
         this.hostCode = hostCode;
+        this.hostEcts = hostEcts;
         this.name = name;
         this.bilkentCode = bilkentCode;
         this.webpage = webpage;
         this.syllabusLink = syllabusLink;
         this.destination = (destination == null) ? CourseRequestDestination.COORDINATOR : destination;
         this.status = (status == null) ? CourseRequestStatus.PENDING : status;
+        this.hostUniName = hostUniName;
+    }
+
+    public static CourseRequest toCourseRequest(CourseRequestRequestBody courseRequestBody, String hostUniName) {
+        return new CourseRequest(null, courseRequestBody.getStudentId(), courseRequestBody.getHostCode(), courseRequestBody.getHostEcts(), 
+                courseRequestBody.getName(), courseRequestBody.getBilkentCode(), courseRequestBody.getWebpage(), courseRequestBody.getSyllabusLink(),
+                courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName);
     }
 }
