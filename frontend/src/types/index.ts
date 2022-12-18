@@ -173,24 +173,12 @@ export type StudentAssociatedCourse = Course & {
     approvalStatus: 'rejected' | 'pending' | 'approved',
 }
 
-export type PreApprovalFormItemType = {
-    courseCode: string,
-    courseName: string,
-    ectsCredits: string,
-    bilkentCourseInfo: string,
-    bilkentCredit: string,
-    electiveEquivalent: string
-}
-
 export type PreApprovalForm = {
-    formUuid: string,
-    studentUuid: string,
-    studentName: string,
-    studentID: string,
-    file: string,
-    rejectionFeedback: string,
-    status?: 'Rejected' | 'Pending' | 'Approved',
-    preApprovalFormItems: Array<PreApprovalFormItemType>
+    id: string,
+    student: Student
+    wishlist: WishlistItemsInterface
+    date: string
+    preApprovalStatus?: 'COORDINATOR_APPROVED' | 'COORDINATOR_REJECTED' | 'PENDING' | 'FAC_APPROVED' | 'WAITING',
 }
 
 export type CoordinatorAssociatedStudents = {
