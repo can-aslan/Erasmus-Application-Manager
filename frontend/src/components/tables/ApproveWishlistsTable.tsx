@@ -119,6 +119,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
                     </Button>
                 </Center>
             </td>
+            <td>{wishlist.feedback}</td>
         </tr>
     ));
 
@@ -174,6 +175,7 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
                     <tr>
                         <th>Student ID</th>
                         <th>View Wishlist</th>
+                        <th>Rejection Feedback</th>
                     </tr>
                 </thead>
                 <tbody>

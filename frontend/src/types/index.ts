@@ -121,7 +121,8 @@ export type CourseWishlistItemMapping = {
 export type ExistingCourseWishlist = {
     studentId: string,
     status: ApprovalStatus,
-    items: Array<WishlistItemsInterface>
+    items: Array<WishlistItemsInterface>,
+    feedback?: string | null
 }
 
 export interface WishlistItemsInterface {
