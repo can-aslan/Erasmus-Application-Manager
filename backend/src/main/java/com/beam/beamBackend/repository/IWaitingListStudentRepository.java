@@ -1,4 +1,5 @@
 package com.beam.beamBackend.repository;
+
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +10,6 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @Repository
-public interface IWaitingListStudentRepository extends JpaRepository<WaitingListStudent, UUID>{
+public interface IWaitingListStudentRepository extends JpaRepository<WaitingListStudent, UUID> {
     Optional<WaitingListStudent> findByStudentUserBilkentId(Long studentBilkentId);
-
 }
