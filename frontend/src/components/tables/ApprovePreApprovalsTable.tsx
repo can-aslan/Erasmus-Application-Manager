@@ -24,7 +24,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [selectedPreApproval, setSelectedPreApproval] = useState<Array<PreApprovalFormItemType>>();
 
     const viewPreApproval = (formID: string) => {
-        setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems!);
+        setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems);
         setPreApprovalDetailsOpened(true);
     }
     const approvePreApproval = (formID: string) => {
@@ -90,8 +90,12 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     return (
 
         <>
-            <RejectionFeedbackModal rejectionFeedbackOpened={rejectionFeedbackOpened} rejectionFeedback={rejectionFeedback} setRejectionFeedbackOpened={setRejectionFeedbackOpened} setRejectionFeedback={setRejectionFeedback}></RejectionFeedbackModal>
-
+            <RejectionFeedbackModal 
+                rejectionFeedbackOpened={rejectionFeedbackOpened} 
+                rejectionFeedback={rejectionFeedback} 
+                setRejectionFeedbackOpened={setRejectionFeedbackOpened} 
+                setRejectionFeedback={setRejectionFeedback}
+            />
             <Modal
                 opened={preApprovalDetailsOpened}
                 size={"auto"}
@@ -99,28 +103,34 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                 onClose={() => setPreApprovalDetailsOpened(false)}
             >
                 <Flex direction="column">
-                    <Flex direction="row" gap="xs"><Text fw={700}>Student Name:</Text> <Text> {selectedStudentName}</Text></Flex>
-                    <Flex direction="row" gap="xs"><Text fw={700}>Student ID:</Text> <Text> {selectedStudentID}</Text></Flex>
+                    <Flex direction="row" gap="xs">
+                        <Text fw={700}>Student Name:</Text>
+                         <Text> {selectedStudentName}</Text>
+                    </Flex>
+                    <Flex direction="row" gap="xs">
+                        <Text fw={700}>Student ID:</Text>
+                        <Text> {selectedStudentID}</Text>
+                    </Flex>
                 </Flex>
+                <Center>
+                    <Table striped withBorder withColumnBorders>
 
-                <Center><Table striped withBorder withColumnBorders>
-
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Course Code (Host)</th>
-                            <th>Course Name (Host)</th>
-                            <th>ECTS Credits</th>
-                            <th>Course Code and Name for a Required Course,
-                                Elective Group Name for an Elective Requirement (Bilkent)
-                            </th>
-                            <th>Credits (Bilkent)</th>
-                            <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
-                        </tr>
-                    </thead>
-                    <tbody>{preApprovalRows}</tbody>
-
-                </Table></Center>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Course Code (Host)</th>
+                                <th>Course Name (Host)</th>
+                                <th>ECTS Credits</th>
+                                <th>Course Code and Name for a Required Course,
+                                    Elective Group Name for an Elective Requirement (Bilkent)
+                                </th>
+                                <th>Credits (Bilkent)</th>
+                                <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
+                            </tr>
+                        </thead>
+                        <tbody>{preApprovalRows}</tbody>
+                    </Table>
+                </Center>
                 <Space h="xs"></Space>
                 <Group position="right">
                     {showApprove && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
