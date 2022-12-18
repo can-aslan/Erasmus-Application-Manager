@@ -169,9 +169,6 @@ public class AccountService {
             String generatedPassword = StudentPlacementService.generatePsw();
             
             User newUser = addUser(new User(UUID.randomUUID(), staff.getName(), staff.getSurname(), staff.getEmail(), staff.getBilkentId(), generatedPassword, staff.getUserType()));        
-            
-            // set unhashed password to user so that frontend can show it
-            newUser.setPassword(generatedPassword);
 
             // check if staff has necessary info
             if (newUser.getUserType() == UserType.COORDINATOR || newUser.getUserType() == UserType.INSTRUCTOR) {
@@ -200,6 +197,8 @@ public class AccountService {
                 }
             }
 
+            // set unhashed password to user so that frontend can show it
+            savedStaff.getUser().setPassword(generatedPassword);
             return new RRegisterStaff(savedStaff, responseInstructorSavedCourses);
         } catch (Exception e) {
             throw e;
