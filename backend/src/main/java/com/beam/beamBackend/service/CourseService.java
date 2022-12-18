@@ -1,5 +1,6 @@
 package com.beam.beamBackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,6 +14,9 @@ import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.ApprovedCourse;
+import com.beam.beamBackend.request.HostCourseRequestBody;
+import com.beam.beamBackend.response.RHostCourse;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -64,25 +68,27 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public HostCourse addHostCourse(HostCourse hostCourse) throws Exception {        
+    public RHostCourse addHostCourse(HostCourseRequestBody hostCourse) throws Exception {        
 
         try {
-            boolean universityExists = uniRepo.existsByName(hostCourse.getUniName());
-            System.out.println("is university valid: " + universityExists);
+            Optional<University> university = uniRepo.findById(hostCourse.getUniversityId());
+            System.out.println("is university valid: " + university);
 
             // if university does not exist don't save course
-            if (!universityExists) {
+            if (!university.isPresent()) {
                 throw new Exception("not a valid university");
             }
 
-            boolean courseExists = hostCourseRepo.existsByCourseCodeAndUniName(hostCourse.getCourseCode(), hostCourse.getUniName());
+            boolean courseExists = hostCourseRepo.existsByCourseCodeAndUniversityId(hostCourse.getCourseCode(), hostCourse.getUniversityId());
 
             // if course is already saved don't save it again
             if (courseExists) {
                 throw new Exception("course already exists");
             }            
 
-            return hostCourseRepo.save(hostCourse);
+            HostCourse hostCourseDb = HostCourse.toHostCourse(hostCourse, university.get());
+            hostCourseDb = hostCourseRepo.save(hostCourseDb);
+            return new RHostCourse(hostCourseDb);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -90,7 +96,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public HostCourse getHostCourseById(UUID courseId) throws Exception {        
+    public RHostCourse getHostCourseById(UUID courseId) throws Exception {        
 
         try {
             Optional<HostCourse> hostCourse = hostCourseRepo.findByCourseId(courseId);
@@ -99,25 +105,30 @@ public class CourseService implements ICourseService {
                 throw new Exception("course not found");
             }
 
-            return hostCourse.get();
+            return new RHostCourse(hostCourse.get());
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
 
-    // @Override
-    // public List<HostCourse> getHostCourseByUniId(UUID uniId) throws Exception {
+    @Override
+    public List<RHostCourse> getHostCourseByUniId(UUID uniId) throws Exception {
 
-    //     try {
-    //         List<HostCourse> hostCourse = hostCourseRepo.findByUniversityId(uniId);
+        try {
+            List<HostCourse> hostCourse = hostCourseRepo.findByUniversityId(uniId);
+            List<RHostCourse> responseList = new ArrayList<RHostCourse>();
 
-    //         return hostCourse;
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    // }
+            for (HostCourse h : hostCourse) {
+                responseList.add(new RHostCourse(h));
+            }
+
+            return responseList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
     
     @Override
     public List<BilkentCourse> getBilkentCourseByDepartment(Department department) throws Exception {        
@@ -143,9 +154,42 @@ public class CourseService implements ICourseService {
     }
     
     @Override
-    public List<HostCourse> getAllHostCourse() throws Exception {    
+    public List<RHostCourse> getAllHostCourse() throws Exception {    
         try {
-            return hostCourseRepo.findAll();
+            List<HostCourse> hostCourse = hostCourseRepo.findAll();
+            List<RHostCourse> responseList = new ArrayList<RHostCourse>();
+
+            for (HostCourse h : hostCourse) {
+                responseList.add(new RHostCourse(h));
+            }
+
+            return responseList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public RHostCourse addHostCourse(HostCourse hostCourse) throws Exception {
+        try {
+            Optional<University> university = uniRepo.findById(hostCourse.getUniversity().getId());
+            System.out.println("is university valid: " + university);
+
+            // if university does not exist don't save course
+            if (!university.isPresent()) {
+                throw new Exception("not a valid university");
+            }
+
+            boolean courseExists = hostCourseRepo.existsByCourseCodeAndUniversityId(hostCourse.getCourseCode(), hostCourse.getUniversity().getId());
+
+            // if course is already saved don't save it again
+            if (courseExists) {
+                throw new Exception("course already exists");
+            }            
+
+            HostCourse hostCourseDb = hostCourseRepo.save(hostCourse);
+            return new RHostCourse(hostCourseDb);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

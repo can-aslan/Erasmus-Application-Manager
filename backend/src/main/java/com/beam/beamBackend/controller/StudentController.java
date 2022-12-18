@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.request.StudentRequest;
+import com.beam.beamBackend.response.RHostCourse;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.IStudentService;
 import jakarta.validation.Valid;
@@ -76,7 +77,7 @@ public class StudentController {
     @GetMapping("/{bilkentId}/uni/course")
     public ResponseEntity<Object> getStudentUniCourses(@Valid @PathVariable("bilkentId") Long bilkentId) {
         try {
-            List<HostCourse> courses = studentService.getHostCoursesOfStudentHostUni(bilkentId);
+            List<RHostCourse> courses = studentService.getHostCoursesOfStudentHostUni(bilkentId);
             return Response.create("uni id of student is retrieved", HttpStatus.OK, courses);
         } catch (Exception e) {
             return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), 499); // might change later
