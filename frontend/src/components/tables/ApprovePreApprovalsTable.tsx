@@ -7,7 +7,7 @@ import { approveSubmittedPreApprovalCoord, rejectSubmittedPreApprovalCord } from
 import { downloadForm } from "../../api/FileService";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useUser } from "../../provider/UserProvider";
-import { Form, PreApprovalForm, PreApprovalFormItemType } from "../../types";
+import { Form, PreApprovalForm, WishlistItemsInterface } from "../../types";
 import { downloadBlobFile } from "../../utils/helpers";
 import RejectionFeedbackModal from "../modals/RejectionFeedbackModal";
 
@@ -31,11 +31,11 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [tempPendingApprovalList, setTempPendingApprovalList] = useState(preApprovals);
     const [selectedApprovalStatusFilter, setSelectedApprovalStatusFilter] = useState<string | null>(null);
     const [searchPreAppInput, setSearchPreAppInput] = useState('');
-    const [selectedPreApproval, setSelectedPreApproval] = useState<Array<PreApprovalFormItemType>>();
+    const [selectedPreApproval, setSelectedPreApproval] = useState<PreApprovalForm>();
 
     const { mutate: approvePreApprovalMutate } = useMutation({
         mutationKey: ['approvePreApprovalMutation'],
-        mutationFn: (studentId: string) => approveSubmittedPreApprovalCoord(axiosSecure, user.id, ""),
+        mutationFn: (studentId: string) => approveSubmittedPreApprovalCoord(axiosSecure, user.id, studentId),
         onSuccess: () =>{
             queryClient.invalidateQueries(['getPreApprovalsCoord'])
         }
@@ -43,7 +43,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
 
     const { mutate: rejectPreApprovalMutate } = useMutation({
         mutationKey: ['rejectPreApprovalMutation'],
-        mutationFn: (studentId: string) => rejectSubmittedPreApprovalCord(axiosSecure, user.id, ""),
+        mutationFn: (studentId: string) => rejectSubmittedPreApprovalCord(axiosSecure, user.id, studentId),
         onSuccess: () =>{
             queryClient.invalidateQueries(['getPreApprovalsCoord'])
         }
@@ -56,38 +56,36 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     })
 
     const viewPreApproval = (formID: string) => {
-        setSelectedPreApproval(preApprovals.find(element => element.id === formID)?.preApprovalFormItems);
+        setSelectedPreApproval(preApprovals.find(element => element.id === formID));
         setPreApprovalDetailsOpened(true);
     }
-    const approvePreApproval = (formID: string) => {
-        //Approve the selected student's wishlist
-        approvePreApprovalMutate("") // TODO:
+    const approvePreApproval = () => {
+        // Approve the selected student's wishlist
+        approvePreApprovalMutate(selectedStudentID);
 
         // Close pop-up
         setPreApprovalDetailsOpened(false);
     }
-    const rejectPreApproval = (formID: string) => {
+    const rejectPreApproval = () => {
         // Reject the selected student's wishlist
-        rejectPreApprovalMutate("")
+        rejectPreApprovalMutate(selectedStudentID);
 
         // Close pop-up
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
     }
-
-    // Below are mock data, they will be changed.
-    //------------------------------------------ Mock Data Starts ----------------------------------------------------------------
-
-    // const preApprovalList = [
-    //     { courseCode: "X_400614", courseName: "Data Structures and Algorithms", ectsCredit: "6.0", bilkentCourseInfo: "CS473 - Algorithms I", bilkentCredits: "3", electiveEquivalent: "" },
-    //     { courseCode: "L_GCBAALG003", courseName: "Imagining the Dutch: themes in Dutch History", ectsCredit: "6.0", bilkentCourseInfo: "Arts Core Elective", bilkentCredits: "3", electiveEquivalent: "" },
-    //     { courseCode: "L_AABAALG056", courseName: "Amsterdam: A Historical Introduction", ectsCredit: "6.0", bilkentCourseInfo: "General Elective", bilkentCredits: "3", electiveEquivalent: "" },
-    //     { courseCode: "X_405067", courseName: "Operating Systems", ectsCredit: "6.0", bilkentCourseInfo: "CS342 - Operating Systems", bilkentCredits: "4", electiveEquivalent: "" },
-    //     { courseCode: "X_401020", courseName: "Statistical Methods", ectsCredit: "6.0", bilkentCourseInfo: "Technical Elective", bilkentCredits: "3", electiveEquivalent: "MATH 260" },
-
-    // ];
-    //------------------------------------------ Mock Data Ends ----------------------------------------------------------------
-
+    function getPreApprovalRows() {
+        return selectedPreApproval?.wishlist?.mappings?.map((element) => (
+            <tr key={element.hostCourse}>
+                <td>{selectedPreApproval.wishlist.mappings.indexOf(element) + 1}</td>
+                <td>{element.hostCourse}</td>
+                <td>{element.hostName}</td>
+                <td>{element.ects}</td>
+                <td>{selectedPreApproval.wishlist.bilkentCourse + selectedPreApproval.wishlist.bilkentName}</td>
+                <td>{selectedPreApproval.wishlist.bilkentCredits}</td>
+            </tr>
+        ));
+    }
     const preApprovalRows = getPreApprovalRows();
     const pendingApprovalRows = getPendingApprovalRows();
 
@@ -103,17 +101,17 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const searchPreApproval = (query: string, filter: string | null) => {
         if (query !== '') {
             if (filter === null) {
-                setTempPendingApprovalList(preApprovals.filter((student) => student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query) || student.rejectionFeedback.toLowerCase().includes(query.toLowerCase())));
+                setTempPendingApprovalList(preApprovals.filter((student) => (student.student.user.name + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)));
             }
             else {
-                setTempPendingApprovalList(preApprovals.filter((student) => (student.studentName.toLowerCase().includes(query.toLowerCase()) || student.studentID.toString().includes(query) || student.rejectionFeedback.toLowerCase().includes(query.toLowerCase())) && student.status === filter));
+                setTempPendingApprovalList(preApprovals.filter((student) => ((student.student.user.name + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)) && student.preApprovalStatus === filter));
             }
         }
         else {
             if (filter === null) {
                 setTempPendingApprovalList(preApprovals);
             } else {
-                setTempPendingApprovalList(preApprovals.filter((student) => student.status === filter));
+                setTempPendingApprovalList(preApprovals.filter((student) => student.preApprovalStatus === filter));
             }
 
         }
@@ -168,8 +166,8 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                 </Center>
                 <Space h="xs"></Space>
                 <Group position="right">
-                    {showApprove && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
-                    {showReject && <Button color={'red'} onClick={() => { rejectPreApproval(selectedStudentID) }}>Reject</Button>}
+                    {showApprove && <Button color={'green'} onClick={() => { approvePreApproval() }}>Approve</Button>}
+                    {showReject && <Button color={'red'} onClick={() => { rejectPreApproval() }}>Reject</Button>}
                 </Group>
             </Modal>
             <Flex direction="column" gap={"sm"}>
@@ -185,7 +183,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                         onChange={(value) => { changeFilter(value, searchPreAppInput) }} 
                         clearable 
                         allowDeselect 
-                        data={["Approved", "Pending", "Rejected"]}
+                        data={["COORDINATOR_APPROVED", "PENDING", "COORDINATOR_REJECTED"]}
                     />
 
                 </Flex>
@@ -196,7 +194,6 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                             <th>Student ID</th>
                             <th>View PreApproval</th>
                             <th>Download PreApproval</th>
-                            <th>Rejection Feedback</th>
                         </tr>
                     </thead>
                     <tbody>{pendingApprovalRows}</tbody>
@@ -208,52 +205,35 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     function getPendingApprovalRows() {
         return tempPendingApprovalList.map((element) => (
             <>
-                <tr key={element.studentName}>
-                    <td>{element.studentName}</td>
-                    <td>{element.studentID}</td>
+                <tr key={element.student.user.id}>
+                    <td>{element.student.user.name + " " + element.student.user.surname}</td>
+                    <td>{element.student.user.bilkentId}</td>
                     <td>{""}
                         <Center>
                             <Button sx={{ width: "99%" }} 
-                                leftIcon={element.status == "Approved" ? <IconCheck /> : element.status == "Pending" ? <IconSearch /> : <IconX />} 
-                                color={element.status == "Approved" ? "green" : element.status == "Pending" ? "blue" : "red"} 
+                                leftIcon={element.preApprovalStatus == "COORDINATOR_APPROVED" ? <IconCheck /> : element.preApprovalStatus == "PENDING" ? <IconSearch /> : <IconX />} 
+                                color={element.preApprovalStatus == "COORDINATOR_APPROVED" ? "green" : element.preApprovalStatus == "PENDING" ? "blue" : "red"} 
                                 onClick={() => {
-                                    setSelectedStudentName(element.studentName);
-                                    setSelectedStudentID(element.studentID);
+                                    setSelectedStudentName(element.student.user.name + " " + element.student.user.surname);
+                                    setSelectedStudentID(element.student.user.bilkentId);
                                     viewPreApproval(element.id);
-                                    setShowApprove(element.status == "Pending" || element.status == "Rejected");
-                                    setShowReject(element.status == "Approved" || element.status == "Pending");
+                                    setShowApprove(element.preApprovalStatus == "PENDING" || element.preApprovalStatus == "COORDINATOR_REJECTED");
+                                    setShowReject(element.preApprovalStatus == "COORDINATOR_APPROVED" || element.preApprovalStatus == "PENDING");
                                 }}
                             >
-                                {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
+                                {(element.preApprovalStatus == "COORDINATOR_APPROVED") || (element.preApprovalStatus == "COORDINATOR_REJECTED") ? "Change Decision" : "View"}
                             </Button>
                         </Center>
                     </td>
                     <td>
                         <Center>
-                            <Button onClick={(e) => downloadPreApproval(element.studentID) }>
+                            <Button onClick={(e) => downloadPreApproval(element.student.user.bilkentId) }>
                                 Download
                             </Button>    
                         </Center>
                     </td>
-                    <td>
-                        {element.rejectionFeedback}
-                    </td>
                 </tr>
             </>
-        ));
-    }
-
-    function getPreApprovalRows() {
-        return selectedPreApproval?.map((element) => (
-            <tr key={element.courseCode}>
-                <td>{selectedPreApproval.indexOf(element) + 1}</td>
-                <td>{element.courseCode}</td>
-                <td>{element.courseName}</td>
-                <td>{element.ectsCredits}</td>
-                <td>{element.bilkentCourseInfo}</td>
-                <td>{element.bilkentCredit}</td>
-                <td>{element.electiveEquivalent}</td>
-            </tr>
         ));
     }
 }

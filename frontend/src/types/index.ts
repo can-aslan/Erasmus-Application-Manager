@@ -178,7 +178,7 @@ export type PreApprovalForm = {
     student: Student
     wishlist: WishlistItemsInterface
     date: string
-    status?: 'COORDINATOR_APPROVED' | 'COORDINATOR_REJECTED' | 'PENDING' | 'FAC_APPROVED' | 'WAITING',
+    preApprovalStatus?: 'COORDINATOR_APPROVED' | 'COORDINATOR_REJECTED' | 'PENDING' | 'FAC_APPROVED' | 'WAITING',
 }
 
 export type CoordinatorAssociatedStudents = {
