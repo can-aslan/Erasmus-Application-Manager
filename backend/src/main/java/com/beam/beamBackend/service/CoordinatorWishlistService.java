@@ -34,16 +34,17 @@ public class CoordinatorWishlistService {
             ArrayList<Wishlist> coordinatorsWishLists = new ArrayList<>();
 
             Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
+
             // Check is the coordinator exists
-            if (!coordinator.isPresent()){
+            if (!coordinator.isPresent()) {
                 throw new Exception("Coordinator is not found!");
-            }
-            else {
-                for (int i = 0; i < wishlists.size(); i++){
+            } else {
+                for (int i = 0; i < wishlists.size(); i++) {
                     Optional<Student> aStudent = studentRepository.findByUserBilkentId(wishlists.get(i).getStudentId());
-                    if (!aStudent.isPresent()){
+                    if (!aStudent.isPresent()) {                        
                         throw new Exception("The student is not found!");
                     }
+
                     if (aStudent.get().getCoordinator().getUser().getId() == coordinator.get().getUser().getId()){
                         coordinatorsWishLists.add(wishlists.get(i));
                     }
