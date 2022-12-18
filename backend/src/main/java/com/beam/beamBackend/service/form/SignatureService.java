@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.model.Signature;
 import com.beam.beamBackend.model.User;
@@ -21,7 +19,6 @@ import com.beam.beamBackend.service.form.decorator.MultipartFileWrapper;
 import com.beam.beamBackend.service.form.decorator.Postfix;
 import com.beam.beamBackend.service.form.decorator.Prefix;
 import com.beam.beamBackend.service.form.decorator.UniquelyNameable;
-
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -34,17 +31,17 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
 @RequiredArgsConstructor
-public class SignatureService {
+public class SignatureService implements ISignatureService {
+    private final IAccountRepository accountRepository;
+    private final ISignatureRepository signatureRepository;
+    private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
+    private S3Client s3 = S3ClientSingleton.getInstance();
     final long ONE_KB = 1024;
     final long ONE_MB = ONE_KB * ONE_KB; 
     final long FILE_SIZE_LIMIT = ONE_MB;
     final String FILE_PREFIX = "SIGNATURE";
-    private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
-    private S3Client s3 = S3ClientSingleton.getInstance();
-    private final IAccountRepository accountRepository;
-    private final ISignatureRepository signatureRepository;
-
     
+    @Override
     public boolean uploadSignature(UUID userId, MultipartFile file) throws FileSizeLimitExceededException {
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
@@ -91,6 +88,7 @@ public class SignatureService {
         }
     }
 
+    @Override
     public byte[] downloadSignature(UUID userId) throws IOException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -111,6 +109,7 @@ public class SignatureService {
         return bytes;
     }
 
+    @Override
     public ByteArrayInputStream getSignatureFile(UUID userId) throws IOException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -131,6 +130,7 @@ public class SignatureService {
         return bais;
     }
 
+    @Override
     public void deleteSignature(UUID userId) {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -152,6 +152,7 @@ public class SignatureService {
         signatureRepository.deleteById(userId); // TODO: Not sure if this works
     }
 
+    @Override
     public Optional<Signature> getSignatureByBilkentId(Long bilkentId) {
         User user = accountRepository.findUserByBilkentId(bilkentId);
         UUID id = user.getId();

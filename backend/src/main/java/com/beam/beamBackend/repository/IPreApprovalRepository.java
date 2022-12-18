@@ -18,7 +18,8 @@ import com.beam.beamBackend.model.PreApprovalForm;
 @Repository
 public interface IPreApprovalRepository extends JpaRepository<PreApprovalForm, UUID>{
     
-    Optional<PreApprovalForm> findByStudentId(Long studentId);
+    Optional<PreApprovalForm> findByStudentUserBilkentId(Long studentId);
+    boolean existsByWishlistStudentId(Long studentId);
 
     /*// Query should be here
     boolean insertPreApp(@Param("student_id") UUID studentId, @Param("name") String name, @Param("surname") String surname, @Param("bilkent_id") Long bilkentIdLong,

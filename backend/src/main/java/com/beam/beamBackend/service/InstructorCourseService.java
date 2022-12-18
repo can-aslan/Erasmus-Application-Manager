@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.BilkentCourse;
@@ -18,7 +16,6 @@ import com.beam.beamBackend.repository.IAccountRepository;
 import com.beam.beamBackend.repository.IBilkentCourseRepository;
 import com.beam.beamBackend.repository.ICourseRequestRepository;
 import com.beam.beamBackend.repository.IInstructorCourseRepository;
-import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
@@ -30,7 +27,7 @@ public class InstructorCourseService {
     private final IInstructorCourseRepository instructorCourseRepo;
     private final IBilkentCourseRepository bilkentCourseRepo;
     private final IAccountRepository userRepo;
-    private final IStaffRepository staffRepository;
+    // private final IStaffRepository staffRepository;
     private final ICourseRequestRepository courseRequestRepo;
 
     public RInstructorCourseAdd addCourseToInstructor(InstructorCourseAdd instructorCourses) throws Exception {
@@ -130,6 +127,7 @@ public class InstructorCourseService {
             }
     
             requestedCourse.get().setStatus(requestResult.getCourseStatus());
+            requestedCourse.get().setFeedback(requestResult.getFeedback());
             return courseRequestRepo.save(requestedCourse.get());
         } catch (Exception e) {
             e.getStackTrace();

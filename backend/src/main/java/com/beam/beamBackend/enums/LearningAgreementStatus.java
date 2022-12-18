@@ -1,9 +1,8 @@
 package com.beam.beamBackend.enums;
 
-public enum PreApprovalStatus {
+public enum LearningAgreementStatus {
     WAITING,
     PENDING,
     COORDINATOR_APPROVED,
-    COORDINATOR_REJECTED,
     FAC_APPROVED,
 }

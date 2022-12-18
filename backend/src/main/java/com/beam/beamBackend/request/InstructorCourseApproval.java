@@ -23,4 +23,6 @@ public class InstructorCourseApproval {
     @NotNull
     @Enumerated(EnumType.STRING)
     private CourseRequestStatus courseStatus; 
+
+    private String feedback;
 }

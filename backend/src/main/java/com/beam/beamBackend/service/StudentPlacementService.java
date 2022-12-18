@@ -1,16 +1,13 @@
 package com.beam.beamBackend.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.beam.beamBackend.enums.Department;
 import com.beam.beamBackend.enums.Faculty;
 import com.beam.beamBackend.enums.Semester;
@@ -27,36 +24,30 @@ import com.beam.beamBackend.repository.IPreferencesRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
-import com.beam.beamBackend.request.StudentRequest;
-import com.beam.beamBackend.request.UserRequest;
-
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;  
 import java.io.IOException;  
 
-
 @Service
 @RequiredArgsConstructor
-public class StudentPlacementService {
+public class StudentPlacementService implements IStudentPlacementService {
     private Hashtable<University, Integer> quotas;
     ArrayList<Student> regiteredStudents = new ArrayList<>();
     ArrayList<Student> waitingList = new ArrayList<>();
 
     @Autowired
     final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final IUniversityRepository universityRepository;
-    private final StudentService studentService;
+    // private final StudentService studentService;
     private final IStudentRepository studentRepository;
     private final IPreferencesRepository preferencesRepository;
     private final IAccountRepository accountRepository;
     private final IStaffRepository staffRepository;
+
+    @Override
     public ArrayList<Student> placeStudents(String department) throws Exception {
-        
         // Get List of coordinators
         List<Staff> coordinators = staffRepository.findByDepartmentAndUserUserType(Department.valueOf(department), UserType.COORDINATOR);
         int assignedCoordinators = 0;
@@ -78,7 +69,7 @@ public class StudentPlacementService {
                 if (preferenceList.get(j) != null) {
                     University currentUni = universityRepository.findUniByName(preferenceList.get(j));
 
-                    if(quotas.get(currentUni) > 0) {
+                    if (quotas.get(currentUni) > 0) {
                         regiteredStudents.get(i).setHostUni(currentUni);
                         quotas.put(currentUni,quotas.get(currentUni) - 1);
 
@@ -104,8 +95,7 @@ public class StudentPlacementService {
         return regiteredStudents;
     }
 
-
-
+    @Override
     public ArrayList<Student> readFromStudentCsv(String department) throws Exception {
         try{ 
             String line = "";  
@@ -124,7 +114,6 @@ public class StudentPlacementService {
                 }
 
                 String[] lineSplitted = line.split(splitBy);    // use comma as separator  
-
                 String name = lineSplitted[1];
                 String surname = lineSplitted[2];
                 Long bilkentId = Long.parseLong(lineSplitted[3]);
@@ -137,9 +126,7 @@ public class StudentPlacementService {
                 // What about password
 
                 Faculty f = Faculty.valueOf(lineSplitted[4]);
-
                 Department d = Department.valueOf(lineSplitted[5]);
-
                 Semester semester = Semester.valueOf(lineSplitted[21]);
 
                 Faculty f2;
@@ -160,7 +147,6 @@ public class StudentPlacementService {
                 String nationality = lineSplitted[34];
                 String dateOfBirth = lineSplitted[35];
                 Sex sex = Sex.valueOf(lineSplitted[36]);                
-
                 String academicYear = lineSplitted[37];
 
                 StudyType st;
@@ -172,15 +158,14 @@ public class StudentPlacementService {
 
                 String password = generatePsw();
                 String hashedpassword = encodePassword(password);
-
                 User newUser = new User(UUID.randomUUID(), name, surname, email, bilkentId, hashedpassword, UserType.OUTGOING_STUDENT);
+                
                 //University homeUni = universityRepository.findUniByName("Bilkent University");
                 University homeUni = null;
                 accountRepository.save(newUser);
                 newUser = accountRepository.findUserByBilkentId(bilkentId);
                 Student newStudent = new Student(UUID.randomUUID(), newUser, d, f, d2, f2, telephoneNo, st, nationality, dateOfBirth, sex, homeUni, null, academicYear, semester, null);
                 studentRepository.save(newStudent);
-
                 regiteredStudents.add(newStudent);
 
                 String pref1 = lineSplitted[22];
@@ -210,6 +195,7 @@ public class StudentPlacementService {
      * @param department department whose universites' quotas will be brought
      * @throws Exception
      */
+    @Override
     public void getAllUniversitiesQuota(String department) throws Exception {
         try {
             String line = "";  
@@ -236,34 +222,15 @@ public class StudentPlacementService {
                 University currentUniversity = universityRepository.findUniByName(uniName);
                 quotas.put(currentUniversity, quota);
             }
+
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();  
             throw e;
         }
     }
-
-    private String encodePassword(String plainPassword) {
-        try {
-            return bCryptPasswordEncoder.encode(plainPassword);
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    public static String generatePsw() {
-        String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
-        String generatedPsw = "";
-
-        for (int i = 0; i < 8; i++) {
-            int random = (int) Math.random();
-            int modulo = random % 35;
-
-            generatedPsw = generatedPsw + allChars.substring(modulo, modulo + 1);
-        }
-        return generatedPsw;
-    }
-
     
+    @Override
     public void readFromUniCsv(String fepartment) throws IOException {
         try {
             String line = "";  
@@ -282,10 +249,31 @@ public class StudentPlacementService {
 
                 // Creation of universities
                 //quotas.put()
-            }  
+            }
+
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();  
             throw e;
         }
-    }   
+    }
+
+    private String encodePassword(String plainPassword) {
+        try {
+            return bCryptPasswordEncoder.encode(plainPassword);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    public static String generatePsw() {
+        String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
+        String generatedPsw = "";
+        for (int i = 0; i < 8; i++){
+            int random = (int) (Math.random() * 1000);
+            int modulo = random % 36;
+            generatedPsw = generatedPsw + allChars.substring(modulo, modulo+1);
+        }
+        return generatedPsw;
+    }
 }

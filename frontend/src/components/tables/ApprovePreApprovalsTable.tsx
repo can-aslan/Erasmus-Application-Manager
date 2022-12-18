@@ -24,19 +24,21 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const [selectedPreApproval, setSelectedPreApproval] = useState<Array<PreApprovalFormItemType>>();
 
     const viewPreApproval = (formID: string) => {
-        setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems!);
+        setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems);
         setPreApprovalDetailsOpened(true);
     }
     const approvePreApproval = (formID: string) => {
         //Approve the selected student's wishlist
         // Close pop-up
         setPreApprovalDetailsOpened(false);
+        // TODO: Add approve mutation, invalidate query
     }
     const rejectPreApproval = (formID: string) => {
         // Reject the selected student's wishlist
         // Close pop-up
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
+        // TODO: Add reject mutation, invalidate query
     }
 
     // Below are mock data, they will be changed.
@@ -90,8 +92,12 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     return (
 
         <>
-            <RejectionFeedbackModal rejectionFeedbackOpened={rejectionFeedbackOpened} rejectionFeedback={rejectionFeedback} setRejectionFeedbackOpened={setRejectionFeedbackOpened} setRejectionFeedback={setRejectionFeedback}></RejectionFeedbackModal>
-
+            <RejectionFeedbackModal 
+                rejectionFeedbackOpened={rejectionFeedbackOpened} 
+                rejectionFeedback={rejectionFeedback} 
+                setRejectionFeedbackOpened={setRejectionFeedbackOpened} 
+                setRejectionFeedback={setRejectionFeedback}
+            />
             <Modal
                 opened={preApprovalDetailsOpened}
                 size={"auto"}
@@ -99,28 +105,33 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                 onClose={() => setPreApprovalDetailsOpened(false)}
             >
                 <Flex direction="column">
-                    <Flex direction="row" gap="xs"><Text fw={700}>Student Name:</Text> <Text> {selectedStudentName}</Text></Flex>
-                    <Flex direction="row" gap="xs"><Text fw={700}>Student ID:</Text> <Text> {selectedStudentID}</Text></Flex>
+                    <Flex direction="row" gap="xs">
+                        <Text fw={700}>Student Name:</Text>
+                         <Text> {selectedStudentName}</Text>
+                    </Flex>
+                    <Flex direction="row" gap="xs">
+                        <Text fw={700}>Student ID:</Text>
+                        <Text> {selectedStudentID}</Text>
+                    </Flex>
                 </Flex>
-
-                <Center><Table striped withBorder withColumnBorders>
-
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Course Code (Host)</th>
-                            <th>Course Name (Host)</th>
-                            <th>ECTS Credits</th>
-                            <th>Course Code and Name for a Required Course,
-                                Elective Group Name for an Elective Requirement (Bilkent)
-                            </th>
-                            <th>Credits (Bilkent)</th>
-                            <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
-                        </tr>
-                    </thead>
-                    <tbody>{preApprovalRows}</tbody>
-
-                </Table></Center>
+                <Center>
+                    <Table striped withBorder withColumnBorders>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Course Code (Host)</th>
+                                <th>Course Name (Host)</th>
+                                <th>ECTS Credits</th>
+                                <th>Course Code and Name for a Required Course,
+                                    Elective Group Name for an Elective Requirement (Bilkent)
+                                </th>
+                                <th>Credits (Bilkent)</th>
+                                <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
+                            </tr>
+                        </thead>
+                        <tbody>{preApprovalRows}</tbody>
+                    </Table>
+                </Center>
                 <Space h="xs"></Space>
                 <Group position="right">
                     {showApprove && <Button color={'green'} onClick={() => { approvePreApproval(selectedStudentID) }}>Approve</Button>}
@@ -129,7 +140,20 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
             </Modal>
             <Flex direction="column" gap={"sm"}>
                 <Flex direction="row" gap={"xl"}>
-                    <TextInput placeholder="Seach by name or ID" value={searchPreAppInput} onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}></TextInput><Select placeholder="Filter by status" value={selectedApprovalStatusFilter} onChange={(value) => { changeFilter(value, searchPreAppInput) }} clearable allowDeselect data={["Approved", "Pending", "Rejected"]}></Select>
+                    <TextInput 
+                        placeholder="Seach by name or ID" 
+                        value={searchPreAppInput} 
+                        onChange={(event) => changeSearch(event.currentTarget.value, selectedApprovalStatusFilter)}
+                        />
+                    <Select 
+                        placeholder="Filter by status" 
+                        value={selectedApprovalStatusFilter} 
+                        onChange={(value) => { changeFilter(value, searchPreAppInput) }} 
+                        clearable 
+                        allowDeselect 
+                        data={["Approved", "Pending", "Rejected"]}
+                    />
+
                 </Flex>
                 <Table striped withBorder withColumnBorders>
                     <thead>
@@ -143,7 +167,9 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                     </thead>
                     <tbody>{pendingApprovalRows}</tbody>
                 </Table>
-            </Flex></>);
+            </Flex>
+        </>
+    );
 
     function getPendingApprovalRows() {
         return tempPendingApprovalList.map((element) => (
@@ -165,12 +191,16 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                             >
                             {(element.status == "Approved") || (element.status == "Rejected") ? "Change Decision" : "View"}
                         </Button>
-                    </Center></td>
-                    <td>{""} 
+                    </Center>
+                </td>
+                <td>{""} 
                     <Center>
                         <Button onClick={()=>{downloadPreApproval()}}>Download</Button>    
-                    </Center></td>
-                <td>{element.rejectionFeedback}</td>
+                    </Center>
+                </td>
+                <td>
+                    {element.rejectionFeedback}
+                </td>
             </tr>
         ));
     }

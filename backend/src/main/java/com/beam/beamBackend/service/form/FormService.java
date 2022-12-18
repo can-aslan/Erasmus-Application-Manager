@@ -1,26 +1,15 @@
 package com.beam.beamBackend.service.form;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
-
-import javax.imageio.ImageIO;
-
-import java.awt.image.BufferedImage;
-
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
-import org.apache.tomcat.util.http.fileupload.impl.SizeException;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.beam.beamBackend.enums.CourseWishlistStatus;
 import com.beam.beamBackend.enums.FormEnum;
 import com.beam.beamBackend.enums.PreApprovalStatus;
@@ -39,7 +28,6 @@ import com.beam.beamBackend.service.form.decorator.MultipartFileWrapper;
 import com.beam.beamBackend.service.form.decorator.Postfix;
 import com.beam.beamBackend.service.form.decorator.Prefix;
 import com.beam.beamBackend.service.form.decorator.UniquelyNameable;
-
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -49,29 +37,26 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.Wishlist;
-
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class FormService {
-    final long ONE_KB = 1024;
-    final long ONE_MB = ONE_KB * ONE_KB; 
-    final long FILE_SIZE_LIMIT = ONE_MB;
-    private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
-
+public class FormService implements IFormService {
     private final IFormRepository formRepository;
     private final IAccountRepository accountRepository;
     private final IWishlistRepository wishlistRepository;
     private final IPreApprovalRepository preApprovalRepository;
     private final IStudentRepository studentRepository;
-    private final FileGenerator fileGenerator;
-
-    private final SignatureService signatureService;
-
+    private final IFileGeneratorService fileGenerator;
+    private final ISignatureService signatureService;
+    private final String DEFAULT_BUCKET_NAME = "beam-form-bucket";
+    final long ONE_KB = 1024;
+    final long ONE_MB = ONE_KB * ONE_KB; 
+    final long FILE_SIZE_LIMIT = ONE_MB;
+    
+    @Override
     public boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -122,6 +107,7 @@ public class FormService {
         }
     }
 
+    @Override
     public boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -170,6 +156,7 @@ public class FormService {
         return true;
     }
 
+    @Override
     public byte[] downloadForm(UUID userId, FormEnum formType) throws IOException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -194,6 +181,7 @@ public class FormService {
         return formByteArray;
     }
 
+    @Override
     public boolean deleteFile(UUID userId, FormEnum formType) {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
@@ -222,6 +210,7 @@ public class FormService {
         return true;
     }
 
+    @Override
     public ByteArrayResource generateAndDownloadPreApproval(UUID studentId) throws Exception {
         try {
             PreApprovalForm preApprovalForm = createPreAppFromWishlist(studentId);
@@ -237,12 +226,20 @@ public class FormService {
         }
     }
 
+    @Override
     public void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception {
-        PreApprovalForm form = createPreAppFromWishlist(studentId);
-        File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
-        uploadForm(approvalForm, studentId, formType);
+        try {
+            PreApprovalForm form = createPreAppFromWishlist(studentId);
+            File approvalForm = fileGenerator.generatePreApprovalForm(form, null);
+            uploadForm(approvalForm, studentId, formType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
     }
 
+    @Override
     public void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception {
         PreApprovalForm currentForm = getPreApprovalForm(studentBilkentId);
         User coordinator = accountRepository.findUserByBilkentId(coordinatorBilkentId);
@@ -281,7 +278,8 @@ public class FormService {
      * @param userUuid user id of the student whose pre approval is supposed to be created
      * @throws Exception
      */
-    public PreApprovalForm createPreAppFromWishlist(UUID studentId) throws Exception{
+    @Override
+    public PreApprovalForm createPreAppFromWishlist(UUID studentId) throws Exception {
         try{
             Optional<Student> student = studentRepository.findByUserId(studentId);
             if (!student.isPresent()){
@@ -297,10 +295,20 @@ public class FormService {
             if (wishlist.get().getStatus() != CourseWishlistStatus.APPROVED ){
                 throw new Exception("Student's wishlist has not been approved!");
             }
+
+            boolean preApprovalExist = preApprovalRepository.existsByWishlistStudentId(student.get().getUser().getBilkentId());
+
+            if (preApprovalExist) {
+                throw new Exception("pre approval already exists for this student");
+            }
             
             // Create instant date object here
-            String date = "a";
-            return preApprovalRepository.save(new PreApprovalForm(UUID.randomUUID(), student.get(), wishlist.get(), date, PreApprovalStatus.PENDING));
+            String date = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
+            Wishlist wishlistObj = wishlist.get();
+            Student studentObj = student.get();
+            PreApprovalForm newForm = new PreApprovalForm(UUID.randomUUID(), studentObj, wishlistObj, date, PreApprovalStatus.PENDING);
+
+            return preApprovalRepository.save(newForm);
         
         } catch(Exception e){
             e.printStackTrace();
@@ -308,14 +316,15 @@ public class FormService {
         }
     }
 
-    public PreApprovalForm getPreApprovalForm(Long bilkentId) throws Exception{
+    @Override
+    public PreApprovalForm getPreApprovalForm(Long bilkentId) throws Exception {
         Optional<Student> student = studentRepository.findByUserBilkentId(bilkentId);
 
         if (!student.isPresent()){
             throw new Exception("Student is not found!");
         } else {
             try{
-                Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentId(bilkentId);
+                Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentUserBilkentId(bilkentId);
 
                 if (!preApprovalForm.isPresent()){
                     throw new Exception("PreApproval form for the student is not present!");
@@ -327,5 +336,15 @@ public class FormService {
                 throw e;
             }
         }
+    }
+
+    @Override
+    public PreApprovalStatus getPreApprovalStatus(Long studentId) {
+        Optional<PreApprovalForm> preApprovalForm = preApprovalRepository.findByStudentUserBilkentId(studentId);
+        if (!preApprovalForm.isPresent()) {
+            return PreApprovalStatus.WAITING;
+        }
+
+        return preApprovalForm.get().getPreApprovalStatus();
     }
 }

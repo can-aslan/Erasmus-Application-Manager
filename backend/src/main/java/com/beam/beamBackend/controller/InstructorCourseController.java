@@ -12,16 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseRequest;
-import com.beam.beamBackend.model.InstructorCourse;
 import com.beam.beamBackend.request.InstructorCourseAdd;
 import com.beam.beamBackend.request.InstructorCourseApproval;
 import com.beam.beamBackend.response.RInstructorCourseAdd;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.InstructorCourseService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -43,7 +40,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/{instructorId}")
+    @GetMapping("{instructorId}/course")
     public ResponseEntity<Object> getInstructorCourses(@Valid @PathVariable("instructorId") UUID instructorId) {
         try {
             List<BilkentCourse> courseList = instructorService.getInstructorCourses(instructorId);
@@ -54,7 +51,7 @@ public class InstructorCourseController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    @GetMapping("/course/{instructorId}/requested")
+    @GetMapping("/{instructorId}/course/requested")
     public ResponseEntity<Object> getInstructorRequestedCourses(@Valid @PathVariable("instructorId") UUID instructorId) {
         try {
             List<CourseRequest> courseList = instructorService.getInstructorRequestedCourses(instructorId);

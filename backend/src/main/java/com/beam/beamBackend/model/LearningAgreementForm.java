@@ -2,11 +2,8 @@ package com.beam.beamBackend.model;
 
 import java.util.UUID;
 
-import com.beam.beamBackend.enums.Department;
-import com.beam.beamBackend.enums.PreApprovalStatus;
-import com.beam.beamBackend.enums.Semester;
+import com.beam.beamBackend.enums.LearningAgreementStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,34 +22,34 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "pre_app")
+@Table(name = "learning_agr")
+
 @NoArgsConstructor
 @AllArgsConstructor
-public class PreApprovalForm {
-    
+public class LearningAgreementForm {
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(name = "id")
-    private UUID id;
+    @Column(name = "preApp_id", nullable = false)
+    private UUID LAId;
 
     @NotNull
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student", nullable = false)
     private Student student;
-    
+
     @NotNull
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wishlist", nullable = false)
+    @JoinColumn(name = "pre_app", nullable = false)
     private Wishlist wishlist;
 
     @NotNull
     @Column(name = "date", nullable = false)
     private String date;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = "approval_status", nullable = false)
-    private PreApprovalStatus preApprovalStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private LearningAgreementStatus laStatus;
 }

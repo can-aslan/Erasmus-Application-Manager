@@ -1,9 +1,9 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
-import { IconCircleCheck, IconDownload, IconTrash } from '@tabler/icons';
-import { useMutation } from "@tanstack/react-query";
+import { IconCircleCheck, IconClockPause, IconDownload, IconFileDislike, IconFileLike, IconStatusChange, IconTrash } from '@tabler/icons';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { deleteForm, downloadForm, submitFile } from '../../api/FileService';
+import { deleteForm, downloadForm, generateAndDownloadPreApproval, generateAndSubmitPreApproval, submitFile } from '../../api/FileService';
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
 import { useUser } from "../../provider/UserProvider";
@@ -18,21 +18,12 @@ const PreApprovalFormPage = () => {
     const axiosSecure = useAxiosSecure('multipart/form-data')
 
     // Fetch pre approval status from backend.
-    // const { data: preApprovalFile, isLoading: isPreApprovalLoading, isError: isPreApprovalError } = usePreApprovalStatus(axiosSecure)
-    // if (isPreApprovalLoading) {
-    //     return <LoadingPage />
-    // }
-
-
-    // if (isPreApprovalError || !preApprovalFile) {
-    //     return <ErrorPage />
-    // }
-
+    const {data: preApprovalStatus, isLoading: isPreApprovalLoading, isError: isPreApprovalError} = usePreApprovalStatus(axiosSecure, user.bilkentId)
     const manualUploadMutation = useMutation({
         mutationKey: ['fileSubmit'],
         mutationFn: (formData: FormData) => submitFile(axiosSecure, formData, user.id),
         onSuccess: () => toast.success("Uploaded the file successfully."),
-        onError: () => toast.success("Please ensure that you deleted your previous file before uploading a new one.")
+        onError: () => toast.error("Please ensure that you deleted your previous file before uploading a new one.")
     })
 
     const fileDownloadMutation = useMutation({
@@ -49,6 +40,28 @@ const PreApprovalFormPage = () => {
         onError: () => toast.error("We couldn't delete the file. Please try again later.")
     })
 
+    const {mutate: generateDownloadMutate, isLoading: isGenerateDownloadLoading} = useMutation({
+        mutationKey: ['generateDownloadPreApproval'],
+        mutationFn: () => generateAndDownloadPreApproval(axiosSecure, user.id),
+        onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}_${user.bilkentId}`),
+        onError: () => toast.error("Generation process failed.")
+    })
+
+    const {mutate: generateSubmitMutate, isLoading: isGenerateSubmitLoading} = useMutation({
+        mutationKey: ['generateDownloadPreApproval'],
+        mutationFn: () => generateAndSubmitPreApproval(axiosSecure, user.id),
+        onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}_${user.bilkentId}`),
+        onError: () => toast.error("Generation process failed.")
+    })
+
+    if (isPreApprovalLoading) {
+        return <LoadingPage />
+    }
+
+
+    if (isPreApprovalError) {
+        return <ErrorPage />
+    }
 
     // https://stackoverflow.com/questions/53914361/upload-a-file-in-react-and-send-it-to-an-express-server
     const handleFileUpload = (payload: File | null) => {
@@ -76,11 +89,27 @@ const PreApprovalFormPage = () => {
     }
 
     const handleGenerateAndDownload = () => {
-        // TODO: Generate pre approval form and download
+        generateDownloadMutate()
     }
 
     const handleGenerateAndSubmit = () => {
-        // TODO:
+        generateSubmitMutate()
+    }
+
+    let preApprovalStatusIcon;
+    switch (preApprovalStatus.data) {
+        case "WAITING":
+            preApprovalStatusIcon = <IconClockPause color="blue" />
+            break;
+        case "PENDING":
+            preApprovalStatusIcon = <IconStatusChange color="blue"/>
+            break
+        case "REJECTED":
+            preApprovalStatusIcon = <IconFileDislike color="red" />
+            break
+        case "APPROVED":
+            preApprovalStatusIcon = <IconFileLike color="green"/>
+            break
     }
 
     return (
@@ -90,8 +119,10 @@ const PreApprovalFormPage = () => {
                     <Title order={2} weight="bold">Pre-approval Status</Title>
                     <Divider />
                     <Group spacing={24} position='center'>
-                        <Text fw={600}>Approved</Text>
-                        <IconCircleCheck size={36} color="green"/>
+                        <Text fw={600}>
+                            {preApprovalStatus.data}
+                        </Text>
+                        {preApprovalStatusIcon || ''}
                         <Button 
                             loading={fileDownloadMutation.isLoading}
                             leftIcon={<IconDownload />} 
@@ -138,8 +169,20 @@ const PreApprovalFormPage = () => {
                 <Title order={1}>OR</Title>
                 <Group position="center">
                     <Stack spacing={50}>
-                        <Button onClick={handleGenerateAndDownload} size="lg">Generate & Download Pre-approval Form</Button>
-                        <Button onClick={handleGenerateAndSubmit} size="lg">Generate & Submit Pre-approval Form</Button>
+                        <Button 
+                            onClick={handleGenerateAndDownload} 
+                            size="lg"
+                            loading={isGenerateDownloadLoading}
+                        >
+                            Generate & Download Pre-approval Form
+                        </Button>
+                        <Button 
+                            onClick={handleGenerateAndSubmit} 
+                            size="lg"
+                            loading={isGenerateSubmitLoading}
+                        >
+                            Generate & Submit Pre-approval Form
+                        </Button>
                     </Stack>
                 </Group>
             </Flex>
