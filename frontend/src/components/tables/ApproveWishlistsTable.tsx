@@ -7,7 +7,7 @@ import { approveWishlist, getStudentWishlist, rejectWishlist } from '../../api/C
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useRejectWishlist } from "../../hooks/useRejectWishlist";
 import { useUser } from "../../provider/UserProvider";
-import { Course, ExistingCourseWishlist, StudentAssociatedCourse, StudentAssociatedWishlist } from "../../types";
+import { Course, ExistingCourseWishlist, StudentAssociatedCourse, StudentAssociatedWishlist, WishlistItemsInterface } from "../../types";
 
 interface ApproveWishlistTableProps {
     wishlists: Array<ExistingCourseWishlist>
@@ -19,11 +19,16 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
     const [opened, setOpened] = useState(false);
     const [selectedStudentID, setSelectedStudentID] = useState("");
     const [selectedIsApproved, setSelectedIsApproved] = useState(false);
+    const [wishlistDetails, setWishlistDetails] = useState();
     const queryClient = useQueryClient()
 
-    const { mutate: mutateGetWishlist } = useMutation({
+    const { mutate: mutateGetWishlist, data:dataWishlistDetails } = useMutation({
         mutationKey: ['getWishlist'],
         mutationFn: (studentBilkentId: string) => getStudentWishlist(axiosSecure, user!.id, studentBilkentId),
+        onSuccess: (dataWishlistDetails) => {
+            
+            setWishlistDetails(dataWishlistDetails.data);
+        }
     })
 
     const { mutate: mutateApproval } = useMutation({
@@ -50,16 +55,16 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
         }
     })
 
-    const viewWishlist = (studentId: string) => {
+    const viewWishlist = (studentBilkentId: string) => {
         //TODO: send data to api, get student's wishlist
-        mutateGetWishlist(selectedStudentID);
+        mutateGetWishlist(studentBilkentId);
         setOpened(true);
 
     }
 
     const approve = (studentBilkentId: string) => {
         // Approve the selected student's wishlist
-        mutateApproval(selectedStudentID);
+        mutateApproval(studentBilkentId);
         // Close pop-up
         setOpened(false);
     }
@@ -87,22 +92,22 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
 
     //------------------------------------------ Mock Data Ends ----------------------------------------------------------------
 
-    // const wishlistRows = wishlistList.map((element) => (
-    //     <tr key={element.courseCode}>
-    //         <td>{element.courseCode}</td>
-    //         <td>{element.courseName}</td>
-    //         <td>{element.ects}</td>
-    //         <td>{""}
-    //             <Center>
-    //                 <Button 
-    //                     onClick={() => {
-    //                         
-    //                     }}>
-    //                     Syllabus
-    //                 </Button>
-    //             </Center></td>
-    //     </tr>
-    // ));
+    const wishlistRows = wishlistDetails.map((element) => (
+        <tr key={element.courseCode}>
+            <td>{element.courseCode}</td>
+            <td>{element.courseName}</td>
+            <td>{element.ects}</td>
+            <td>{""}
+                <Center>
+                    <Button 
+                        onClick={() => {
+                            
+                        }}>
+                        Syllabus
+                    </Button>
+                </Center></td>
+        </tr>
+    ));
     const waitingApprovalRows = wishlists.map((wishlist) => (
         <tr key={wishlist.studentId}>
             <td>{wishlist.studentId}</td>

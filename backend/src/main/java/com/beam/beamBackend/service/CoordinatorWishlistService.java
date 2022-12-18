@@ -71,13 +71,13 @@ public class CoordinatorWishlistService {
                 throw new Exception("Student is not found!");
             }
 
-            Optional<Staff> coordinator = staffRepository.findById(coordinatorId);
+            Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
             // Check is the coordinator exists
             if (!coordinator.isPresent()){
                 throw new Exception("Coordinator is not found!");
             }
 
-            if(aStudent.get().getCoordinator().getId() == coordinator.get().getId()){
+            if(aStudent.get().getCoordinator().getId() == coordinator.get().getUser().getId()){
                 throw new Exception("You are not coordinator of this student!");
             } else {
                 Optional<Wishlist> wishlist = wishlistRepository.findByStudentId(studentId);
@@ -97,7 +97,7 @@ public class CoordinatorWishlistService {
 
     public void determineWishlistStatus(@Valid UUID coordinatorId, @Valid Long studentId, @Valid CourseWishlistStatus status) throws Exception {
         try {
-            Optional<Staff> coordinator = staffRepository.findById(coordinatorId);
+            Optional<Staff> coordinator = staffRepository.findByUserId(coordinatorId);
             if (!coordinator.isPresent()){
                 throw new Exception("Coordinator is not found!");
             }
