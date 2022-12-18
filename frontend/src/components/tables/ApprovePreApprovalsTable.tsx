@@ -56,7 +56,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     })
 
     const viewPreApproval = (formID: string) => {
-        setSelectedPreApproval(preApprovals.find(element => element.formUuid === formID)?.preApprovalFormItems);
+        setSelectedPreApproval(preApprovals.find(element => element.id === formID)?.preApprovalFormItems);
         setPreApprovalDetailsOpened(true);
     }
     const approvePreApproval = (formID: string) => {
@@ -219,7 +219,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                                 onClick={() => {
                                     setSelectedStudentName(element.studentName);
                                     setSelectedStudentID(element.studentID);
-                                    viewPreApproval(element.formUuid);
+                                    viewPreApproval(element.id);
                                     setShowApprove(element.status == "Pending" || element.status == "Rejected");
                                     setShowReject(element.status == "Approved" || element.status == "Pending");
                                 }}
