@@ -149,12 +149,8 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
             <Space h="xs" />
             <Group spacing='xl' position={"right"}>
                 {selectedShowApprove && <Button color={'green'} onClick={() => { approve(selectedStudentID, 'APPROVED') }}>Approve</Button>}
-                {selectedShowReject && 
-                    <>
-                        <Text color='green'>Already Approved</Text>
-                        <Button color={'red'} onClick={() => {setRejectionFeedbackOpened(true)}}>Reject</Button>
-                    </>
-                }
+                {!selectedShowApprove &&  selectedShowReject && <Text color='green'>Already Approved</Text>}
+                {selectedShowReject && <Button color={'red'} onClick={() => {setRejectionFeedbackOpened(true)}}>Reject</Button>}
             </Group>
         </Modal>
             <Modal opened={rejectionFeedbackOpened}

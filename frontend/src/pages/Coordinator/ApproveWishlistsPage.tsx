@@ -10,7 +10,7 @@ import LoadingPage from "../Feedback/LoadingPage";
 const ApproveWishlistsPage = () => {
     const axiosSecure = useAxiosSecure()
     const { user } = useUser()
-    const { data: dataWhislists, isError, isLoading } = useQuery({
+    const { data: dataWishlist, isError, isLoading } = useQuery({
         queryFn: () => getAllStudentWishlists(axiosSecure, user?.id!),
         queryKey:['getAllStudentWishlists']
     })
@@ -21,7 +21,7 @@ const ApproveWishlistsPage = () => {
         )
     }
 
-    if (isError || !dataWhislists) {
+    if (isError || !dataWishlist) {
         return (
             <ErrorPage />
         )
@@ -37,7 +37,7 @@ const ApproveWishlistsPage = () => {
                     spacing='xl'
                 >
                     <Title color='blue' size='36px'>Submitted Wishlists</Title>
-                    <ApproveWishlistsTable wishlists={dataWhislists.data}/>
+                    <ApproveWishlistsTable wishlists={dataWishlist.data}/>
                 </Stack>
             </Box>
         </Center>

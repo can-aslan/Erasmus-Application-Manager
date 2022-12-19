@@ -57,7 +57,7 @@ const PreApprovalFormPage = () => {
     const {mutate: generateSubmitMutate, isLoading: isGenerateSubmitLoading} = useMutation({
         mutationKey: ['genereateSubmitPreApproval'],
         mutationFn: () => generateAndSubmitPreApproval(axiosSecure, user.id),
-        onSuccess: (data) => downloadPdf(data),
+        onSuccess: () => toast.success("Generated and submitted the pre-approval file successfully! You can download your file to see the generated file."),
         onError: () => toast.error("Generation process failed.")
     })
 

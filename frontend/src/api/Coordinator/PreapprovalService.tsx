@@ -1,9 +1,15 @@
 import { AxiosInstance } from "axios"
-import { ResponsePreApprovalForm, ResponsePreApprovalFormList } from "../../types/responseTypes"
+import { ResponseCoordinatorAllStudentCourseWishlist, ResponsePreApprovalForm, ResponsePreApprovalFormList } from "../../types/responseTypes"
 
 
 export const getSubmittedPreApprovalsCoord = async (axios: AxiosInstance, coordinatorId: string) => {
     const response = await axios.get<ResponsePreApprovalFormList>(`/preapproval/coordinator/${coordinatorId}`)
+    console.log(response)
+    return response.data
+}
+
+export const getSubmittedWishlistsForCoordinator = async (axios: AxiosInstance, coordinatorId: string) => {
+    const response = await axios.get<ResponseCoordinatorAllStudentCourseWishlist>(`/wishlist/fetch/coordinator/${coordinatorId}`)
     console.log(response)
     return response.data
 }
