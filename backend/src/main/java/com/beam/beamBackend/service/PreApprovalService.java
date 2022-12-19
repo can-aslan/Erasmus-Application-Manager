@@ -31,7 +31,7 @@ public class PreApprovalService implements IPreApprovalService {
                 throw new Exception("user not found");
             }
 
-            return preApprovalRepository.findAllByStudentCoordinatorUserId(coordinatorUserId);
+            return preApprovalRepository.findAll();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -87,5 +87,5 @@ public class PreApprovalService implements IPreApprovalService {
             throw e;
         }
     }
-    // use formService.signApproval to sign approval
+    
 }
