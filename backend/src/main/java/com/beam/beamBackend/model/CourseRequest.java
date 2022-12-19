@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
+import com.beam.beamBackend.request.CourseRequestRequestBody;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -58,17 +59,22 @@ public class CourseRequest {
     @Column(name = "syllabus_link")
     private String syllabusLink;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "destination")
     private CourseRequestDestination destination;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CourseRequestStatus status;
+    
+    // @NotBlank
+    @Column(name = "host_uni_name")
+    private String hostUniName;
 
-    public CourseRequest (
+    @Column(name = "feedback")
+    private String feedback;
+
+    public CourseRequest(
         @JsonProperty("requestId") UUID requestId,
         @JsonProperty("studentId") Long studentId,
         @JsonProperty("hostCode") String hostCode,
@@ -78,16 +84,34 @@ public class CourseRequest {
         @JsonProperty("webpage") String webpage,
         @JsonProperty("syllabusLink") String syllabusLink,
         @JsonProperty("destination") CourseRequestDestination destination,
-        @JsonProperty("status") CourseRequestStatus status
+        @JsonProperty("status") CourseRequestStatus status,
+        @JsonProperty("hostUniName") String hostUniName,        
+        @JsonProperty("feedback") String feedback        
     ) {
+
         this.requestId = (requestId == null) ? UUID.randomUUID() : requestId;
         this.studentId = studentId;
         this.hostCode = hostCode;
+        this.hostEcts = hostEcts;
         this.name = name;
         this.bilkentCode = bilkentCode;
         this.webpage = webpage;
         this.syllabusLink = syllabusLink;
         this.destination = (destination == null) ? CourseRequestDestination.COORDINATOR : destination;
         this.status = (status == null) ? CourseRequestStatus.PENDING : status;
+        this.hostUniName = hostUniName;
+        this.feedback = feedback;
     }
+
+    public static CourseRequest toCourseRequest(CourseRequestRequestBody courseRequestBody, String hostUniName) {
+        return new CourseRequest(null, courseRequestBody.getStudentId(), courseRequestBody.getHostCode(), courseRequestBody.getHostEcts(), 
+                courseRequestBody.getName(), courseRequestBody.getBilkentCode(), courseRequestBody.getWebpage(), courseRequestBody.getSyllabusLink(),
+                courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName, null); // feedback is null in this implementation
+    }
+
+    // public static CourseRequest toCourseRequest(CourseRequestRequestBody courseRequestBody, String hostUniName) {
+    //     return new CourseRequest(null, courseRequestBody.getStudentId(), courseRequestBody.getHostCode(), courseRequestBody.getHostEcts(), 
+    //             courseRequestBody.getName(), courseRequestBody.getBilkentCode(), courseRequestBody.getWebpage(), courseRequestBody.getSyllabusLink(),
+    //             courseRequestBody.getDestination(), courseRequestBody.getStatus(), hostUniName, null); // feedback is null in this implementation
+    // }
 }

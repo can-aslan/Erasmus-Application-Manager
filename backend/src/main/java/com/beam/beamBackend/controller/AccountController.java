@@ -1,9 +1,7 @@
 package com.beam.beamBackend.controller;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.HashSet;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,13 +15,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.beam.beamBackend.exception.ExceptionLogger;
+import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
 import com.beam.beamBackend.request.ChangePassword;
 import com.beam.beamBackend.response.RLoginUser;
 import com.beam.beamBackend.response.RRefreshToken;
+import com.beam.beamBackend.response.RRegisterStaff;
 import com.beam.beamBackend.response.Response;
-import com.beam.beamBackend.service.AccountService;
+import com.beam.beamBackend.service.IAccountService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -31,12 +32,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/v1/auth")
 public class AccountController {
-    private final AccountService accountService;
-
-    // @Autowired
-    // public AccountController(AccountService accountService) {
-    //     this.accountService = accountService;
-    // }
+    private final IAccountService accountService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "login")
@@ -45,27 +41,40 @@ public class AccountController {
             RLoginUser token = accountService.login(userInfo);
             return Response.create("login is successful", HttpStatus.OK, token);
         } catch (Exception e) {
-            return Response.create("login failed", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register")
     public ResponseEntity<Object> register(@Valid @RequestBody User userInfo) {
         try {
-            UUID ids = accountService.addUser(userInfo);
+            User ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "/register_chunk")
     public ResponseEntity<Object> register(@RequestBody User[] userInfo) {
         try {
             HashSet<User> users = accountService.addUserChunk(userInfo);
             return Response.create("accounts are created", HttpStatus.OK, users);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
+        }        
+    }
+    
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "register_staff")
+    public ResponseEntity<Object> registerStaff(@Valid @RequestBody RegisterStaff userInfo) {
+        try {
+            RRegisterStaff savedStaff = accountService.addStaff(userInfo);
+            return Response.create("account is created", HttpStatus.OK, savedStaff);
+        } catch (Exception e) {
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);
         }        
     }
 
@@ -75,10 +84,10 @@ public class AccountController {
         @RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
 
         try {
-            boolean isPasswordChanged = accountService.changePassword(auth, userInfo);
+            accountService.changePassword(auth, userInfo);
             return Response.create("password is changed", HttpStatus.OK);
         } catch (Exception e) {
-            return Response.create("password cannot be changed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -89,17 +98,18 @@ public class AccountController {
             RRefreshToken newToken = accountService.refreshToken(auth);
             return Response.create("new accsess token is created", HttpStatus.OK, newToken);
         } catch (Exception e) {
-            return Response.create("auth failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/test")
     public ResponseEntity<Object> testAuth() {
         try {
             String test = "welcome to the authenticated endpoint!";
             return Response.create("ok", HttpStatus.OK, test);
         } catch (Exception e) {
-            return Response.create("auth failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -110,7 +120,7 @@ public class AccountController {
             List<User> userList = accountService.getUsers();
             return Response.create("ok", HttpStatus.OK, userList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 }

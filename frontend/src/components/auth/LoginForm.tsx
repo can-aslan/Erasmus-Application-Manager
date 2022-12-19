@@ -32,7 +32,7 @@ const LoginForm = () => {
         onError: (error) => {
             if (axios.isAxiosError(error)) {
                 if (!error.status) {
-                    toast.error("We can't reach BEAM servers at the moment. Please wait while we identify the issue!", {
+                    toast.error("Password or Bilkent ID is wrong!", {
                         position: toast.POSITION.BOTTOM_LEFT,
                     })
                 }
@@ -67,7 +67,8 @@ const LoginForm = () => {
             const bilkentID = form.values.bilkentID
             const pwd = form.values.password
             // FIXME: Commented until database is connected
-            loginMutation.mutate({bilkentID, pwd})
+            loginMutation.mutate({ bilkentID, pwd })
+
 
             // setUser({
             //     refreshToken: "refreshT",
@@ -76,13 +77,15 @@ const LoginForm = () => {
             //     id: "22002811",
             //     name: "Selim Can",
             //     surname: "Güler",
-
+            //     bilkentId: "22003216",
             //     userType: UserEnum.OutgoingStudent,
             // })
             // navigate("/")
         }
     }
-
+    const goGuestPage = () => {
+        navigate("/guest");
+    }
     return (
         <form>
             <Stack spacing={16}>
@@ -105,12 +108,17 @@ const LoginForm = () => {
                 >
                     Sign In
                 </Button>
+                <Button
+                    onClick={goGuestPage}
+                >
+                    Continue as Guest
+                </Button>
                 <Group position="center">
-                    <Link
+                    {/* <Link
                         to='/forgot-password'
                     >
                         Forgot your password?
-                    </Link>
+                    </Link> */}
                 </Group>
             </Stack>
         </form>

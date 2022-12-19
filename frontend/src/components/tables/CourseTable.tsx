@@ -7,17 +7,18 @@ import { BilkentCourse, HostCourse } from "../../types";
 type CourseTableCourses = {
     bilkentCourse: BilkentCourse
     hostCourse: HostCourse
+    wishId: string,
 }
 
 interface CourseTableProps {
     records: Array<CourseTableCourses> | undefined,
-    handleRemoveItem: (event: React.MouseEvent, bilkentCourseId: string) => void
+    handleRemoveItem: (event: React.MouseEvent, wishlistId: string) => void
 }
 
 const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
     return (
         <DataTable
-            mih={120}
+            minHeight={150}
             columns={[
                 {
                     accessor: 'bilkentCourse.courseCode',
@@ -25,12 +26,12 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     width: 80
                 },
                 {
-                    accessor: 'bilkentCourse.courseName',
+                    accessor: 'bilkentCourse.bilkentName',
                     title: "Bilkent Course Name",
                     width: 120
                 },
                 {
-                    accessor: 'bilkentCourse.ECTSCredits',
+                    accessor: 'bilkentCourse.ects',
                     title: "ECTS Credits",
                     width: 120
                 },
@@ -40,12 +41,12 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     width: 80
                 },
                 {
-                    accessor: 'hostCourse.courseName',
+                    accessor: 'hostCourse.hostName',
                     title: "Host Course Name",
                     width: 120
                 },
                 {
-                    accessor: 'hostCourse.ECTSCredits',
+                    accessor: 'hostCourse.ects',
                     title: "ECTS Credits",
                     width: 120
                 },
@@ -54,7 +55,7 @@ const CourseTable = ({ records, handleRemoveItem }: CourseTableProps) => {
                     accessor: "actions",
                     textAlignment: 'right',
                     render: (course) => (
-                        <ActionIcon onClick={(e) => handleRemoveItem(e, course.bilkentCourse.courseUUID)} color='red' size='xl'>
+                        <ActionIcon onClick={(e) => handleRemoveItem(e, course.wishId)} color='red' size='xl'>
                             <IconTrash />
                         </ActionIcon>
                     )

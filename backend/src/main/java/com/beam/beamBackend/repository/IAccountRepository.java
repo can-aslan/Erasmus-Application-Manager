@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.beam.beamBackend.enums.UserType;
 import com.beam.beamBackend.model.User;
 
 // @Qualifier("accountjpa")
@@ -24,6 +25,8 @@ public interface IAccountRepository extends JpaRepository<User, UUID> {
     Optional<User> findUserById(UUID id);
     Optional<User> findUserByEmail(String email);
     boolean existsByBilkentId(Long bilkentId);
+    boolean existsByBilkentIdOrEmail(Long bilkentId, String email);
+    boolean existsByIdAndUserType(UUID id, UserType userType);
     /*
         @Query("SELECT phoneNumber FROM CustomerEntity customer")
         List<String> findPhoneNumbers();

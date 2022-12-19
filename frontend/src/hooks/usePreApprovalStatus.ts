@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosInstance } from "axios"
-import { getFile } from "../api/FileService"
-import { useUser } from "../provider/UserProvider"
+import { getPreApprovalStatus } from "../api/FileService"
 
-export const usePreApprovalStatus = (axios: AxiosInstance, userId: string) => {
+export const usePreApprovalStatus = (axios: AxiosInstance, bilkentId: string) => {
     return useQuery({
-        queryKey: ['preApprovalForm'],
-        queryFn: () => getFile(axios, userId),
+        queryKey: ['preApprovalFormStatus'],
+        queryFn: () => getPreApprovalStatus(axios, bilkentId),
     })
 }

@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import com.beam.beamBackend.request.StaffRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
@@ -39,17 +40,26 @@ public class Staff {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @NotNull
+    // @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "department", nullable = false)
+    @Column(name = "department", nullable = true)
     private Department department;
 
-    @NotNull
+    // @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "faculty", nullable = false)
+    @Column(name = "faculty", nullable = true)
     private Faculty faculty;
 
     public static Staff toStaff(StaffRequest sReq, User u) {
         return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
+    }
+    
+    // public static Staff toStaff(StaffRequest sReq, User u) {
+    //     return new Staff(null, u, sReq.getDepartment(), sReq.getFaculty());
+    // }
+
+    @JsonIgnore
+    public UUID getId() {
+        return id;
     }
 }

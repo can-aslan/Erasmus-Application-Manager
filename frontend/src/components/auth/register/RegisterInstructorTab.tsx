@@ -6,16 +6,15 @@ import { toast } from "react-toastify"
 import { registerStaff } from "../../../api/UserService"
 import useAxiosSecure from "../../../hooks/useAxiosSecure"
 import { useCourses } from "../../../hooks/useCourses"
-import { BilkentCourse, NewUser } from "../../../types"
+import { BilkentCourse, NewStaff, UserEnum } from "../../../types"
 import { DEPARTMENTS, FACULTIES } from "../../../utils/constants"
 
 const RegisterInstructorTab = () => {
     const axiosSecure = useAxiosSecure()
-    const [department, setDepartment] = useState('')
-    const [faculty, setFaculty] = useState('')
-    const [courses, setCourses] = useState<Array<BilkentCourse>>()
+    const [department, setDepartment] = useState(DEPARTMENTS[0].label)
+    const [faculty, setFaculty] = useState(FACULTIES[0].label)
 
-    // const { data: bilkentCourses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses(axiosSecure)
+    const { data: bilkentCourses, isLoading: isCoursesLoading, isError: isCoursesError} = useCourses(axiosSecure)
 
     const form = useForm({
         initialValues: {
@@ -35,8 +34,9 @@ const RegisterInstructorTab = () => {
     const handleRegister = () => {
         const validation = form.validate()
         if (!validation.hasErrors && department && faculty) {
-            const user: NewUser = {
+            const user: NewStaff = {
                 ...form.values,
+                userType: UserEnum.Instructor,
                 department,
                 faculty
             }
@@ -46,9 +46,9 @@ const RegisterInstructorTab = () => {
 
     const { mutate: mutateRegister, data: userData, isLoading: isRegisterLoading } = useMutation({
         mutationKey: ['registerUser'],
-        mutationFn: (user: NewUser) => registerStaff(axiosSecure, user),
+        mutationFn: (user: NewStaff) => registerStaff(axiosSecure, user),
         onSuccess: () => toast.success(`Registered the user.`),
-        onError: () => toast.success("Student registration failed.")
+        onError: () => toast.error("Student registration failed.")
     })
     
     return (
@@ -76,11 +76,14 @@ const RegisterInstructorTab = () => {
                 label="Select faculty"
                 placeholder="Faculties"
                 data={FACULTIES}
+                value={faculty}
+                onChange={(value) => setFaculty(value!)}
             />
             <Select
                 label="Select department"
                 placeholder="Departments"
                 data={DEPARTMENTS}
+                onChange={(value) => setDepartment(value!)}
             />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>

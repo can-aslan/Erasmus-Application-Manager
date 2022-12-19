@@ -1,13 +1,16 @@
-export const downloadBlobFile = (body: Uint8Array[], filenameWithoutExtension: string, extension = 'pdf') => {
-    const blob = new Blob(body)
-    const filename = `${filenameWithoutExtension}.${extension}`
+export const downloadBlobFile = (body: Blob, filenameWithoutExtension: string='image', extension = 'pdf') => {
+    const aElement = document.createElement('a');
+    const url = URL.createObjectURL(body)
+    aElement.href = url
+    aElement.download = filenameWithoutExtension;
+    document.body.appendChild(aElement);
+    aElement.click();
+    document.body.removeChild(aElement);
+}
 
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', filename)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+export const downloadPdf = (data: string) => {
+    const link = document.createElement('a');
+    link.href = "data:application/octet-stream;base64," + data;
+    link.download = 'file.pdf';
+    link.click();
 }

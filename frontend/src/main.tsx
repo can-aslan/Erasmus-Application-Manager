@@ -4,13 +4,14 @@ import {
 } from '@tanstack/react-query'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
-import PersistentLogin from './components/auth/PersistentLogin'
-import RequireAuth from './components/auth/RequireAuth'
 import Layout from './components/Layout'
 import ProviderWrapper from './components/ProviderWrapper'
+import PersistentLogin from './components/auth/PersistentLogin'
+import RequireAuth from './components/auth/RequireAuth'
 import './index.css'
+import PlacementPage from './pages/Admin/PlacementPage'
 import RegisterPage from './pages/Admin/RegisterPage'
 import ApproveLearningAgreementPage from './pages/Coordinator/ApproveLearningAgreementPage'
 import CoordinatorApprovePreApprovalsPage from './pages/Coordinator/ApprovePreApprovalsPage'
@@ -22,6 +23,7 @@ import ApprovePreApprovalsPage from './pages/FACMember/ApprovePreApprovalsPage'
 import MissingPage from './pages/Feedback/MissingPage'
 import Unauthorized from './pages/Feedback/UnauthorizedPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import GuestPage from './pages/Guest/GuestPage'
 import ApproveCourseRequestPage from './pages/Instructor/ApproveCourseRequestPage'
 import LoginPage from './pages/LoginPage'
 import TranscriptUploadPage from './pages/OISEPStaff/TranscriptUploadPage'
@@ -31,8 +33,9 @@ import LearningAgreementPage from './pages/OutgoingStudent/LearningAgreementPage
 import PreApprovalFormPage from './pages/OutgoingStudent/PreApprovalFormPage'
 import UniversitiesPage from './pages/OutgoingStudent/UniversitiesPage'
 import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
-import SeeCourseEvaluationsPage from './pages/SeeCourseEvaluationsPage'
+import UploadSignaturePage from './pages/UploadSignaturePage'
 import { UserEnum } from './types'
+
 
 const router = createBrowserRouter([
   {
@@ -48,8 +51,16 @@ const router = createBrowserRouter([
     element: <ForgotPasswordPage />
   },
   {
-    path: '/course-evaluations',
-    element: <SeeCourseEvaluationsPage uniId='1'/>
+    path: '/guest',
+    element: <GuestPage/>
+  },
+  {
+    path: '/universities',
+    element: <UniversitiesPage />
+  },
+  {
+    path: '/universities/:universityId',
+    element: <UniversityDetails />
   },
   {
     element: <PersistentLogin />,
@@ -61,11 +72,10 @@ const router = createBrowserRouter([
           UserEnum.Coordinator, 
           UserEnum.FACMember, 
           UserEnum.IncomingStudent, 
-          UserEnum.IncomingStudent, 
           UserEnum.OutgoingStudent, 
           UserEnum.Instructor, 
           UserEnum.ExperiencedStudent,
-          UserEnum.OISEPStaff,
+          UserEnum.ISOStaff,
         ]} />,
         children: [
           {
@@ -75,6 +85,10 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.OutgoingStudent]} />,
                 children: [
+                  {
+                    path: '/student/upload-signature',
+                    element: <UploadSignaturePage></UploadSignaturePage>
+                  },
                   {
                     path: '/student/pre-approval-form',
                     element: <PreApprovalFormPage />
@@ -88,21 +102,9 @@ const router = createBrowserRouter([
                     element: <CourseWishlistPage />
                   },
                   {
-                    path: '/student/universities',
-                    element: <UniversitiesPage />
-                  },
-                  {
-                    path: '/student/universities/:universityId',
-                    element: <UniversityDetails />
-                  },
-                  {
                     path: '/student/learning-agreement',
                     element: <LearningAgreementPage/>
                   },
-                  {
-                    path: '/student/course-evaluations',
-                    element: <SeeCourseEvaluationsPage uniId='1'/>
-                  }
                 ]
               },
               {
@@ -125,6 +127,10 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.Coordinator]} />,
                 children: [
+                  {
+                    path: '/coordinator/upload-signature',
+                    element: <UploadSignaturePage />
+                  },
                   {
                     path: '/coordinator/student-wishlists',
                     element: <ApproveWishlistsPage />
@@ -149,6 +155,10 @@ const router = createBrowserRouter([
                   {
                     path: '/admin/register-page',
                     element: <RegisterPage />
+                  },
+                  {
+                    path: '/admin/placement-page',
+                    element: <PlacementPage />
                   }
                 ]
               },
@@ -176,7 +186,7 @@ const router = createBrowserRouter([
                 ]
               },
               {
-                element: <RequireAuth allowedUsers={[UserEnum.OISEPStaff]} />,
+                element: <RequireAuth allowedUsers={[UserEnum.ISOStaff]} />,
                 children: [
                   {
                     path: '/oisep-staff/transcript-upload',

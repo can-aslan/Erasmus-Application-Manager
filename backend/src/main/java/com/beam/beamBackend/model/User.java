@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import com.beam.beamBackend.enums.UserType;
+import com.beam.beamBackend.request.UserRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(generator = "UUID")
+    // @GeneratedValue(generator = "UUID")
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -38,11 +39,11 @@ public class User {
     private String surname;
 
     @NotBlank
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @NotNull
-    @Column(name = "bilkent_id", nullable = false)
+    @Column(name = "bilkent_id", nullable = false, unique = true)
     private Long bilkentId;
 
     @NotBlank
@@ -72,8 +73,13 @@ public class User {
     }
 
     // do not send password to client
-    @JsonIgnore
-    public String getPassword() {
-        return password;
+    // @JsonIgnore
+    // public String getPassword() {
+    //     return password;
+    // }
+
+    public static User toUser(UserRequest userRequest, String password) {
+        return new User(userRequest.getId(), userRequest.getName(), userRequest.getSurname(), 
+                userRequest.getEmail(), userRequest.getBilkentId(), null, null);
     }
 }

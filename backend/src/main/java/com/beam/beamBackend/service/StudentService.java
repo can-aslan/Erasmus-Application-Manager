@@ -1,37 +1,45 @@
 package com.beam.beamBackend.service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
+import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.Staff;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.repository.IAccountRepository;
+import com.beam.beamBackend.repository.IHostCourseRepository;
 import com.beam.beamBackend.repository.IStaffRepository;
 import com.beam.beamBackend.repository.IStudentRepository;
 import com.beam.beamBackend.repository.IUniversityRepository;
 import com.beam.beamBackend.request.StudentRequest;
+import com.beam.beamBackend.response.RHostCourse;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class StudentService {
-    final private IStudentRepository studentRepo;
-    final private IAccountRepository userRepo;
+public class StudentService implements IStudentService {
+    private final IStudentRepository studentRepo;
+    private final IAccountRepository userRepo;
     private final IUniversityRepository uniRepository;
     private final IStaffRepository staffRepository;
+    private final IHostCourseRepository hostCourseRepo;
 
+    @Override
     public UUID addStudent(StudentRequest student) throws Exception {
         try {
+            // if student already exists throw an exception
             Optional<User> user = userRepo.findUserById(student.getUserId());
 
             if (!user.isPresent()) {
                 throw new Exception("user not found");
             }
 
+            // if universities don't exist throw an exception
             Optional<University> homeUni = uniRepository.findUniById(student.getHomeUniId());
 
             if (!homeUni.isPresent()) {
@@ -44,6 +52,7 @@ public class StudentService {
                 throw new Exception("host university not found");
             }
             
+            // if coordinator does not exists throw ane exception
             Optional<Staff> coordinator = staffRepository.findByUserId(student.getCoordinatorId());
 
             if (!coordinator.isPresent()) {
@@ -62,22 +71,28 @@ public class StudentService {
         }        
     }
 
-    // public Student getStudentByBilkentId(Long bilkentId) throws Exception {
-    //     try {
-    //         Optional<Student> s = studentRepo.findByBilkentId(bilkentId);
+    @Override
+    public List<RHostCourse> getHostCoursesOfStudentHostUni(Long bilkentId) throws Exception {
+        try {
+            Student student = getStudentByBilkentId(bilkentId);
+            String hostUniName = student.getHostUni().getName();
 
-    //         if (!s.isPresent()) {
-    //             throw new Exception("user not found");
-    //         }
+            List<HostCourse> hostCourses = hostCourseRepo.findByUniversityName(hostUniName);
+            List<RHostCourse> responseList = new ArrayList<RHostCourse>();
 
-    //         return s.get();
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         throw e;
-    //     }
-    // }
+            for (HostCourse h : hostCourses) {
+                responseList.add(new RHostCourse(h));
+            }
+
+            return responseList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     // this is user id
+    @Override
     public Student getStudentById(UUID id) throws Exception {
         try {
             Optional<Student> s = studentRepo.findByUserId(id);
@@ -93,6 +108,7 @@ public class StudentService {
         }
     }
 
+    @Override
     public List<Student> getAll() throws Exception {
         try {
             return studentRepo.findAll();
@@ -102,6 +118,7 @@ public class StudentService {
         }
     }
 
+    @Override
     public University getUniOfStudent(Long bilkentId) throws Exception {
         Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
 
@@ -112,6 +129,7 @@ public class StudentService {
         return student.get().getHostUni();
     }
 
+    @Override
     public UUID getUniIdOfStudent(Long bilkentId) throws Exception {
         Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
 
@@ -122,6 +140,7 @@ public class StudentService {
         return student.get().getHostUni().getId();
     }
 
+    @Override
     public Student getStudentByBilkentId(Long bilkentId) throws Exception {
         Optional<Student> student = studentRepo.findByUserBilkentId(bilkentId);
 
@@ -132,6 +151,7 @@ public class StudentService {
         return student.get();
     }
 
+    @Override
     public Student updateStudent(StudentRequest student) throws Exception {
         try {
             Student studentToUpdate = studentRepo.getReferenceById(student.getUserId());
@@ -205,6 +225,5 @@ public class StudentService {
             e.printStackTrace();
             throw e;
         }
-        
     }
 }

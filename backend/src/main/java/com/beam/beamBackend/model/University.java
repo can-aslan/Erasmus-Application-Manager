@@ -45,10 +45,7 @@ public class University {
 
     @NotBlank
     @Column(name = "city", nullable = false)
-    private String city;
-    
-    // @NotNull
-    // private UUID countryId;    
+    private String city;    
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,13 +55,11 @@ public class University {
     public University(@JsonProperty("id") UUID id,
                 @JsonProperty("name") String name,
                 @JsonProperty("city") String city,
-                // @JsonProperty("countryId") UUID countryId,
                 Country country) {
 
         this.id = id;
         this.name = name;
         this.city = city;
-        // this.countryId = countryId;
         this.country = country;
     }
 }

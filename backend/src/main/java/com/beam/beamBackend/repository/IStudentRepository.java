@@ -14,4 +14,6 @@ public interface IStudentRepository extends JpaRepository<Student, UUID> {
     Optional<Student> findByUserBilkentId(Long bilkentId);
     Optional<Student> findByUserId(UUID id);
     List<Student> findAll();
+    List<Student> findAllByCoordinatorUserId(UUID id);
+    
 }
