@@ -63,7 +63,7 @@ public class FormController {
             return Response.create("Successfully deleted the file", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File deletion failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("File deletion failed", HttpStatus.CONFLICT);  
         }
     }
 
@@ -80,7 +80,7 @@ public class FormController {
                     .body(resource);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File download failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("File download failed", HttpStatus.CONFLICT);  
         }
     }
 
@@ -93,7 +93,7 @@ public class FormController {
             return Response.create("Successfully submitted the file.", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File submit failed.", HttpStatus.CONFLICT); // might change later
+            return Response.create("File submit failed.", HttpStatus.CONFLICT);  
         }
     }
     
@@ -108,7 +108,7 @@ public class FormController {
                     .body(new String(resource));
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File upload failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("File upload failed", HttpStatus.CONFLICT);  
         }
     }
 
@@ -122,7 +122,7 @@ public class FormController {
             return Response.create("Signed the file successfully", HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("File sign failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("File sign failed", HttpStatus.CONFLICT);  
         }
     }
 
@@ -134,7 +134,7 @@ public class FormController {
             return Response.create("Fetched pre-approval status successfully", HttpStatus.OK, status);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.create("Pre-approval status fetch failed", HttpStatus.CONFLICT); // might change later
+            return Response.create("Pre-approval status fetch failed", HttpStatus.CONFLICT);  
         }
     }
 }

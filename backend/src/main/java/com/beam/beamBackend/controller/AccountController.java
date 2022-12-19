@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.RegisterStaff;
 import com.beam.beamBackend.model.User;
 import com.beam.beamBackend.model.UserLogin;
@@ -39,7 +41,7 @@ public class AccountController {
             RLoginUser token = accountService.login(userInfo);
             return Response.create("login is successful", HttpStatus.OK, token);
         } catch (Exception e) {
-            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);
         }        
     }
 
@@ -50,7 +52,7 @@ public class AccountController {
             User ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
-            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), HttpStatus.CONFLICT); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);
         }        
     }
 
@@ -61,7 +63,7 @@ public class AccountController {
             HashSet<User> users = accountService.addUserChunk(userInfo);
             return Response.create("accounts are created", HttpStatus.OK, users);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
     
@@ -72,7 +74,7 @@ public class AccountController {
             RRegisterStaff savedStaff = accountService.addStaff(userInfo);
             return Response.create("account is created", HttpStatus.OK, savedStaff);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);
         }        
     }
 
@@ -85,7 +87,7 @@ public class AccountController {
             accountService.changePassword(auth, userInfo);
             return Response.create("password is changed", HttpStatus.OK);
         } catch (Exception e) {
-            return Response.create("password cannot be changed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -96,7 +98,7 @@ public class AccountController {
             RRefreshToken newToken = accountService.refreshToken(auth);
             return Response.create("new accsess token is created", HttpStatus.OK, newToken);
         } catch (Exception e) {
-            return Response.create("auth failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -107,7 +109,7 @@ public class AccountController {
             String test = "welcome to the authenticated endpoint!";
             return Response.create("ok", HttpStatus.OK, test);
         } catch (Exception e) {
-            return Response.create("auth failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -118,7 +120,7 @@ public class AccountController {
             List<User> userList = accountService.getUsers();
             return Response.create("ok", HttpStatus.OK, userList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 }
