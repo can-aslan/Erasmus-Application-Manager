@@ -82,7 +82,14 @@ public class WishlistService implements IWishlistService {
             wishlistRepository.save(new Wishlist(studentId, CourseWishlistStatus.WAITING));
         }
 
-        // Maybe later, check if bilkent course already exists in wishlist item repository
+        // Check if bilkent course already exists in wishlist item repository
+        String newBilkentCourseToAdd = itemToAdd.getBilkentCourse();
+        String newBilkentNameToAdd = itemToAdd.getBilkentName();
+
+        if (itemRepository.existsByBilkentCourse(newBilkentCourseToAdd) || itemRepository.existsByBilkentName(newBilkentNameToAdd)) {
+            throw new Exception("student with id " + studentId + " cannot add wishlist item, already has bilkent course or bilkent name in the wishlist");
+        }
+
         if (!itemToAdd.getStudentId().equals(studentId)) {
             throw new Exception("student with id " + studentId + " cannot add wishlist item, student ids do not match");
         }
