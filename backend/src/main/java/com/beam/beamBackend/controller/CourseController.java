@@ -36,7 +36,7 @@ public class CourseController {
             BilkentCourse course = courseService.addBilkentCourse(bilkentCourse);
             return Response.create("course is saved", HttpStatus.OK, course);
         } catch (Exception e) {
-            return Response.create("course add failed", 499);
+            return Response.create(e.getLocalizedMessage() + ": " + e.getMessage(), 499);
         }        
     }
 
