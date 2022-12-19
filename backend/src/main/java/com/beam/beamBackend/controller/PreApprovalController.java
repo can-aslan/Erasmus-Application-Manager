@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.PreApprovalForm;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.IPreApprovalService;
@@ -31,7 +33,7 @@ public class PreApprovalController {
             return Response.create("PreApprovals are fetched!", HttpStatus.OK, preApprovalForms);
         }
         catch (Exception e) {
-            return Response.create("PreApprovals could not fetched!", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 
@@ -43,7 +45,7 @@ public class PreApprovalController {
             return Response.create("PreApprovals are approved!", HttpStatus.OK, isSuccessfull);
         }
         catch (Exception e) {
-            return Response.create("PreApprovals could not be approved!", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 
@@ -55,7 +57,7 @@ public class PreApprovalController {
             return Response.create("PreApprovals are rejected!", HttpStatus.OK, isSuccessfull);
         }
         catch (Exception e) {
-            return Response.create("PreApprovals could not be rejected!", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 }

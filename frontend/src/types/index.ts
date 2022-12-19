@@ -237,7 +237,7 @@ export type PastEvaluationItem = {
 }
 
 export type StudentAssociatedCoursePastEvaluationItem = PastEvaluationItem & {
-    course_id?: string,
+    course_id: string,
     eval_status: string
 }
 

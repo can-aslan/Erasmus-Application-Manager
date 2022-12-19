@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.model.WishlistItem;
 import com.beam.beamBackend.model.WishlistItemMapping;
@@ -42,7 +44,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("course wishlists fetch failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -61,7 +63,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("course wishlists fetch failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -83,7 +85,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("course wishlists fetch failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -102,7 +104,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("course wishlist submission failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -141,7 +143,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("adding a course wishlist item failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -160,7 +162,7 @@ public class WishlistController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return Response.create("removing a course wishlist item failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

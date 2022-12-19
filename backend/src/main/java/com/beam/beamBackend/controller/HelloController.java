@@ -20,7 +20,7 @@ public class HelloController {
             String test = "Hi, this is BEAM backend team!";
             return Response.create("ok", HttpStatus.OK, test);
         } catch (Exception e) {
-            return Response.create("hello failed", 312); // might change later
+            return Response.create("hello failed", 312);  
         }        
     }
 }

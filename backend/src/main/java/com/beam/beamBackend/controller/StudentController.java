@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.request.StudentRequest;
@@ -36,7 +38,7 @@ public class StudentController {
             UUID id = studentService.addStudent(student);
             return Response.create("student is added", HttpStatus.OK, id);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
     
@@ -47,7 +49,7 @@ public class StudentController {
             List<Student> students = studentService.getAll();
             return Response.create("student is added", HttpStatus.OK, students);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 
@@ -58,7 +60,7 @@ public class StudentController {
             Student student = studentService.getStudentByBilkentId(bilkentId);
             return Response.create("student is retrieved", HttpStatus.OK, student);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 
@@ -69,7 +71,7 @@ public class StudentController {
             UUID uniId = studentService.getUniIdOfStudent(bilkentId);
             return Response.create("uni id of student is retrieved", HttpStatus.OK, uniId);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 
@@ -80,20 +82,9 @@ public class StudentController {
             List<RHostCourse> courses = studentService.getHostCoursesOfStudentHostUni(bilkentId);
             return Response.create("uni id of student is retrieved", HttpStatus.OK, courses);
         } catch (Exception e) {
-            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
-
-    // @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Object> getStudentById(@Valid @PathVariable("id") UUID id) {
-    //     try {
-    //         Student student = studentService.getStudentById(id);
-    //         return Response.create("student is added", HttpStatus.OK, student);
-    //     } catch (Exception e) {
-    //         return Response.create("student is not created", 499); // might change later
-    //     }        
-    // }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "")
@@ -102,7 +93,7 @@ public class StudentController {
             Student updated = studentService.updateStudent(student);
             return Response.create("student is added", HttpStatus.OK, updated);
         } catch (Exception e) {
-            return Response.create("student is not created", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 }

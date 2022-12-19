@@ -3,6 +3,8 @@ package com.beam.beamBackend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.Country;
 import com.beam.beamBackend.model.University;
 import com.beam.beamBackend.request.AddUni;
@@ -36,7 +38,7 @@ public class UniversityCountryController {
             HashSet<University> addedUnis = uniCountryService.addUniversity(university);
             return Response.create("account is created", HttpStatus.OK, addedUnis);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);  
         }        
     }
 
@@ -48,7 +50,7 @@ public class UniversityCountryController {
             HashSet<Country> addedCountries = uniCountryService.addCountry(country);
             return Response.create("accounts are created", HttpStatus.OK, addedCountries);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);  
         }        
     }
 
@@ -59,7 +61,7 @@ public class UniversityCountryController {
             List<University> uniList = uniCountryService.getAllUni();
             return Response.create("ok", HttpStatus.OK, uniList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -77,7 +79,7 @@ public class UniversityCountryController {
             
             return Response.create("ok", HttpStatus.OK, countryList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -88,7 +90,7 @@ public class UniversityCountryController {
             University uni = uniCountryService.getUni(uniId);
             return Response.create("ok", HttpStatus.OK, uni);
         } catch (Exception e) {
-            return Response.create("university cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -99,7 +101,7 @@ public class UniversityCountryController {
             Country country = uniCountryService.getCountry(countryId);
             return Response.create("ok", HttpStatus.OK, country);
         } catch (Exception e) {
-            return Response.create("country cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -110,7 +112,7 @@ public class UniversityCountryController {
             List<University> universities = uniCountryService.getUniByCountry(countryId);
             return Response.create("ok", HttpStatus.OK, universities);
         } catch (Exception e) {
-            return Response.create("universities cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 }
