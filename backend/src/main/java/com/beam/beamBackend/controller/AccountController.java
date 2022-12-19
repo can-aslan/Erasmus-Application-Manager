@@ -39,7 +39,7 @@ public class AccountController {
             RLoginUser token = accountService.login(userInfo);
             return Response.create("login is successful", HttpStatus.OK, token);
         } catch (Exception e) {
-            return Response.create("login failed", 499); // might change later
+            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), 499); // might change later
         }        
     }
 
@@ -50,7 +50,7 @@ public class AccountController {
             User ids = accountService.addUser(userInfo);
             return Response.create("account is created", HttpStatus.OK, ids);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+            return Response.create(e.getLocalizedMessage() + " : " + e.getMessage(), HttpStatus.CONFLICT); // might change later
         }        
     }
 
