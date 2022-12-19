@@ -49,16 +49,19 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         }
     })
 
-    const { mutate: downloadPreApprovalMutate } = useMutation({
+    const { mutate: downloadPreApprovalMutate, isLoading: isPreApprovalDownloadLoading } = useMutation({
         mutationKey: ['coordinatorDownloadPreApproval'],
         mutationFn: (studentId: string) => downloadForm(axiosSecure, studentId, Form.PRE_APPROVAL),
         onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}`)
     })
 
     const viewPreApproval = (formID: string) => {
-        setSelectedPreApproval(preApprovals.find(element => element.id === formID));
-        setPreApprovalDetailsOpened(true);
+        const preApprovalForm = preApprovals.find(element => element.id === formID)
+        console.log(preApprovalForm)
+        setSelectedPreApproval(preApprovalForm);
+        setPreApprovalDetailsOpened(true)
     }
+
     const approvePreApproval = () => {
         // Approve the selected student's wishlist
         approvePreApprovalMutate(selectedStudentID);
@@ -74,19 +77,6 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         setRejectionFeedbackOpened(true);
         setPreApprovalDetailsOpened(false);
     }
-    function getPreApprovalRows() {
-        return selectedPreApproval?.wishlist?.mappings?.map((element) => (
-            <tr key={element.hostCourse}>
-                <td>{selectedPreApproval.wishlist.mappings.indexOf(element) + 1}</td>
-                <td>{element.hostCourse}</td>
-                <td>{element.hostName}</td>
-                <td>{element.ects}</td>
-                <td>{selectedPreApproval.wishlist.bilkentCourse + selectedPreApproval.wishlist.bilkentName}</td>
-                <td>{selectedPreApproval.wishlist.bilkentCredits}</td>
-            </tr>
-        ));
-    }
-    const preApprovalRows = getPreApprovalRows();
     const pendingApprovalRows = getPendingApprovalRows();
 
     const changeFilter = (filter: string | null, query: string) => {
@@ -101,10 +91,10 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
     const searchPreApproval = (query: string, filter: string | null) => {
         if (query !== '') {
             if (filter === null) {
-                setTempPendingApprovalList(preApprovals.filter((student) => (student.student.user.name + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)));
+                setTempPendingApprovalList(preApprovals.filter((student) => (student.student.user.name + " " + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)));
             }
             else {
-                setTempPendingApprovalList(preApprovals.filter((student) => ((student.student.user.name + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)) && student.preApprovalStatus === filter));
+                setTempPendingApprovalList(preApprovals.filter((student) => ((student.student.user.name + " " + student.student.user.surname).toLowerCase().includes(query.toLowerCase()) || student.student.user.bilkentId.toString().includes(query)) && student.preApprovalStatus === filter));
             }
         }
         else {
@@ -158,10 +148,29 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                                     Elective Group Name for an Elective Requirement (Bilkent)
                                 </th>
                                 <th>Credits (Bilkent)</th>
-                                <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th>
+                                {/* <th>Elective Requirement Exemptions only: Course code(s) of directly equivalent course(s), if any (Bilkent)</th> */}
                             </tr>
                         </thead>
-                        <tbody>{preApprovalRows}</tbody>
+                        <tbody>
+                            {selectedPreApproval?.wishlist?.items?.map((element, index) => {
+                                console.log(selectedPreApproval.wishlist.items)
+                                if (typeof element === "string") {
+
+                                }
+                                else {
+                                    return (
+                                        <tr key={element.mappings[0].hostCourse + index}>
+                                            <td>{index + 1}</td>
+                                            <td>{element.mappings[0].hostCourse}</td>
+                                            <td>{element.mappings[0].hostName}</td>
+                                            <td>{element.mappings[0].ects}</td>
+                                            <td>{element.bilkentCourse + " " + element.bilkentName}</td>
+                                            <td>{element.bilkentCredits}</td>
+                                        </tr>
+                                    )
+                                }
+                            })}
+                        </tbody>
                     </Table>
                 </Center>
                 <Space h="xs"></Space>
@@ -227,7 +236,10 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                     </td>
                     <td>
                         <Center>
-                            <Button onClick={(e) => downloadPreApproval(element.student.user.bilkentId) }>
+                            <Button 
+                                onClick={(e) => downloadPreApproval(element.student.user.id) }
+                                loading={isPreApprovalDownloadLoading}
+                            >
                                 Download
                             </Button>    
                         </Center>
