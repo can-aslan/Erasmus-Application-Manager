@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.CourseRequest;
 import com.beam.beamBackend.request.InstructorCourseAdd;
@@ -35,7 +37,7 @@ public class InstructorCourseController {
             RInstructorCourseAdd result = instructorService.addCourseToInstructor(courseInfo);
             return Response.create("account is created", HttpStatus.OK, result);
         } catch (Exception e) {
-            return Response.create("account creation is failed", HttpStatus.CONFLICT); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.CONFLICT);  
         }        
     }
 
@@ -46,7 +48,7 @@ public class InstructorCourseController {
             List<BilkentCourse> courseList = instructorService.getInstructorCourses(instructorId);
             return Response.create("ok", HttpStatus.OK, courseList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -57,7 +59,7 @@ public class InstructorCourseController {
             List<CourseRequest> courseList = instructorService.getInstructorRequestedCourses(instructorId);
             return Response.create("ok", HttpStatus.OK, courseList);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 
@@ -68,7 +70,7 @@ public class InstructorCourseController {
             CourseRequest result = instructorService.determineRequestedCourseStatus(requestResult);
             return Response.create("ok", HttpStatus.OK, result);
         } catch (Exception e) {
-            return Response.create("accounts cannot be retrieved", HttpStatus.OK); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.OK);  
         }        
     }
 }

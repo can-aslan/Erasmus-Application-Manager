@@ -12,6 +12,7 @@ export type ResponseUser = Response<User>
 export type ResponseStudentCourseWishlist = Response<ExistingCourseWishlist>
 export type ResponseAllStudentCourseWishlist = Response<Array<ExistingCourseWishlist>>
 export type ResponseStudentSpecificCourseWishlist = Response<StudentAssociatedWishlist>
+export type ResponseCoordinatorAllStudentCourseWishlist = Response<Array<ExistingCourseWishlist>>
 
 // Preapproval form
 export type ResponseAllSubmitedPreApprovals = Response<Array<PreApprovalForm>>

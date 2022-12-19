@@ -2,6 +2,7 @@ import {
     IconArrowsTransferDown,
     IconBook,
     IconClick,
+    IconFileCheck,
     IconFileReport,
     IconFileSearch,
     IconGift,
@@ -49,17 +50,13 @@ export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> 
     [UserEnum.ISOStaff]: []
 }
 
-const DEFAULT_NAVBAR_LINK_OBJECTS: Array<NavbarLink> = [
-    {
-        label: 'Upload Signature',
-        to: 'upload-signature',
-        icon: <IconSignature />
-    },
-]
-
 export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
     [UserEnum.OutgoingStudent]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
+        {
+            label: 'Upload Signature',
+            to: '/student/upload-signature',
+            icon: <IconSignature />
+        },
         {
             label: 'Course Wishlist',
             to: '/student/course-wishlist',
@@ -99,7 +96,6 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.FACMember]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Approve Pre-Approvals',
             to: '/fac-member/approve-pre-approvals',
@@ -112,7 +108,11 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         },
     ],
     [UserEnum.Coordinator]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
+        {
+            label: 'Upload Signature',
+            to: '/coordinator/upload-signature',
+            icon: <IconSignature />
+        },
         {
             label: 'Student Wishlists',
             to: '/coordinator/student-wishlists',
@@ -147,11 +147,10 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.Instructor]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Approve Course Request',
-            to: '/instructor/approve-course-request'
-
+            to: '/instructor/approve-course-request',
+            icon: <IconFileCheck />
         }
     ],
     [UserEnum.ExperiencedStudent]: [
@@ -167,7 +166,6 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
         }
     ],
     [UserEnum.ISOStaff]: [
-        ...DEFAULT_NAVBAR_LINK_OBJECTS,
         {
             label: 'Upload Transcript',
             to: '/oisep-staff/transcript-upload',

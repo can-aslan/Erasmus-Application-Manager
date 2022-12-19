@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Group, Modal, Space, Table, TextInput } from "@mantine/core";
+import { Button, Center, Flex, Group, Modal, Space, Table, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SetStateAction, useState } from "react";
@@ -147,8 +147,9 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
 
             </Table>}
             <Space h="xs" />
-            <Group position={"right"}>
+            <Group spacing='xl' position={"right"}>
                 {selectedShowApprove && <Button color={'green'} onClick={() => { approve(selectedStudentID, 'APPROVED') }}>Approve</Button>}
+                {!selectedShowApprove &&  selectedShowReject && <Text color='green'>Already Approved</Text>}
                 {selectedShowReject && <Button color={'red'} onClick={() => {setRejectionFeedbackOpened(true)}}>Reject</Button>}
             </Group>
         </Modal>

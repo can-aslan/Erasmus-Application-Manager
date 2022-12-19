@@ -93,12 +93,14 @@ public class FileGeneratorService implements IFileGeneratorService {
                 directlyEquivalent.add("");
             }
             // pseudo data ends
+            File tempFile = File.createTempFile("preapproval", "pdf");
     
             try {
                 // Make the document landscape
                 document.setPageSize(PageSize.A4.rotate());
     
-                PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.dir") + "/src/main/resources/testPDF.pdf"));
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                PdfWriter.getInstance(document, fos);
                 
                 //FileOutputStream fos = new FileOutputStream("d:/testPDF.pdf");
                 //PdfWriter.getInstance(document, fos);
@@ -120,9 +122,8 @@ public class FileGeneratorService implements IFileGeneratorService {
                 throw e;
             }
             System.out.println("PDF generated!");
-    
-            File createdPdf = new File(System.getProperty("user.dir") + "/src/main/resources/testPDF.pdf");
-            return createdPdf; // need to return InputStream (convert outputstream to inputStream)
+
+            return tempFile; // need to return InputStream (convert outputstream to inputStream)
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

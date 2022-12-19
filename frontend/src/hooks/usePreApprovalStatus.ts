@@ -4,7 +4,7 @@ import { getPreApprovalStatus } from "../api/FileService"
 
 export const usePreApprovalStatus = (axios: AxiosInstance, bilkentId: string) => {
     return useQuery({
-        queryKey: ['preApprovalForm'],
+        queryKey: ['preApprovalFormStatus'],
         queryFn: () => getPreApprovalStatus(axios, bilkentId),
     })
 }

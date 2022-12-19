@@ -1,6 +1,6 @@
 import { Anchor, Button, Card, Divider, FileButton, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCircleCheck, IconClockPause, IconDownload, IconFileDislike, IconFileLike, IconStatusChange, IconTrash } from '@tabler/icons';
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { deleteForm, downloadForm, generateAndDownloadPreApproval, generateAndSubmitPreApproval, submitFile } from '../../api/FileService';
@@ -8,7 +8,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { usePreApprovalStatus } from "../../hooks/usePreApprovalStatus";
 import { useUser } from "../../provider/UserProvider";
 import { Form } from "../../types";
-import { downloadBlobFile } from "../../utils/helpers";
+import { downloadBlobFile, downloadPdf } from "../../utils/helpers";
 import ErrorPage from "../Feedback/ErrorPage";
 import LoadingPage from "../Feedback/LoadingPage";
 
@@ -16,13 +16,17 @@ const PreApprovalFormPage = () => {
     const { user } = useUser()
     const [file, setFile] = useState<File | null>(null)
     const axiosSecure = useAxiosSecure('multipart/form-data')
+    const queryClient = useQueryClient()
 
     // Fetch pre approval status from backend.
     const {data: preApprovalStatus, isLoading: isPreApprovalLoading, isError: isPreApprovalError} = usePreApprovalStatus(axiosSecure, user.bilkentId)
     const manualUploadMutation = useMutation({
         mutationKey: ['fileSubmit'],
         mutationFn: (formData: FormData) => submitFile(axiosSecure, formData, user.id),
-        onSuccess: () => toast.success("Uploaded the file successfully."),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["preApprovalStatus"])
+            toast.success("Uploaded the file successfully.")
+        },
         onError: () => toast.error("Please ensure that you deleted your previous file before uploading a new one.")
     })
 
@@ -43,14 +47,17 @@ const PreApprovalFormPage = () => {
     const {mutate: generateDownloadMutate, isLoading: isGenerateDownloadLoading} = useMutation({
         mutationKey: ['generateDownloadPreApproval'],
         mutationFn: () => generateAndDownloadPreApproval(axiosSecure, user.id),
-        onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}_${user.bilkentId}`),
+        onSuccess: (data) => {
+            console.log(data)
+            downloadPdf(data)
+        },
         onError: () => toast.error("Generation process failed.")
     })
 
     const {mutate: generateSubmitMutate, isLoading: isGenerateSubmitLoading} = useMutation({
-        mutationKey: ['generateDownloadPreApproval'],
+        mutationKey: ['genereateSubmitPreApproval'],
         mutationFn: () => generateAndSubmitPreApproval(axiosSecure, user.id),
-        onSuccess: (data) => downloadBlobFile(data, `${Form.PRE_APPROVAL}_${user.bilkentId}`),
+        onSuccess: () => toast.success("Generated and submitted the pre-approval file successfully! You can download your file to see the generated file."),
         onError: () => toast.error("Generation process failed.")
     })
 

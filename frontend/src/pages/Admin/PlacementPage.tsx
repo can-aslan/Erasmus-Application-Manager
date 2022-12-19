@@ -1,4 +1,4 @@
-import { Button, Flex, Select } from "@mantine/core";
+import { Button, Center, Flex, Select } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from 'react';
 import { toast } from "react-toastify";
@@ -27,21 +27,25 @@ const PlacementPage = () => {
     }
     
     return (
-        <Flex direction='column'>
-            <Select
-                data={DEPARTMENTS}
-                value={selectedDepartment}
-                onChange={(value) => setSelectedDepartment(value!)}
-            >
+        <Center >
+            <Flex direction='column' miw={500} gap='xl'>
+                
+                <Select
+                    label="Select department:"
+                    data={DEPARTMENTS}
+                    value={selectedDepartment}
+                    onChange={(value) => setSelectedDepartment(value!)}
+                >
 
-            </Select>
-            <Button
-                onClick={handlePlacement}
-                loading={isPlacementLoading}
-            >
-                Place
-            </Button>
-        </Flex>
+                </Select>
+                <Button
+                    onClick={handlePlacement}
+                    loading={isPlacementLoading}
+                >
+                    Place Students
+                </Button>
+            </Flex>
+        </Center>
     );
 }
  

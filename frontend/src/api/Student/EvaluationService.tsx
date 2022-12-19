@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios"
-import { StudentAssociatedUniPastEvaluationItem } from "../../types"
+import { StudentAssociatedCoursePastEvaluationItem, StudentAssociatedUniPastEvaluationItem } from "../../types"
 import { ResponseStudentPastEvaluation } from "../../types/responseTypes"
 
 export const getStudentPastUniEval = async (axios: AxiosInstance, studentId: string) => {
@@ -19,7 +19,7 @@ export const evaluateUni = async (axios: AxiosInstance, evalForm: StudentAssocia
 }
 
 export const evaluateCourse = async (axios: AxiosInstance, evalForm: StudentAssociatedUniPastEvaluationItem) => {
-    const response = await axios.post<StudentAssociatedUniPastEvaluationItem>('/eval/course',
+    const response = await axios.post<StudentAssociatedCoursePastEvaluationItem>('/eval/course',
         evalForm)
     return response.data
 }

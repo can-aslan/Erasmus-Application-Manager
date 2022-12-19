@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.Student;
 import com.beam.beamBackend.response.Response;
 import com.beam.beamBackend.service.IStudentPlacementService;
@@ -37,7 +39,7 @@ public class StudentPlacementController {
             return Response.create("Students are placed!", HttpStatus.OK, registeredStundets);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.create("Students could not be placed!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

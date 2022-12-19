@@ -1,11 +1,16 @@
 import { AxiosInstance } from "axios"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
 import { CoordinatorWishlistChange, Course, StudentAssociatedCourse } from "../../types"
-import { ResponseAllStudentCourseWishlist, ResponseStudentCourseWishlist, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
+import { ResponseAllStudentCourseWishlist, ResponseCoordinatorAllStudentCourseWishlist, ResponseStudentCourseWishlist, ResponseStudentSpecificCourseWishlist } from "../../types/responseTypes"
 
 
 export const getAllStudentWishlists = async (axios: AxiosInstance, coordinatorId: string) => {
     const response = await axios.get<ResponseAllStudentCourseWishlist>(`/coordinator/${coordinatorId}/wishlist`)
+    return response.data
+}
+
+export const getAllCoordinatorAssociatedWishlists = async (axios: AxiosInstance, coordinatorId: string) => {
+    const response = await axios.get<ResponseCoordinatorAllStudentCourseWishlist>(`/wishlist/fetch/coordinator/${coordinatorId}`)
     return response.data
 }
 

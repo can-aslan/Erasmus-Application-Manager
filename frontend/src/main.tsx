@@ -36,10 +36,6 @@ import UniversityDetails from './pages/OutgoingStudent/UniversityDetailsPage'
 import UploadSignaturePage from './pages/UploadSignaturePage'
 import { UserEnum } from './types'
 
-const defaultPaths = [{
-  path: '/upload-signature',
-  element: <UploadSignaturePage></UploadSignaturePage>
-}]
 
 const router = createBrowserRouter([
   {
@@ -76,7 +72,6 @@ const router = createBrowserRouter([
           UserEnum.Coordinator, 
           UserEnum.FACMember, 
           UserEnum.IncomingStudent, 
-          UserEnum.IncomingStudent, 
           UserEnum.OutgoingStudent, 
           UserEnum.Instructor, 
           UserEnum.ExperiencedStudent,
@@ -90,7 +85,10 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.OutgoingStudent]} />,
                 children: [
-                  ...defaultPaths,
+                  {
+                    path: '/student/upload-signature',
+                    element: <UploadSignaturePage></UploadSignaturePage>
+                  },
                   {
                     path: '/student/pre-approval-form',
                     element: <PreApprovalFormPage />
@@ -120,7 +118,6 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.FACMember]} />,
                 children: [
-                  ...defaultPaths,
                   {
                     path: '/fac-member/approve-pre-approvals',
                     element: <ApprovePreApprovalsPage />
@@ -130,7 +127,10 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.Coordinator]} />,
                 children: [
-                  ...defaultPaths,
+                  {
+                    path: '/coordinator/upload-signature',
+                    element: <UploadSignaturePage />
+                  },
                   {
                     path: '/coordinator/student-wishlists',
                     element: <ApproveWishlistsPage />
@@ -152,7 +152,6 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.Admin]} />,
                 children: [
-                  ...defaultPaths,
                   {
                     path: '/admin/register-page',
                     element: <RegisterPage />
@@ -166,7 +165,6 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.Instructor]} />,
                 children: [
-                  ...defaultPaths,
                   {
                     // Instructor pages
                     path: '/instructor/approve-course-request',
@@ -177,7 +175,6 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.ExperiencedStudent]} />,
                 children: [
-                  ...defaultPaths,
                   {
                     path: '/experienced-student/evaluate-university',
                     element: <EvaluateUniversityPage />
@@ -191,7 +188,6 @@ const router = createBrowserRouter([
               {
                 element: <RequireAuth allowedUsers={[UserEnum.ISOStaff]} />,
                 children: [
-                  ...defaultPaths,
                   {
                     path: '/oisep-staff/transcript-upload',
                     element: <TranscriptUploadPage />

@@ -29,7 +29,7 @@ const EvaluateCoursesPage = () => {
     })
 
     const { mutate: mutateGetPastCourseEval, data: dataEval, isLoading: isEvalLoading } = useMutation({
-        mutationKey: ['get_past_eval'],
+        mutationKey: ['get_past_course_eval'],
         mutationFn: (selectedId: string) => getStudentPastCourseEval(axiosSecure, user?.bilkentId!, selectedId),
         onSuccess: dataEval => {
             setGivenRating(dataEval.data.rate);
@@ -37,18 +37,18 @@ const EvaluateCoursesPage = () => {
         },
     })
 
-    const { mutate: mutateSaveEvalUni, data: userSaveData, isLoading: isSaveUniLoading } = useMutation({
-        mutationKey: ['saveUniEval'],
+    const { mutate: mutateSaveEvalCourse, data: userSaveData, isLoading: isSaveUniLoading } = useMutation({
+        mutationKey: ['saveCourseEval'],
         mutationFn: (newEval: StudentAssociatedCoursePastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
         onSuccess: () => toast.success(`Evaluation saved.`),
         onError: () => toast.error("Evaluation save failed.")
     })
 
-    const { mutate: mutateSubmitEvalUni, data: userSubmitData, isLoading: isSubmitUniLoading } = useMutation({
-        mutationKey: ['submitUniEval'],
+    const { mutate: mutateSubmitEvalCourse, data: userSubmitData, isLoading: isSubmitUniLoading } = useMutation({
+        mutationKey: ['submitCourseEval'],
         mutationFn: (newEval: StudentAssociatedCoursePastEvaluationItem) => evaluateCourse(axiosSecure, newEval),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['get_past_eval'] })
+            queryClient.invalidateQueries({ queryKey: ['get_past_course_eval'] })
             toast.success(`Evaluation submitted.`);},
         onError: () => toast.error("Evaluation submit failed.")
     })
@@ -77,10 +77,10 @@ const EvaluateCoursesPage = () => {
         eval_status: "SUBMITTED"
     }
     const saveEval = () => {
-        mutateSaveEvalUni(newSaveEval);
+        mutateSaveEvalCourse(newSaveEval);
     }
     const submitEval = () => {
-        mutateSubmitEvalUni(newSubmitEval);
+        mutateSubmitEvalCourse(newSubmitEval);
     }
     if (isCoursesLoading || isEvalLoading) {
         return (
@@ -111,6 +111,8 @@ const EvaluateCoursesPage = () => {
                 onSearchChange={setSearchedCourse}
                 onChange={(value) => {
                     setSelectedCourse(value);
+                    console.log(value)
+                    console.log(courses)
                     const id = courses.find(course => course.courseName === value)?.courseId!;
                     setSelectedCourseId(id);
                     mutateGetPastCourseEval(id);

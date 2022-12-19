@@ -22,7 +22,7 @@ const UploadSignaturePage = () => {
         mutationKey: ['downloadSignature'],
         mutationFn: async () => await downloadSignature(axiosSecure, user.id),
         onSuccess: (data) => { 
-            downloadBlobFile(data, "filename")
+            downloadBlobFile(data)
         },
         onError: () => toast.error("Error while trying to fetch the file from the database. Make sure you have uploaded your signature before trying to download.")
     })

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.beam.beamBackend.enums.Department;
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.BilkentCourse;
 import com.beam.beamBackend.model.HostCourse;
 import com.beam.beamBackend.request.HostCourseRequestBody;
@@ -36,7 +37,7 @@ public class CourseController {
             BilkentCourse course = courseService.addBilkentCourse(bilkentCourse);
             return Response.create("course is saved", HttpStatus.OK, course);
         } catch (Exception e) {
-            return Response.create("course add failed", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }        
     }
 
@@ -48,7 +49,7 @@ public class CourseController {
             RHostCourse course = courseService.addHostCourse(hostCourse);
             return Response.create("course is saved", HttpStatus.OK, course);
         } catch (Exception e) {
-            return Response.create("course add failed", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }        
     }
 
@@ -59,7 +60,7 @@ public class CourseController {
             RHostCourse hostCourse = courseService.getHostCourseById(courseId);
             return Response.create("ok", HttpStatus.OK, hostCourse);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
     
@@ -70,7 +71,7 @@ public class CourseController {
             BilkentCourse bilkentCourse = courseService.getBilkentCourseById(courseId);
             return Response.create("ok", HttpStatus.OK, bilkentCourse);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 
@@ -81,7 +82,7 @@ public class CourseController {
             List<RHostCourse> hostCourses = courseService.getAllHostCourse();
             return Response.create("ok", HttpStatus.OK, hostCourses);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
     
@@ -92,7 +93,7 @@ public class CourseController {
             List<BilkentCourse> bilkentCourses = courseService.getAllBilkentCourse();
             return Response.create("ok", HttpStatus.OK, bilkentCourses);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
     
@@ -103,7 +104,7 @@ public class CourseController {
             List<RHostCourse> hostCourses = courseService.getHostCourseByUniId(uniId);
             return Response.create("ok", HttpStatus.OK, hostCourses);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
     
@@ -114,7 +115,7 @@ public class CourseController {
             List<BilkentCourse> bilkentCourses = courseService.getBilkentCourseByDepartment(department);
             return Response.create("ok", HttpStatus.OK, bilkentCourses);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST);
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);
         }        
     }
 

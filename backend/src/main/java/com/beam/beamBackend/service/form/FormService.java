@@ -219,8 +219,10 @@ public class FormService implements IFormService {
             File approvalForm = fileGenerator.generatePreApprovalForm(preApprovalForm, null);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] form = fis.readAllBytes();
-            fis.close();
 
+            fis.close();
+            approvalForm.delete();
+            
             byte[] encoded = Base64.getEncoder().encode(form);
             return encoded;
         } catch (Exception e) {
@@ -281,7 +283,7 @@ public class FormService implements IFormService {
      * @throws Exception
      */
     @Override
-    public PreApprovalForm createPreAppFromWishlist(UUID studentId, boolean isSavedToDatabase) throws Exception {
+    public PreApprovalForm createPreAppFromWishlist(UUID studentId, boolean saveToDatabase) throws Exception {
         try{
             Optional<Student> student = studentRepository.findByUserId(studentId);
             if (!student.isPresent()){
@@ -309,7 +311,7 @@ public class FormService implements IFormService {
             Student studentObj = student.get();
             PreApprovalForm newForm = new PreApprovalForm(UUID.randomUUID(), studentObj, wishlistObj, date, PreApprovalStatus.PENDING);
 
-            if (isSavedToDatabase) {
+            if (saveToDatabase) {
                 preApprovalRepository.save(newForm);
             }
 
