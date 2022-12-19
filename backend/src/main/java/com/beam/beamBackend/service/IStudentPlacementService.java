@@ -8,5 +8,4 @@ public interface IStudentPlacementService {
     ArrayList<Student> placeStudents(String department) throws Exception;
     ArrayList<Student> readFromStudentCsv(String department) throws Exception;
     void getAllUniversitiesQuota(String department) throws Exception;
-    void readFromUniCsv(String fepartment) throws IOException;
 }

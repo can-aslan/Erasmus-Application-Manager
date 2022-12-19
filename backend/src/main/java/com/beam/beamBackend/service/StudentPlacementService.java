@@ -29,9 +29,14 @@ import com.beam.beamBackend.repository.IWaitingListStudentRepository;
 
 import lombok.RequiredArgsConstructor;
 import java.io.BufferedReader;
-import java.io.FileReader;  
-import java.io.IOException;  
+import java.io.FileReader;
+import java.io.IOException;
 
+/**
+ * A Service to deal with student placment business
+ * 
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class StudentPlacementService implements IStudentPlacementService {
@@ -50,18 +55,29 @@ public class StudentPlacementService implements IStudentPlacementService {
     private final IStaffRepository staffRepository;
     private final IWaitingListStudentRepository waitingListStudentRepository;
 
+    /**
+     * This method gets list of all students that are applied to the Erasmus
+     * program and in the same department. Acoording to their preferences they
+     * are placed in a host university. At the end of this method, students who
+     * are not placed in a university are placed in waitingList.
+     * 
+     * @param department of the students who are in the application list
+     * @return the ArrayList of students who are placed to a university
+     */
     @Override
     public ArrayList<Student> placeStudents(String department) throws Exception {
         // Get List of coordinators
-        List<Staff> coordinators = staffRepository.findByDepartmentAndUserUserType(Department.valueOf(department), UserType.COORDINATOR);
+        List<Staff> coordinators = staffRepository.findByDepartmentAndUserUserType(Department.valueOf(department),
+                UserType.COORDINATOR);
         int assignedCoordinators = 0;
         readFromStudentCsv(department);
         getAllUniversitiesQuota(department);
-        
-        //Assign coordinator to students
+
+        // Assign coordinator to students
         for (int i = 0; i < registeredStudents.size(); i++) {
             ArrayList<String> preferenceList = new ArrayList<>();
-            Optional<Preferences> preferences = preferencesRepository.findByStudentBilkentId(registeredStudents.get(i).getUser().getBilkentId());
+            Optional<Preferences> preferences = preferencesRepository
+                    .findByStudentBilkentId(registeredStudents.get(i).getUser().getBilkentId());
             preferenceList.add(preferences.get().getPref1());
             preferenceList.add(preferences.get().getPref2());
             preferenceList.add(preferences.get().getPref3());
@@ -76,48 +92,58 @@ public class StudentPlacementService implements IStudentPlacementService {
                     System.out.println(currentUni);
                     if (quotas.get(currentUni) > 0) {
                         registeredStudents.get(i).setHostUni(currentUni);
-                        quotas.put(currentUni,quotas.get(currentUni) - 1);
-                        
-                        //Assign coordinator to students
-                        Staff currentCoordinator = coordinators.get( assignedCoordinators % coordinators.size());
+                        quotas.put(currentUni, quotas.get(currentUni) - 1);
+
+                        // Assign coordinator to students
+                        Staff currentCoordinator = coordinators.get(assignedCoordinators % coordinators.size());
                         System.out.println(currentCoordinator);
                         registeredStudents.get(i).setCoordinator(currentCoordinator);
 
-                        break;  
+                        break;
                     }
                 }
             }
         }
 
-        // Waiting list creation 
-        // If a registeredstudent's hostUn property is null that means they are in the waiting list
+        // Waiting list creation
+        // If a registeredstudent's hostUn property is null that means they are in the
+        // waiting list
         int waitingListIndex = 0;
-        for (int i = 0; i < registeredStudents.size(); i++){
+        for (int i = 0; i < registeredStudents.size(); i++) {
             Student currentStudent = registeredStudents.get(i);
             if (currentStudent.getHostUni() == null) {
-                WaitingListStudent waitingListStudent = new WaitingListStudent(UUID.randomUUID(), currentStudent, waitingListIndex);
+                WaitingListStudent waitingListStudent = new WaitingListStudent(UUID.randomUUID(), currentStudent,
+                        waitingListIndex);
                 waitingListStudentRepository.save(waitingListStudent);
             }
         }
 
-        for (Student s: registeredStudents) {
+        for (Student s : registeredStudents) {
             studentRepository.save(s);
         }
-        
+
         return registeredStudents;
     }
 
+    /**
+     * This method read the provided CSV file provided per department
+     * and creates list of students in this CSV file
+     * 
+     * @param department of the students in the desired CSV file
+     * @return list of students in the desired department
+     */
     @Override
     public ArrayList<Student> readFromStudentCsv(String department) throws Exception {
-        try{ 
-            String line = "";  
-            String splitBy = ",";  
+        try {
+            String line = "";
+            String splitBy = ",";
 
             boolean isHeader = true;
-            //parsing a CSV file into BufferedReader class constructor  
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/sortedStudents"+ department + ".csv"));  
-            while ((line = br.readLine()) != null)   //returns a Boolean value  
-            {  
+            // parsing a CSV file into BufferedReader class constructor
+            BufferedReader br = new BufferedReader(new FileReader(
+                    System.getProperty("user.dir") + "/src/main/resources/sortedStudents" + department + ".csv"));
+            while ((line = br.readLine()) != null) // returns a Boolean value
+            {
                 // Skip the first line of the table while registering students
                 if (isHeader) {
                     isHeader = false;
@@ -125,7 +151,7 @@ public class StudentPlacementService implements IStudentPlacementService {
                     continue;
                 }
 
-                String[] lineSplitted = line.split(splitBy);    // use comma as separator  
+                String[] lineSplitted = line.split(splitBy); // use comma as separator
                 String name = lineSplitted[1];
                 String surname = lineSplitted[2];
                 Long bilkentId = Long.parseLong(lineSplitted[3]);
@@ -158,7 +184,7 @@ public class StudentPlacementService implements IStudentPlacementService {
                 String telephoneNo = lineSplitted[33];
                 String nationality = lineSplitted[34];
                 String dateOfBirth = lineSplitted[35];
-                Sex sex = Sex.valueOf(lineSplitted[36]);                
+                Sex sex = Sex.valueOf(lineSplitted[36]);
                 String academicYear = lineSplitted[37];
 
                 StudyType st;
@@ -170,7 +196,8 @@ public class StudentPlacementService implements IStudentPlacementService {
 
                 String password = generatePsw();
                 String hashedpassword = encodePassword(password);
-                User newUser = new User(UUID.randomUUID(), name, surname, email, bilkentId, hashedpassword, UserType.OUTGOING_STUDENT);
+                User newUser = new User(UUID.randomUUID(), name, surname, email, bilkentId, hashedpassword,
+                        UserType.OUTGOING_STUDENT);
                 University homeUni = universityRepository.findUniByName("Bilkent University");
                 if (!accountRepository.existsByBilkentId(bilkentId)) {
                     accountRepository.save(newUser);
@@ -178,29 +205,31 @@ public class StudentPlacementService implements IStudentPlacementService {
                     throw new Exception("The user already exists!");
                 }
                 newUser = accountRepository.findUserByBilkentId(bilkentId);
-                Student newStudent = new Student(UUID.randomUUID(), newUser, d, f, d2, f2, telephoneNo, st, nationality, dateOfBirth, sex, homeUni, null, academicYear, semester, null);
+                Student newStudent = new Student(UUID.randomUUID(), newUser, d, f, d2, f2, telephoneNo, st, nationality,
+                        dateOfBirth, sex, homeUni, null, academicYear, semester, null);
 
                 registeredStudents.add(newStudent);
 
                 String pref1 = lineSplitted[22];
-                String pref2 = lineSplitted[23];    
+                String pref2 = lineSplitted[23];
                 String pref3 = lineSplitted[24];
                 String pref4 = lineSplitted[25];
-                String pref5 = lineSplitted[26]; 
+                String pref5 = lineSplitted[26];
 
                 Optional<Preferences> p = preferencesRepository.findByStudentBilkentId(bilkentId);
                 if (!p.isPresent()) {
-                    Preferences preferences = new Preferences(UUID.randomUUID(), newStudent.getUser().getBilkentId(), pref1, pref2, pref3, pref4, pref5);
+                    Preferences preferences = new Preferences(UUID.randomUUID(), newStudent.getUser().getBilkentId(),
+                            pref1, pref2, pref3, pref4, pref5);
                     preferencesRepository.save(preferences);
                 }
-                
+
                 newUser.setPassword(password);
-            }  
+            }
 
             br.close();
 
-        } catch (IOException e) {  
-            e.printStackTrace();  
+        } catch (IOException e) {
+            e.printStackTrace();
             throw e;
         }
 
@@ -208,19 +237,22 @@ public class StudentPlacementService implements IStudentPlacementService {
     }
 
     /**
-     * This method brings quota of all universities from relatedservices and put University and quota and university
+     * This method brings quota of all universities from relatedservices and put
+     * University and quota and university
      * pairs into the quotas hashmap
+     * 
      * @param department department whose universites' quotas will be brought
      * @throws Exception
      */
     @Override
     public void getAllUniversitiesQuota(String department) throws Exception {
         try {
-            String line = "";  
-            String splitBy = ",";  
+            String line = "";
+            String splitBy = ",";
 
             boolean isHeader = true;
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/UniQuotas" + department + ".csv"));  
+            BufferedReader br = new BufferedReader(new FileReader(
+                    System.getProperty("user.dir") + "/src/main/resources/UniQuotas" + department + ".csv"));
 
             while ((line = br.readLine()) != null) {
                 // Skip the first line of the table while registering students
@@ -231,7 +263,7 @@ public class StudentPlacementService implements IStudentPlacementService {
                     continue;
                 }
 
-                String[] lineSplitted = line.split(splitBy);    // use comma as separator  
+                String[] lineSplitted = line.split(splitBy); // use comma as separator
 
                 String uniName = lineSplitted[0];
                 String quotaString = lineSplitted[1];
@@ -243,39 +275,17 @@ public class StudentPlacementService implements IStudentPlacementService {
 
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();  
-            throw e;
-        }
-    }
-    
-    @Override
-    public void readFromUniCsv(String fepartment) throws IOException {
-        try {
-            String line = "";  
-            String splitBy = ",";  
-    
-            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/main/resources/UniQuotas.csv"));  
-            while ((line = br.readLine()) != null){
-                String[] lineSplitted = line.split(splitBy);    // use comma as separator
-                
-                boolean isHeader = true;
-                // Skip the first line of the table while registering students
-                if (isHeader){
-                    isHeader = false;
-                    continue;
-                }
-
-                // Creation of universities
-                //quotas.put()
-            }
-
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();  
+            e.printStackTrace();
             throw e;
         }
     }
 
+    /**
+     * A method to create hashed passwords
+     * 
+     * @param plaiPassword is a password to be hashed
+     * @return String, hashed password
+     */
     private String encodePassword(String plainPassword) {
         try {
             return bCryptPasswordEncoder.encode(plainPassword);
@@ -283,14 +293,19 @@ public class StudentPlacementService implements IStudentPlacementService {
             throw e;
         }
     }
-    
+
+    /**
+     * A method to generate 8-character long random password
+     * 
+     * @return String, random password
+     */
     public static String generatePsw() {
         String allChars = "abcdefghijklmnopqprstuvwxyz0123456789";
         String generatedPsw = "";
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             int random = (int) (Math.random() * 1000);
             int modulo = random % 36;
-            generatedPsw = generatedPsw + allChars.substring(modulo, modulo+1);
+            generatedPsw = generatedPsw + allChars.substring(modulo, modulo + 1);
         }
         return generatedPsw;
     }
