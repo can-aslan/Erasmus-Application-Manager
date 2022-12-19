@@ -76,6 +76,7 @@ const RegisterFACMember = () => {
                 placeholder="Faculties"
                 data={FACULTIES}
                 value={faculty}
+                onChange={(value) => setFaculty(value!)}
             />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>

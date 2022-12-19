@@ -77,11 +77,13 @@ const RegisterInstructorTab = () => {
                 placeholder="Faculties"
                 data={FACULTIES}
                 value={faculty}
+                onChange={(value) => setFaculty(value!)}
             />
             <Select
                 label="Select department"
                 placeholder="Departments"
                 data={DEPARTMENTS}
+                onChange={(value) => setDepartment(value!)}
             />
             <Button onClick={handleRegister} loading={isRegisterLoading}>Register</Button>
         </Flex>

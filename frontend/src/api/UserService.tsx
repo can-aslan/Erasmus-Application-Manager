@@ -29,7 +29,7 @@ export const registerUser = async (axios: AxiosInstance, newUser: NewStaff) => {
 }
 
 export const registerStaff = async (axios: AxiosInstance, newUser: NewStaff) => {
-    const response = await axios.post<NewStaff>('auth/register/staff', newUser)
+    const response = await axios.post<NewStaff>('auth/register_staff', newUser)
     return response.data
 }
 

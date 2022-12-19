@@ -9,11 +9,11 @@ export const getSubmittedPreApprovalsCoord = async (axios: AxiosInstance, coordi
 }
 
 export const approveSubmittedPreApprovalCoord = async (axios: AxiosInstance, coordinatorId: string, studentId: string) => {
-    const response = await axios.post<ResponsePreApprovalForm>(`/coordinator/${coordinatorId}/student/${studentId}/approve`)
+    const response = await axios.post<ResponsePreApprovalForm>(`preapproval/coordinator/${coordinatorId}/student/${studentId}/approve`)
     return response.data
 }
 
 export const rejectSubmittedPreApprovalCord = async (axios: AxiosInstance, coordinatorId: string, studentId: string) => {
-    const response = await axios.post<ResponsePreApprovalForm>(`/coordinator/${coordinatorId}/student/${studentId}/reject`)
+    const response = await axios.post<ResponsePreApprovalForm>(`preapproval/coordinator/${coordinatorId}/student/${studentId}/reject`)
     return response.data
 }

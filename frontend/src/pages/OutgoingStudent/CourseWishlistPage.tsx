@@ -102,9 +102,9 @@ const CourseWishlistPage = () => {
         }
 
         const hostCourse: HostCourse = {
-            courseCode: w.mappings[0].hostCourse,
-            hostName: w.mappings[0].hostName,
-            ects: w.mappings[0].ects || 0,
+            courseCode: w.mappings[0]?.hostCourse,
+            hostName: w.mappings[0]?.hostName,
+            ects: w.mappings[0]?.ects || 0,
         }
 
         return {

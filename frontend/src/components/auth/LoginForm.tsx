@@ -114,11 +114,11 @@ const LoginForm = () => {
                     Continue as Guest
                 </Button>
                 <Group position="center">
-                    <Link
+                    {/* <Link
                         to='/forgot-password'
                     >
                         Forgot your password?
-                    </Link>
+                    </Link> */}
                 </Group>
             </Stack>
         </form>
