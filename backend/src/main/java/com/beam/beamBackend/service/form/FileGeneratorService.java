@@ -133,7 +133,7 @@ public class FileGeneratorService implements IFileGeneratorService {
 
     private void addTitleTable(Document document) throws MalformedURLException, IOException, DocumentException {
         // Image handling
-        String imagePath = System.getProperty("user.dir") + "/src/main/resources/bilkent_logo.png";
+        String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png";
         Image bilkentLogo = Image.getInstance(imagePath);
         bilkentLogo.scaleAbsolute(40,40);
 

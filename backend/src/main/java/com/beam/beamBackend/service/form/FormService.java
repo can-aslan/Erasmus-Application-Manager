@@ -64,7 +64,6 @@ public class FormService implements IFormService {
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
         
-        // TODO: Check userId
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (form.isPresent()) {
             throw new Exception("A form with given form type is already saved in the system.");
@@ -163,7 +162,6 @@ public class FormService implements IFormService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         
-        // TODO: Check userId
 
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (!form.isPresent()) {
@@ -188,10 +186,9 @@ public class FormService implements IFormService {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
 
-        // TODO: Check userId
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (!form.isPresent()) {
-            return false; // TODO: Throw custom error
+            return false;
         }
         
         /* 
@@ -209,6 +206,7 @@ public class FormService implements IFormService {
         
         // Remove key from the database
         formRepository.deleteByUserId(userId);
+        preApprovalRepository.deleteByStudentUserId(userId);
         return true;
     }
 
