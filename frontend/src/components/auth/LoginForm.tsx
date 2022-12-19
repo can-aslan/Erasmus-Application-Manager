@@ -32,7 +32,7 @@ const LoginForm = () => {
         onError: (error) => {
             if (axios.isAxiosError(error)) {
                 if (!error.status) {
-                    toast.error("We can't reach BEAM servers at the moment. Please wait while we identify the issue!", {
+                    toast.error("Password or Bilkent ID is wrong!", {
                         position: toast.POSITION.BOTTOM_LEFT,
                     })
                 }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RHostCourse {
+    private UUID courseId;
     private String courseCode;
     private String courseName;
     private double ects;
@@ -21,6 +22,7 @@ public class RHostCourse {
     private UUID universityId;
 
     public RHostCourse(HostCourse hostCourse) {
+        this.courseId = hostCourse.getCourseId();
         this.courseCode = hostCourse.getCourseCode();
         this.courseName = hostCourse.getCourseName();
         this.ects = hostCourse.getEcts();
