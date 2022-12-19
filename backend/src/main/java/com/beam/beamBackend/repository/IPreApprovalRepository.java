@@ -14,8 +14,8 @@ import com.beam.beamBackend.model.PreApprovalForm;
 
 @Transactional
 @Repository
-public interface IPreApprovalRepository extends JpaRepository<PreApprovalForm, UUID>{
-    
+public interface IPreApprovalRepository extends JpaRepository<PreApprovalForm, UUID> {
+
     Optional<PreApprovalForm> findByStudentUserBilkentId(Long studentId);
     boolean existsByWishlistStudentId(Long studentId);
     List<PreApprovalForm> findAllByStudentCoordinatorUserId(UUID id);
