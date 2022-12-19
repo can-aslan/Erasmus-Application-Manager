@@ -31,7 +31,7 @@ public class PreApprovalService implements IPreApprovalService {
                 throw new Exception("user not found");
             }
 
-            return preApprovalRepository.findByStudentCoordinatorUserId(coordinatorUserId);
+            return preApprovalRepository.findAllByStudentCoordinatorUserId(coordinatorUserId);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -53,7 +53,9 @@ public class PreApprovalService implements IPreApprovalService {
             }
 
             formService.signPreApproval(studentId, coordinator.get().getBilkentId());
-            preApproval.get().setPreApprovalStatus(PreApprovalStatus.COORDINATOR_APPROVED);
+            PreApprovalForm preApprovalObj = preApproval.get();
+            preApprovalObj.setPreApprovalStatus(PreApprovalStatus.COORDINATOR_APPROVED);
+            preApprovalRepository.save(preApprovalObj);
 
             return true;
         } catch (Exception e) {
@@ -76,7 +78,9 @@ public class PreApprovalService implements IPreApprovalService {
                 throw new Exception("Coordinator is not found!");
             }
 
-            preApproval.get().setPreApprovalStatus(PreApprovalStatus.COORDINATOR_REJECTED);
+            PreApprovalForm preApprovalObj = preApproval.get();
+            preApprovalObj.setPreApprovalStatus(PreApprovalStatus.COORDINATOR_REJECTED);
+            preApprovalRepository.save(preApprovalObj);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

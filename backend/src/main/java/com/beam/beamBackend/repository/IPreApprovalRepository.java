@@ -18,7 +18,7 @@ public interface IPreApprovalRepository extends JpaRepository<PreApprovalForm, U
     
     Optional<PreApprovalForm> findByStudentUserBilkentId(Long studentId);
     boolean existsByWishlistStudentId(Long studentId);
-    List<PreApprovalForm> findByStudentCoordinatorUserId(UUID id);
+    List<PreApprovalForm> findAllByStudentCoordinatorUserId(UUID id);
 
     /*// Query should be here
     boolean insertPreApp(@Param("student_id") UUID studentId, @Param("name") String name, @Param("surname") String surname, @Param("bilkent_id") Long bilkentIdLong,

@@ -83,7 +83,6 @@ public class WishlistService implements IWishlistService {
         }
 
         // Maybe later, check if bilkent course already exists in wishlist item repository
-
         if (!itemToAdd.getStudentId().equals(studentId)) {
             throw new Exception("student with id " + studentId + " cannot add wishlist item, student ids do not match");
         }
