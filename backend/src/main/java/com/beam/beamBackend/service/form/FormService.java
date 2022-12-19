@@ -219,8 +219,10 @@ public class FormService implements IFormService {
             File approvalForm = fileGenerator.generatePreApprovalForm(preApprovalForm, null);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] form = fis.readAllBytes();
-            fis.close();
 
+            fis.close();
+            approvalForm.delete();
+            
             byte[] encoded = Base64.getEncoder().encode(form);
             return encoded;
         } catch (Exception e) {
