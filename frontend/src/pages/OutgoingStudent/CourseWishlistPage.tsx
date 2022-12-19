@@ -11,7 +11,7 @@ import { useCourses } from '../../hooks/useCourses';
 import useHostCourses from '../../hooks/useHostCourses';
 import { useStudentWishlist } from '../../hooks/useStudentWishlist';
 import { useUser } from '../../provider/UserProvider';
-import { BilkentCourse, CourseWishlistItemMapping, HostCourse, NewCourseWish } from "../../types";
+import { BilkentCourse, Course, CourseWishlistItemMapping, HostCourse, NewCourseWish } from "../../types";
 import ErrorPage from '../Feedback/ErrorPage';
 import LoadingPage from '../Feedback/LoadingPage';
 
@@ -93,26 +93,31 @@ const CourseWishlistPage = () => {
 
     // Table will consist of pairs of Bilkent courses and host uni courses. This is because
     // of the course transfer process that will happen later on. 
-    const tableItems: Array<CourseTableCourses> | undefined = courseWishlist?.data.items ? courseWishlist.data.items.map((w) => {
-        const bilkentCourse: BilkentCourse = {
-            bilkentCredit: w.bilkentCredits,
-            courseCode: w.bilkentCourse,
-            bilkentName: w.bilkentName,
-            ects: w.ects,
-        }
+    const tableItems: Array<CourseTableCourses[]> | undefined = courseWishlist?.data.items ? courseWishlist.data.items.map((w) => {
+        const courseTableCourses: Array<CourseTableCourses> = w.mappings.map(m => {
+            const bilkentCourse: BilkentCourse = {
+                bilkentCredit: w.bilkentCredits,
+                courseCode: w.bilkentCourse,
+                bilkentName: w.bilkentName,
+                ects: w.ects,
+            }
 
-        const hostCourse: HostCourse = {
-            courseCode: w.mappings[0]?.hostCourse,
-            hostName: w.mappings[0]?.hostName,
-            ects: w.mappings[0]?.ects || 0,
-        }
+            const hostCourse: HostCourse = {
+                courseCode: m.hostCourse,
+                hostName: m.hostName,
+                ects: m.ects || 0,
+            }
 
-        return {
-            bilkentCourse,
-            hostCourse,
-            wishId: w.wishlistItemId,
-        }
+            return {
+                bilkentCourse,
+                hostCourse,
+                wishId: w.wishlistItemId,
+            }
+        })
+
+        return courseTableCourses
     }) : []
+    const flatTableItems: Array<CourseTableCourses> | undefined = tableItems ? tableItems.flat() : []
     
     const handleSave = () => {
         let uuid = "00000000-0000-0000-0000-000000000000"
@@ -226,7 +231,7 @@ const CourseWishlistPage = () => {
                             mih={150}
                         >
                             <CourseTable
-                                records={tableItems}
+                                records={flatTableItems}
                                 handleRemoveItem={handleRemoveWish}
                             />
                             <Flex gap='xl' align='center' justify='center'>
