@@ -15,6 +15,11 @@ import com.beam.beamBackend.service.form.FormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * A Spring Service class to implement business logic of PreApprovalForm model
+ * 
+ * @version 1.0
+ */
 @RequiredArgsConstructor
 @Service
 public class PreApprovalService implements IPreApprovalService {
@@ -22,6 +27,12 @@ public class PreApprovalService implements IPreApprovalService {
     private final IAccountRepository accountRepository;
     private final FormService formService;
 
+    /**
+     * This method returns list of preapprovals for a coordinator
+     * 
+     * @param coordinatorUserId is user id of a coordinator
+     * @return List of preApprovalForm's for a coordinator
+     */
     @Override
     public List<PreApprovalForm> getCoordinatorPreApprovals(@Valid UUID coordinatorUserId) throws Exception {
         try {
@@ -38,6 +49,14 @@ public class PreApprovalService implements IPreApprovalService {
         }
     }
 
+    /**
+     * This method change the status of the preApprovalForm of the Student with
+     * given bilkentId to COORDINATOR_APPROVED
+     * 
+     * @param coordinatorUserId user id of the coordinator who approves the form
+     * @param studentId         bilkent id of the student whose form is approved
+     * @return if the form successfully approved or not
+     */
     @Override
     public boolean approvePreApprovals(@Valid UUID coordinatorUserId, @Valid Long studentId) throws Exception {
         try {
@@ -62,6 +81,14 @@ public class PreApprovalService implements IPreApprovalService {
         }
     }
 
+    /**
+     * This method change the status of the preApprovalForm of the Student with
+     * given bilkentId to COORDINATOR_REJECTED
+     * 
+     * @param coordinatorUserId user id of the coordinator who rejects the form
+     * @param studentId         bilkent id of the student whose form is rejected
+     * @return if the form successfully rejected or not
+     */
     @Override
     public boolean rejectPreApprovals(@Valid UUID coordinatorUserId, @Valid Long studentId) throws Exception {
         try {
@@ -83,5 +110,4 @@ public class PreApprovalService implements IPreApprovalService {
             throw e;
         }
     }
-    // use formService.signApproval to sign approval
 }

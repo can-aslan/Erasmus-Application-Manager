@@ -29,12 +29,27 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * A Spring Controller class to handle retrieval, approval, and rejection
+ * process
+ * of coordinators
+ * 
+ * @version 1.0
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/coordinator")
 public class CoordinatorController {
     private final CoordinatorWishlistService coordinatorWishlistService;
 
+    /**
+     * This method retrives submitted wishlists for the given coordinator
+     * 
+     * @param coordinatorUserId user id of the coordinator whom submtted
+     *                          preApprovals
+     *                          are retrieved
+     * @return list of wishlists
+     */
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/{coordinatorUserId}/wishlist")
     public ResponseEntity<Object> getCoordinatorsWishlists(
@@ -47,6 +62,15 @@ public class CoordinatorController {
         }
     }
 
+    /**
+     * This method retrieves the wishlist of the student if the student's
+     * coordinator is the given coordinator.
+     * 
+     * @param coordinatorUserId user id of the coordinator whom submtted
+     * preApprovals are retrieved
+     * 
+     * @return wishlist of the student
+     */
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @GetMapping("/{coordinatorUserId}/wishlist/student/{studentBilkentId}")
     public ResponseEntity<Object> getWishlist(@Valid @PathVariable("coordinatorUserId") UUID coordinatorUserId,
@@ -61,6 +85,15 @@ public class CoordinatorController {
         }
     }
 
+    /**
+     * This method determines the wishlist of the student if the student's
+     * coordinator is the given coordinator.
+     * 
+     * @param coordinatorUserId user id of the coordinator whom submtted
+     * preApprovals are retrieved
+     * 
+     * @return if the determining process occures successfully or not
+     */
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
     @PostMapping(path = "/wishlist/determineStatus", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> determineWishlistStatus(
@@ -72,23 +105,4 @@ public class CoordinatorController {
             return Response.create("Wishlist status of students couldn't changed!", 499);
         }
     }
-
-    /*
-     * @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*",
-     * allowCredentials = "true")
-     * 
-     * @GetMapping( "/{syllabusUrl}")
-     * public ResponseEntity<Object>
-     * getCourseSyllabusUrl(@Valid @PathVariable("coordinatorId") UUID
-     * coordinatorId, @Valid @PathVariable("studentId") Long studentId){
-     * try{
-     * String syllabusUrl =
-     * coordinatorWishlistService.getCourseSyllabusUrl(coordinatorId, studentId);
-     * return Response.create("Syllabus url is fetched", HttpStatus.OK,
-     * syllabusUrl);
-     * }catch (Exception e){
-     * return Response.create("Syllabus url couldn't fetced!", 499);
-     * }
-     * }
-     */
 }
