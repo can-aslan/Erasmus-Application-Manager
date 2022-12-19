@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.CourseEvaluationForm;
 import com.beam.beamBackend.model.UniEvaluationForm;
 import com.beam.beamBackend.response.RCourseEval;
@@ -37,7 +39,7 @@ public class EvaluationController {
             UUID id = evalService.evaluateUni(uniEval);
             return Response.create("university evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
-            return Response.create("evaluation failed", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 
@@ -48,7 +50,7 @@ public class EvaluationController {
             RUniEval uniEvals = evalService.getUniEval(uniId);
             return Response.create("ok", HttpStatus.OK, uniEvals);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);  
         }        
     }
 
@@ -60,7 +62,7 @@ public class EvaluationController {
             UUID id = evalService.evaluateCourse(courseEval);
             return Response.create("course evaluation is saved", HttpStatus.OK, id);
         } catch (Exception e) {
-            return Response.create("evaluation failed", 499); // might change later
+            return Response.create(ExceptionLogger.log(e), 499);  
         }        
     }
 
@@ -71,7 +73,7 @@ public class EvaluationController {
             RCourseEval courseEvals = evalService.getCourseEval(courseId);
             return Response.create("ok", HttpStatus.OK, courseEvals);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);  
         }        
     }
 
@@ -82,7 +84,7 @@ public class EvaluationController {
             UniEvaluationForm uniEval = evalService.getStudentUniEval(authorId);
             return Response.create("ok", HttpStatus.OK, uniEval);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);  
         }        
     }
 
@@ -93,7 +95,7 @@ public class EvaluationController {
             CourseEvaluationForm courseEval = evalService.getStudentCourseEval(authorId, courseId);
             return Response.create("ok", HttpStatus.OK, courseEval);
         } catch (Exception e) {
-            return Response.create("university evaluations cannot be retrieved", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(ExceptionLogger.log(e), HttpStatus.BAD_REQUEST);  
         }        
     }
 }

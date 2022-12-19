@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.beam.beamBackend.enums.CourseWishlistStatus;
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.model.Course;
 import com.beam.beamBackend.model.Wishlist;
 import com.beam.beamBackend.request.CoordinatorWishlistApproval;
@@ -43,7 +44,7 @@ public class CoordinatorController {
             ArrayList<Wishlist> wishlists = coordinatorWishlistService.getCoordinatorsWishlists(coordinatorUserId);
             return Response.create("Wishlists fetched!", HttpStatus.OK, wishlists);
         } catch (Exception e) {
-            return Response.create("Wishlist couldn't fetched", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 
@@ -57,7 +58,7 @@ public class CoordinatorController {
             return Response.create("Wishlist of the student" + studentBilkentId + "is fetched", HttpStatus.OK,
                     wishedCourses);
         } catch (Exception e) {
-            return Response.create("Wishlist of the student" + studentBilkentId + "couldn't fetched", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 
@@ -69,7 +70,7 @@ public class CoordinatorController {
             Wishlist wishlist = coordinatorWishlistService.determineWishlistStatus(wishlistResult);
             return Response.create("Wishlist status of students is changed!", HttpStatus.OK, wishlist);
         } catch (Exception e) {
-            return Response.create("Wishlist status of students couldn't changed!", 499);
+            return Response.create(ExceptionLogger.log(e), 499);
         }
     }
 

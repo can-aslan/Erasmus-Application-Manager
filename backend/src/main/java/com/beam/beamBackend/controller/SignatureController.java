@@ -30,11 +30,11 @@ public class SignatureController {
         @PathVariable("userId") UUID userId) {
         try {
             signatureService.uploadSignature(userId, signature);
-            return Response.create("Signature submission successful", HttpStatus.OK); // might change later
+            return Response.create("Signature submission successful", HttpStatus.OK);  
         } catch (FileSizeLimitExceededException e) {
-            return Response.create("Exceeded the file size limit.", HttpStatus.BAD_REQUEST); // might change later
+            return Response.create("Exceeded the file size limit.", HttpStatus.BAD_REQUEST);  
         } catch (Exception e) {
-            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST);  
         }
     }
 
@@ -49,7 +49,7 @@ public class SignatureController {
                     .ok()
                     .body(resource);
         } catch (IOException e) {
-            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST);  
         }
     }
 
@@ -58,9 +58,9 @@ public class SignatureController {
     public ResponseEntity<Object> deleteSignature(@PathVariable("userId") UUID userId) {
         try {
             signatureService.deleteSignature(userId);
-            return Response.create("Signature submission successful", HttpStatus.OK); // might change later
+            return Response.create("Signature submission successful", HttpStatus.OK);  
         } catch (Exception e) {
-            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST); // might change later
+            return Response.create(e.getMessage(), HttpStatus.BAD_REQUEST);  
         }
     }
 }
