@@ -164,7 +164,7 @@ export type CourseRequest = {
     destination?: CourseRequestDestination | null,
     status?: ApprovalStatus | null
     feedback?: string,
-    hostUniName: string
+    hostUniName?: string
 }
 
 export type StudentAssociatedCourse = Course & {
