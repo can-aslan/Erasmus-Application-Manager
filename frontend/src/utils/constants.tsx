@@ -77,11 +77,6 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             to: '/student/learning-agreement',
             icon: <IconLicense />
         },
-        {
-            label: 'Course Evaluations',
-            to: '/student/course-evaluations',
-            icon: <IconBook/>
-        }
     ],
     [UserEnum.IncomingStudent]: [
         {
