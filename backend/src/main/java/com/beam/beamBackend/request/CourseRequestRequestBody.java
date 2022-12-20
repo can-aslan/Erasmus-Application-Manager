@@ -2,7 +2,6 @@ package com.beam.beamBackend.request;
 
 import lombok.AllArgsConstructor;
 import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,10 +9,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import com.beam.beamBackend.enums.CourseRequestDestination;
 import com.beam.beamBackend.enums.CourseRequestStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -31,6 +30,7 @@ public class CourseRequestRequestBody {
     private String hostCode;
 
     @NotNull
+    @Min(value = 0, message = "Host ECTS must be at least 0")
     private Double hostEcts;
 
     @NotBlank
