@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.beam.beamBackend.exception.CourseRequestAlreadyExists;
+import com.beam.beamBackend.exception.ExceptionLogger;
 import com.beam.beamBackend.exception.StudentNotFound;
 import com.beam.beamBackend.exception.UniversityNotFound;
 import com.beam.beamBackend.model.CourseRequest;
@@ -43,23 +45,15 @@ public class CourseRequestController {
         }
         catch (StudentNotFound noStudentException) {
             noStudentException.printStackTrace();
-            return Response.create(
-                "course request failed: "
-                + noStudentException.getLocalizedMessage()
-                + ", "
-                + noStudentException.getMessage()
-                , HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return Response.create(ExceptionLogger.log(noStudentException), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         catch (UniversityNotFound noUniversityException) {
             noUniversityException.printStackTrace();
-            return Response.create(
-                "course request failed: "
-                + noUniversityException.getLocalizedMessage()
-                + ", "
-                + noUniversityException.getMessage()
-                , HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return Response.create(ExceptionLogger.log(noUniversityException), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        catch (CourseRequestAlreadyExists courseRequestExsists) {
+            courseRequestExsists.printStackTrace();
+            return Response.create(ExceptionLogger.log(courseRequestExsists), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -97,25 +91,13 @@ public class CourseRequestController {
                 :
                 Response.create("course requests fetch unsuccessful", HttpStatus.BAD_REQUEST);
         }
-        catch (StudentNotFound studentNotFoundException) {
-            studentNotFoundException.printStackTrace();
-            return Response.create(
-                "could not retrieve course requests of student: "
-                + studentNotFoundException.getLocalizedMessage()
-                + ", "
-                + studentNotFoundException.getMessage()
-                , HttpStatus.INTERNAL_SERVER_ERROR
-            );
+        catch (StudentNotFound noStudentException) {
+            noStudentException.printStackTrace();
+            return Response.create(ExceptionLogger.log(noStudentException), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        catch (UniversityNotFound universityNotFoundException) {
-            universityNotFoundException.printStackTrace();
-            return Response.create(
-                "could not retrieve course requests of student: "
-                + universityNotFoundException.getLocalizedMessage()
-                + ", "
-                + universityNotFoundException.getMessage()
-                , HttpStatus.INTERNAL_SERVER_ERROR
-            );
+        catch (UniversityNotFound noUniversityException) {
+            noUniversityException.printStackTrace();
+            return Response.create(ExceptionLogger.log(noUniversityException), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e) {
             e.printStackTrace();
