@@ -30,11 +30,12 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
     })
 
 
-    const changeRequest = (newStatus: string, requestID: string) => {
+    const changeRequest = (newStatus: string, requestID: string, feedback: string) => {
         const requestBody: InstructorCourseRequestChange = {
             courseStatus: newStatus,
             instructorId: user.id,
             courseRequestId: requestID,
+            feedback: feedback
         }
         mutateChangeRequestStatus(requestBody);
     }
@@ -52,7 +53,7 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
                     <TextInput value={rejectionFeedback} onChange={(event) => setRejectionFeedback(event.currentTarget.value)} label={"Rejection Feedback"} placeholder={"Please a feedback for your rejection..."}></TextInput>
                     <Flex justify={"right"} gap={"xs"}>
                         <Button color={"red"} onClick={() => { setRejectionFeedbackOpened(false); setRejectionFeedback(""); }}>Cancel Rejection</Button>
-                        <Button color={"green"} onClick={() => { setRejectionFeedbackOpened(false); changeRequest("REJECTED", selectedRequestId) }}>Confirm Rejection</Button>
+                        <Button color={"green"} onClick={() => { setRejectionFeedbackOpened(false); changeRequest("REJECTED", selectedRequestId, rejectionFeedback) }}>Confirm Rejection</Button>
                     </Flex>
 
                 </Flex>
@@ -79,7 +80,7 @@ const ApproveRequestedCoursesGrid = ({ waitingCourses }: ApproveRequestedCourses
                             <Flex direction={"column"} gap={"sm"} >
                                 <TextInput disabled label={"Bilkent"} value={course.bilkentCode}></TextInput>
                                 <Anchor target="_blank" href={course.webpage} span><Button leftIcon={<IconWorld />} color={'blue'}>{"Course Webpage"}</Button></Anchor>
-                                <Button color={'green'} onClick={() => { changeRequest("APPROVED", course.requestId!) }}>Approve</Button>
+                                <Button color={'green'} onClick={() => { changeRequest("APPROVED", course.requestId!, "") }}>Approve</Button>
                             </Flex>
 
                         </Flex>

@@ -68,7 +68,7 @@ public class FileGeneratorService implements IFileGeneratorService {
     
             //ArrayList<String> hostCourses = new ArrayList<>();
             ArrayList<String> bilkentCourses = new ArrayList<>();
-            ArrayList<String> courseCode = new ArrayList<>();
+            ArrayList<ArrayList<String>> courseCodes = new ArrayList<>();
             ArrayList<Double> ects = new ArrayList<>();
             ArrayList<Double> bilkentCredit = new ArrayList<>();
             ArrayList<String> directlyEquivalent = new ArrayList<>();
@@ -79,15 +79,20 @@ public class FileGeneratorService implements IFileGeneratorService {
                 bilkentCourses.add(wishlistItems.get(i).getBilkentCourse());
                 bilkentCredit.add(wishlistItems.get(i).getBilkentCredits());
                 double ectsTotal = 0;
-                ArrayList<String> a = new ArrayList<>();
+                ArrayList<String> hostCoursesNames = new ArrayList<>();
+                ArrayList<String> hostCourseCodes = new ArrayList<>();
+
                 for (int j = 0; j < wishlistItems.get(i).getMappings().size(); j++){
-                    String s = wishlistItems.get(i).getMappings().get(j).getHostName();
-                    a.add(s);
-                    hostCourses.add(a);
+                    String hostCourseName = wishlistItems.get(i).getMappings().get(j).getHostName();
+                    String hostCourseCode = wishlistItems.get(i).getMappings().get(j).getHostCourse();
+                    hostCoursesNames.add(hostCourseName);
+                    hostCourseCodes.add(hostCourseCode);
                     ectsTotal = ectsTotal + wishlistItems.get(i).getMappings().get(j).getEcts();
                 }
+
+                hostCourses.add(hostCoursesNames);
                 // Only gets the course code of the first host university course 
-                courseCode.add(wishlistItems.get(i).getMappings().get(0).getHostCourse());
+                courseCodes.add(hostCourseCodes);
                 // It is assumed that ects in the WishlistItem model since there should be one ects value even there are more than one host course
                 ects.add(ectsTotal);
                 directlyEquivalent.add("");
@@ -112,7 +117,7 @@ public class FileGeneratorService implements IFileGeneratorService {
                 addTitleTable(document);
                 addStudentInfo(document ,name, surname, id, department);
                 addInstAndPeriodInfo( document, hostInst, academicYear, semester );
-                createCourseLists(document, hostCourses, bilkentCourses, courseCode, ects, bilkentCredit, directlyEquivalent);
+                createCourseLists(document, hostCourses, bilkentCourses, courseCodes, ects, bilkentCredit, directlyEquivalent);
                 createApprovalTable(document, approvedBy, coordinatorName, signature, date);
     
                 document.close();
@@ -133,7 +138,7 @@ public class FileGeneratorService implements IFileGeneratorService {
 
     private void addTitleTable(Document document) throws MalformedURLException, IOException, DocumentException {
         // Image handling
-        String imagePath = System.getProperty("user.dir") + "/src/main/resources/bilkent_logo.png";
+        String imagePath = System.getProperty("user.dir") + "/backend/src/main/resources/bilkent_logo.png";
         Image bilkentLogo = Image.getInstance(imagePath);
         bilkentLogo.scaleAbsolute(40,40);
 
@@ -313,7 +318,7 @@ public class FileGeneratorService implements IFileGeneratorService {
         Document document,
         ArrayList<ArrayList<String>> hostCourses,
         ArrayList<String> bilkentCourses,
-        ArrayList<String> courseCode,
+        ArrayList<ArrayList<String>> courseCodes,
         ArrayList<Double> ects,
         ArrayList<Double> bilkentCredit,
         ArrayList<String> directlyEquivalent
@@ -403,21 +408,22 @@ public class FileGeneratorService implements IFileGeneratorService {
             coursesTable.addCell(cell);
 
             // Course code
-            p1.clear();
-            p1.add(courseCode.get(i));
             cell = new PdfPCell();
-            cell.addElement(p1);
+            for ( int j = 0; j < courseCodes.get(i).size(); j++) {
+                p1.clear();
+                p1.add(courseCodes.get(i).get(j));
+                cell.addElement(p1);
+            }
             coursesTable.addCell(cell);
 
             // Course Name
-            p1.clear();
+            cell = new PdfPCell();
             // Adds more than 1 course names
             for( int j = 0; j < hostCourses.get(i).size(); j++){
+                p1.clear();
                 p1.add(hostCourses.get(i).get(j));
-            }
-
-            cell = new PdfPCell();
-            cell.addElement(p1);
+                cell.addElement(p1);
+            }            
             coursesTable.addCell(cell);
 
             // ECTS

@@ -90,16 +90,20 @@ const ApproveWishlistsTable = ({ wishlists }: ApproveWishlistTableProps) => {
         setOpened(false);
     }
 
-    const wishlistRows = wishlistDetails?.map((element) => (
-        <tr key={element.mappings[0].hostCourse}>
-            <td>{element.mappings[0].hostCourse}</td>
-            <td>{element.mappings[0].hostName}</td>
-            <td>{element.ects}</td>
-            <td>{element.bilkentCourse}</td>
-            <td>{element.bilkentName}</td>
-            <td>{element.ects}</td>
-        </tr>
-    ));
+    const wishlistRows = wishlistDetails?.map((element) => {
+        return element.mappings.map(m => {
+            return (
+                <tr key={m.hostCourse}>
+                    <td>{m.hostName}</td>
+                    <td>{m.hostCourse}</td>
+                    <td>{m.ects}</td>
+                    <td>{element.bilkentCourse}</td>
+                    <td>{element.bilkentName}</td>
+                    <td>{element.ects}</td>
+                </tr>
+            )
+        })
+    });
     const waitingApprovalRows = wishlists.map((wishlist) => (
         <tr key={wishlist.studentId}>
             <td>{wishlist.studentId}</td>

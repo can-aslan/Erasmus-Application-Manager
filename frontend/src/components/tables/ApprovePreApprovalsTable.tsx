@@ -34,7 +34,8 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         onSuccess: () =>{
             toast.success("Approved the pre-approval file successfully.")
             queryClient.invalidateQueries(['getPreApprovalsCoord'])
-        }
+        },
+        onError: () => toast.error("Please check if you have uploaded your signature to approve this file.")
     })
 
     const { mutate: rejectPreApprovalMutate, isLoading: isRejectLoading  } = useMutation({
