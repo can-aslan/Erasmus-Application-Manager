@@ -65,20 +65,31 @@ public class FormService implements IFormService {
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
         
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
+
+        // If form is present, we do not throw an error, instead we replace the file.
         if (form.isPresent()) {
-            throw new Exception("A form with given form type is already saved in the system.");
+            Form existingForm = form.get();
+            deleteFile(userId, formType);
+            formRepository.delete(existingForm);
         }
 
+        if (file == null || file.isEmpty()) {
+            throw new Exception("Uploaded file is empty");
+        }
+
+        // Max file size is 1 MB
         if (file.getSize() > FILE_SIZE_LIMIT) {
             String errMsg = "Exceeded the file size limit of " + FILE_SIZE_LIMIT;
             throw new FileSizeLimitExceededException(errMsg, file.getSize(), FILE_SIZE_LIMIT);
         }
 
+        // User check
         Optional<User> user = accountRepository.findById(userId);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with given ID could not be found.");
         }
 
+        // File name generation is based on the bilkent ID to make it more understandable when the forms are requested
         User u = user.get();
         String bilkentId = Long.toString(u.getBilkentId());
 
@@ -109,15 +120,20 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException {
+    public boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
         String timestamp = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").format(new java.util.Date());
 
-
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (form.isPresent()) {
-            deleteFile(userId, formType);
+            Form existingForm = form.get();
+            try {
+                deleteFile(userId, formType);
+            } catch (Exception e) {
+                throw e;
+            }
+            formRepository.delete(existingForm);
         }
 
         if (file == null || file.length() == 0) {
@@ -161,34 +177,47 @@ public class FormService implements IFormService {
     public byte[] downloadForm(UUID userId, FormEnum formType) throws IOException, Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
-        
 
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (!form.isPresent()) {
             throw new Exception("There is no file that you can download. Make sure to upload a file before downloading.");
         }
 
+        Optional<User> user = accountRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException("User can not be found.");
+        }
+
         /* 
             Fetches the key based on the user ID assuming the fact that there are only one unique
             files for each file type for each user. The file is read and returned as bytes.
         */
-        final String key = form.get().getKey();
-        ResponseBytes<GetObjectResponse> s3Object = s3.getObject(
-            GetObjectRequest.builder().bucket(bucketName).key(key).build(),
-            ResponseTransformer.toBytes());
-        final byte[] formByteArray = s3Object.asByteArray();
+        try {
+            final String key = form.get().getKey();
+            ResponseBytes<GetObjectResponse> s3Object = s3.getObject(
+                GetObjectRequest.builder().bucket(bucketName).key(key).build(),
+                ResponseTransformer.toBytes());
+            final byte[] formByteArray = s3Object.asByteArray();
+            return formByteArray;
+        } catch (Exception e) {
+            throw new Exception("Form fetch has failed");
+        }
 
-        return formByteArray;
     }
 
     @Override
-    public boolean deleteFile(UUID userId, FormEnum formType) {
+    public boolean deleteFile(UUID userId, FormEnum formType) throws Exception {
         S3Client s3 = S3ClientSingleton.getInstance();
         String bucketName = DEFAULT_BUCKET_NAME;
 
         Optional<Form> form = formRepository.findFormByUserIdAndFormType(userId, formType);
         if (!form.isPresent()) {
-            return false;
+            throw new Exception("File is not present at the moment");
+        }
+
+        Optional<User> user = accountRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException("User with given ID could not be found.");
         }
         
         /* 
@@ -214,13 +243,17 @@ public class FormService implements IFormService {
     public byte[] generateAndDownloadPreApproval(UUID studentId) throws Exception {
         try {
             PreApprovalForm preApprovalForm = createPreAppFromWishlist(studentId, false);
+
+            // Get the approval form, read it using the FileInputStream and delete the file after the process
             File approvalForm = fileGenerator.generatePreApprovalForm(preApprovalForm, null);
             FileInputStream fis = new FileInputStream(approvalForm);
             byte[] form = fis.readAllBytes();
-
+            
+            // Finishing up by closing and deleting resources
             fis.close();
             approvalForm.delete();
             
+            // Return file as Base64 string
             byte[] encoded = Base64.getEncoder().encode(form);
             return encoded;
         } catch (Exception e) {
@@ -243,10 +276,10 @@ public class FormService implements IFormService {
 
     @Override
     public void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception {
+        Optional<Signature> signature = signatureService.getSignatureByBilkentId(coordinatorBilkentId);
         PreApprovalForm currentForm = getPreApprovalForm(studentBilkentId);
         User coordinator = accountRepository.findUserByBilkentId(coordinatorBilkentId);
         User student = accountRepository.findUserByBilkentId(studentBilkentId);
-        Optional<Signature> signature = signatureService.getSignatureByBilkentId(coordinatorBilkentId);
 
         if (!signature.isPresent()) {
             throw new Exception("Signature not find for coordinator");
@@ -255,19 +288,9 @@ public class FormService implements IFormService {
         Signature signatureObj = signature.get();
         final String key = signatureObj.getKey();
 
-        // Write signature to a temp file
+        // Download the signature of the coordinator
         byte[] signatureByteArray = signatureService.downloadSignature(coordinator.getId());
-
-        // File tempFile = File.createTempFile("sign", ".png", null);
-        // FileOutputStream fos = new FileOutputStream(tempFile);
-        // fos.write(signatureByteArray);
-
-        // Convert signature to buffered image and pass it to generate preapproval form
-        // BufferedImage signatureImg = ImageIO.read(tempFile);
-
         File approvalForm = fileGenerator.generatePreApprovalForm(currentForm, signatureByteArray);
-
-        // tempFile.delete();
 
         uploadForm(approvalForm, student.getId(), FormEnum.PRE_APPROVAL);
     }
@@ -300,7 +323,8 @@ public class FormService implements IFormService {
 
             boolean preApprovalExist = preApprovalRepository.existsByWishlistStudentId(student.get().getUser().getBilkentId());
             if (preApprovalExist) {
-                throw new Exception("pre approval already exists for this student");
+                // Delete existing pre approval and continue without exception, overrites the existing pre approval
+                preApprovalRepository.deleteByStudentUserId(student.get().getUser().getId());
             }
             
             // Create instant date object here
