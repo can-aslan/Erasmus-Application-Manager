@@ -84,7 +84,7 @@ const CourseRequestPage = () => {
                 syllabusLink: form.values.syllabusLink,
                 hostEcts: form.values.ectsCredits,
                 bilkentCode: searchedBilkentCourseInfo,
-                destination: isElective ? 'COORDINATOR' : 'INSTRUCTOR'
+                destination: isElective ? 'COORDINATOR' : 'INSTRUCTOR',
             }
             mutateCourseRequest(courseRequest)
             console.log("error yok");
