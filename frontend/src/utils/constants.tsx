@@ -140,11 +140,6 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             to: '/admin/placement-page',
             icon: <IconReplace />
         },
-        {
-            label: 'Add University/Course',
-            to: '/admin/add-uni-course-page',
-            icon: <IconSchool />
-        }
     ],
     [UserEnum.Instructor]: [
         {
