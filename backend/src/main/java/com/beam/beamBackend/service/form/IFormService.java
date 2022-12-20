@@ -13,9 +13,9 @@ import com.beam.beamBackend.model.PreApprovalForm;
 
 public interface IFormService {
     boolean uploadForm(MultipartFile file, UUID userId, FormEnum formType) throws IOException, FileSizeLimitExceededException, UsernameNotFoundException, Exception;
-    boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException;
+    boolean uploadForm(File file, UUID userId, FormEnum formType) throws FileSizeLimitExceededException, Exception;
     byte[] downloadForm(UUID userId, FormEnum formType) throws IOException, Exception;
-    boolean deleteFile(UUID userId, FormEnum formType);
+    boolean deleteFile(UUID userId, FormEnum formType) throws Exception;
     byte[] generateAndDownloadPreApproval(UUID studentId) throws Exception;
     void generateAndSubmitPreApproval(FormEnum formType, UUID studentId) throws Exception;
     void signPreApproval(Long studentBilkentId, Long coordinatorBilkentId) throws Exception;
