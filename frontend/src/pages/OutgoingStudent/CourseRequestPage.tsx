@@ -56,15 +56,15 @@ const CourseRequestPage = () => {
             <LoadingPage />
         )
     }
-        
+
     if (isPreviousError || isCoursesError || !dataPrevious) {
         return (
             <ErrorPage />
         )
     }
-        
+
     const allCoursesBilkent = courses.data.map(c => c.courseCode);
-    
+
     const handleRequestCourse = () => {
         const validate = form.validate();
         if (searchedBilkentCourseInfo === '') {
@@ -106,11 +106,12 @@ const CourseRequestPage = () => {
             <td style={{ maxWidth: "200" }}>{""}
                 <Group>
                     {course.status == 'APPROVED' ? <IconCheck color={"#2f9e44"} /> : course.status == 'PENDING' ? <IconSearch color={"#1971c2"} /> : <IconX color={"#e03131"} />}
-                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}> 
+                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}>
                         {course.status == 'APPROVED' ? "Approved" : course.status == 'PENDING' ? "Pending Approval" : "Rejected"}
                     </Text>
                 </Group>
             </td>
+            <td style={{wordWrap:"break-word"}}>{course.feedback}</td>
         </tr>
     ));
 
@@ -162,11 +163,11 @@ const CourseRequestPage = () => {
                                 onSearchChange={setBilkentOnSearchChange}
                                 searchValue={searchedBilkentCourseInfo}
                                 data={isElective ? ELECTIVE_TYPES : allCoursesBilkent} />
-                            <Button 
+                            <Button
                                 onClick={handleRequestCourse}
                                 loading={isCourseRequestLoading}
                             >
-                                    Request Course
+                                Request Course
                             </Button>
                         </Stack>
                     </form>
@@ -189,6 +190,7 @@ const CourseRequestPage = () => {
                                 <th>ECTS Credits</th>
                                 <th>Bilkent Equivalent</th>
                                 <th>Request Status</th>
+                                <th>Rejection Feedback</th>
                             </tr>
                         </thead>
                         <tbody>{previouslyRequestedRows}</tbody>

@@ -176,6 +176,7 @@ const CourseWishlistPage = () => {
                 <StatusFeedback 
                     title='Wishlist Status'
                     status={courseWishlist?.data.status || "WAITING"}
+                    feedback= {courseWishlist?.data.feedback}
                 />
                 <Flex gap={100}>
                     <Flex direction='column' gap='xl'>

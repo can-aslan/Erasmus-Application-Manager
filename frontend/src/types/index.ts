@@ -303,7 +303,7 @@ export type InstructorCourseRequestChange = {
     courseStatus: string;
     instructorId: string;
     courseRequestId: string;
-
+    feedback: string
 }
 
 export type CoordinatorWishlistChange = {
