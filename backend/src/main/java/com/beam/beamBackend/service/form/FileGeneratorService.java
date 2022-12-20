@@ -54,6 +54,7 @@ public class FileGeneratorService implements IFileGeneratorService {
             String academicYear = student.getAcademicYear();
             String semester = student.getSemester().toString();
             String coordinatorName = student.getCoordinator().getUser().getName();
+            String coordinatorSurname = student.getCoordinator().getUser().getSurname();
             
             String approvedBy = "Exchange Coordinator";
             if (signature != null){
@@ -118,7 +119,7 @@ public class FileGeneratorService implements IFileGeneratorService {
                 addStudentInfo(document ,name, surname, id, department);
                 addInstAndPeriodInfo( document, hostInst, academicYear, semester );
                 createCourseLists(document, hostCourses, bilkentCourses, courseCodes, ects, bilkentCredit, directlyEquivalent);
-                createApprovalTable(document, approvedBy, coordinatorName, signature, date);
+                createApprovalTable(document, approvedBy, coordinatorName, coordinatorSurname, signature, date);
     
                 document.close();
                 
@@ -462,6 +463,7 @@ public class FileGeneratorService implements IFileGeneratorService {
         Document document,
         String approvedBy,
         String coordinatorName,
+        String coordinatorSurname,
         Image signature,
         String date
     ) throws DocumentException {
@@ -515,7 +517,7 @@ public class FileGeneratorService implements IFileGeneratorService {
 
         // Coordinator Name dynamic
         p2.clear();
-        p2.add(coordinatorName);
+        p2.add(coordinatorName + " " + coordinatorSurname);
         cell = new PdfPCell();
         cell.addElement(p2);
         approvalTable.addCell(cell);
