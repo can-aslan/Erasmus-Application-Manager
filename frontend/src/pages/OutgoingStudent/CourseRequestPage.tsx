@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { getPreviouslyRequestedCourses, makeCourseRequest } from "../../api/Student/CourseService";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useCourses } from "../../hooks/useCourses";
@@ -31,7 +32,11 @@ const CourseRequestPage = () => {
         mutationKey: ['courseRequest'],
         mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course),
         onSuccess: () => {
+            toast.success("Course requested successfully!");
             queryClient.invalidateQueries(['previousCourseRequests'])
+        },
+        onError: () => {
+            toast.error("Course request failed.");
         }
     })
 
@@ -91,11 +96,6 @@ const CourseRequestPage = () => {
         }
     }
 
-    // const previouslyRequestedCoursesList = [
-    //     { courseCode: "Zart", courseName: "Zart Dersi", bilkentCode: "CS - 319", bilkentCredits: "4", ectsCredits: "6", requestStatus: 0 },
-    //     { courseCode: "Zurt", courseName: "Zurt Dersi", bilkentCode: "CS - 201", bilkentCredits: "3", ectsCredits: "6", requestStatus: 1 },
-    //     { courseCode: "Zort", courseName: "Zort Dersi", bilkentCode: "CS - 315", bilkentCredits: "3", ectsCredits: "6", requestStatus: 2 },
-    // ]
     const previouslyRequestedCoursesList: Array<CourseRequest> = dataPrevious.data;
     const previouslyRequestedRows = previouslyRequestedCoursesList.map((course) => (
         <tr key={course.requestId} >
