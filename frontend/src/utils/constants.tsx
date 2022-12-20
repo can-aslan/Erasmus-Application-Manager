@@ -47,7 +47,7 @@ export const PROGRESSBAR_STEP_OBJECTS: Record<UserEnum, Array<ProgressBarStep>> 
     [UserEnum.Admin]: [],
     [UserEnum.Instructor]: [],
     [UserEnum.ExperiencedStudent]: [],
-    [UserEnum.ISOStaff]: []
+    [UserEnum.OISEP]: []
 }
 
 export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
@@ -160,7 +160,7 @@ export const NAVBAR_LINK_OBJECTS: Record<UserEnum, Array<NavbarLink>> = {
             icon: <IconBook />
         }
     ],
-    [UserEnum.ISOStaff]: [
+    [UserEnum.OISEP]: [
         {
             label: 'Upload Transcript',
             to: '/oisep-staff/transcript-upload',

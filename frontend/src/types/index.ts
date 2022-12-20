@@ -20,7 +20,7 @@ export enum UserEnum {
     Admin = 'ADMIN',
     Instructor = 'INSTRUCTOR',
     ExperiencedStudent = 'EXPERIENCED_STUDENT',
-    ISOStaff = 'ISO_STAFF'
+    OISEP="OISEP"
 }
 
 export type NewStaff = {

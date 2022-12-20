@@ -75,7 +75,7 @@ const router = createBrowserRouter([
           UserEnum.OutgoingStudent, 
           UserEnum.Instructor, 
           UserEnum.ExperiencedStudent,
-          UserEnum.ISOStaff,
+          UserEnum.OISEP,
         ]} />,
         children: [
           {
@@ -186,7 +186,7 @@ const router = createBrowserRouter([
                 ]
               },
               {
-                element: <RequireAuth allowedUsers={[UserEnum.ISOStaff]} />,
+                element: <RequireAuth allowedUsers={[UserEnum.OISEP]} />,
                 children: [
                   {
                     path: '/oisep-staff/transcript-upload',
