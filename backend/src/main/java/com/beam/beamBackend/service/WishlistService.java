@@ -84,9 +84,8 @@ public class WishlistService implements IWishlistService {
 
         // Check if bilkent course already exists in wishlist item repository
         String newBilkentCourseToAdd = itemToAdd.getBilkentCourse();
-        String newBilkentNameToAdd = itemToAdd.getBilkentName();
 
-        if (itemRepository.existsByBilkentCourse(newBilkentCourseToAdd) || itemRepository.existsByBilkentName(newBilkentNameToAdd)) {
+        if (itemRepository.existsByStudentIdAndBilkentCourse(studentId,newBilkentCourseToAdd)) {
             throw new Exception("student with id " + studentId + " cannot add wishlist item, already has bilkent course or bilkent name in the wishlist");
         }
 

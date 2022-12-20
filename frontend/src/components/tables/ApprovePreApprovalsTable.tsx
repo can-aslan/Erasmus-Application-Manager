@@ -64,7 +64,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
         rejectPreApprovalMutate(bilkentId);
 
         // Close pop-up
-        setRejectionFeedbackOpened(true);
+        setRejectionFeedbackOpened(false);
     }
     const pendingApprovalRows = getPendingApprovalRows();
 
@@ -156,7 +156,7 @@ const ApprovePreApprovalsTable = ({preApprovals}: ApprovePreApprovalsTableProps)
                         <td> 
                             <Button 
                                 color={'red'} 
-                                onClick={() => { rejectPreApproval(element.student.user.bilkentId) }}
+                                onClick={() => { setRejectionFeedbackOpened(true); }}
                                 loading={isRejectLoading}
                             >
                                     Reject
