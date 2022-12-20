@@ -174,7 +174,7 @@ const CourseRequestPage = () => {
             </Box>
             <Divider orientation="vertical" />
             <Box
-                sx={{ minWidth: 300 }}
+                sx={{ minWidth: 200 }}
                 mx="auto"
             >
                 <Stack

@@ -11,6 +11,7 @@ import ProviderWrapper from './components/ProviderWrapper'
 import PersistentLogin from './components/auth/PersistentLogin'
 import RequireAuth from './components/auth/RequireAuth'
 import './index.css'
+import CourseUniversityPage from './pages/Admin/CourseUniversityPage'
 import PlacementPage from './pages/Admin/PlacementPage'
 import RegisterPage from './pages/Admin/RegisterPage'
 import ApproveLearningAgreementPage from './pages/Coordinator/ApproveLearningAgreementPage'
@@ -159,6 +160,10 @@ const router = createBrowserRouter([
                   {
                     path: '/admin/placement-page',
                     element: <PlacementPage />
+                  },
+                  {
+                    path: '/admin/add-uni-course-page',
+                    element: <CourseUniversityPage />
                   }
                 ]
               },

@@ -13,6 +13,7 @@ const PlacementPage = () => {
     const {mutate: placementMutate, isLoading: isPlacementLoading} = useMutation({
         mutationKey: ['studentPlacement'],
         mutationFn: (department: string) => placeStudents(axiosSecure, department),
+        onSuccess: () => toast.success("Placement completed successfully!")
     })
 
     const handlePlacement = () => {
