@@ -112,6 +112,7 @@ public class FormService implements IFormService {
             final UUID id = UUID.randomUUID();
             Form newForm = new Form(id, userId, formType, key);
             formRepository.save(newForm);
+            createPreAppFromWishlist(userId, true);
             return true;
         }
         catch (Exception e) {
