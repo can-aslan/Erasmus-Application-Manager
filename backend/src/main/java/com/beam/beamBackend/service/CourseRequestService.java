@@ -3,6 +3,7 @@ package com.beam.beamBackend.service;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import com.beam.beamBackend.exception.CourseRequestAlreadyExists;
 import com.beam.beamBackend.exception.StudentNotFound;
 import com.beam.beamBackend.exception.UniversityNotFound;
 import com.beam.beamBackend.model.CourseRequest;
@@ -20,8 +21,18 @@ public class CourseRequestService implements ICourseRequestService {
     private final IStudentRepository studentRepository;
 
     @Override
-    public boolean requestCourse(CourseRequestRequestBody courseRequestBody) throws Exception, StudentNotFound, UniversityNotFound {
+    public boolean requestCourse(CourseRequestRequestBody courseRequestBody) throws Exception, StudentNotFound, UniversityNotFound, CourseRequestAlreadyExists {
         try {
+            if (courseRequestRepository.existsByHostCodeAndBilkentCode(
+                courseRequestBody.getHostCode(),
+                courseRequestBody.getBilkentCode())
+            ) {
+                throw new CourseRequestAlreadyExists(   "course request for (host) "
+                                                        + courseRequestBody.getHostCode()
+                                                        + " = " + courseRequestBody.getBilkentCode()
+                                                        + " (bilkent) already exists in the system");
+            }
+            
             Student student = getStudentByCheckingIdAndHostUniName(courseRequestBody.getStudentId());
             String hostUniName = student.getHostUni().getName();
 
@@ -36,6 +47,10 @@ public class CourseRequestService implements ICourseRequestService {
         catch (UniversityNotFound universityNotFoundException) {
             universityNotFoundException.printStackTrace();
             throw universityNotFoundException;
+        }
+        catch (CourseRequestAlreadyExists courseRequestAlreadyExists) {
+            courseRequestAlreadyExists.printStackTrace();
+            throw courseRequestAlreadyExists;
         }
         catch (Exception e) {
             e.printStackTrace();

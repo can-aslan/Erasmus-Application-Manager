@@ -20,7 +20,7 @@ export enum UserEnum {
     Admin = 'ADMIN',
     Instructor = 'INSTRUCTOR',
     ExperiencedStudent = 'EXPERIENCED_STUDENT',
-    ISOStaff = 'ISO_STAFF'
+    OISEP="OISEP"
 }
 
 export type NewStaff = {
@@ -164,7 +164,7 @@ export type CourseRequest = {
     destination?: CourseRequestDestination | null,
     status?: ApprovalStatus | null
     feedback?: string,
-    hostUniName: string
+    hostUniName?: string
 }
 
 export type StudentAssociatedCourse = Course & {
@@ -303,7 +303,7 @@ export type InstructorCourseRequestChange = {
     courseStatus: string;
     instructorId: string;
     courseRequestId: string;
-
+    feedback: string
 }
 
 export type CoordinatorWishlistChange = {

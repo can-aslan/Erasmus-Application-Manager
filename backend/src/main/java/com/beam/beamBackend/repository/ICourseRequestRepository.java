@@ -12,6 +12,7 @@ import com.beam.beamBackend.model.CourseRequest;
 public interface ICourseRequestRepository extends JpaRepository<CourseRequest, UUID> {
     List<CourseRequest> findAllByStudentId(Long studentId);
     Optional<CourseRequest> findByRequestId(UUID requestId);
+    boolean existsByHostCodeAndBilkentCode(String hostCode, String bilkentCode);
     /*
     boolean saveRequest(CourseRequest courseRequest);
     boolean editRequestByRequestId(UUID courseRequestId, CourseRequest newCourseRequest);

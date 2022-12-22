@@ -14,4 +14,5 @@ public interface IWishlistItemRepository extends JpaRepository<WishlistItem, UUI
     boolean deleteByStudentIdAndBilkentCourse(Long studentId, String bilkentCourse);
     boolean existsByBilkentCourse(String bilkentCourse);
     boolean existsByBilkentName(String bilkentName);
+    boolean existsByStudentIdAndBilkentCourse(Long studentId, String bilkentCourse);
 }

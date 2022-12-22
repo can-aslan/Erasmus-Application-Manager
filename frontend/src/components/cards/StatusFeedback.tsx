@@ -5,9 +5,10 @@ import { ApprovalStatus } from "../../types";
 interface StatusFeedbackProps {
     title: string,
     status: ApprovalStatus,
+    feedback?: string | null
 }
 
-const StatusFeedback = ({ title, status }: StatusFeedbackProps) => {
+const StatusFeedback = ({ title, status, feedback}: StatusFeedbackProps) => {
     return (
         <Card maw={300} shadow='sm' p='xl' radius='md' withBorder>
             <Stack>
@@ -18,7 +19,7 @@ const StatusFeedback = ({ title, status }: StatusFeedbackProps) => {
                         ? <IconCircleCheck size={32} color="green"/> 
                             : status === "PENDING" 
                             ? <IconClockPause size={32} color='blue' /> : <IconBan size={32} color='red'/>}
-                    
+                    {status === "REJECTED" && feedback &&<Text>Rejection Feedback: {feedback}</Text>}
                 </Group>
             </Stack>
         </Card>

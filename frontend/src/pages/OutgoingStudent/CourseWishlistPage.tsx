@@ -176,10 +176,11 @@ const CourseWishlistPage = () => {
                 <StatusFeedback 
                     title='Wishlist Status'
                     status={courseWishlist?.data.status || "WAITING"}
+                    feedback= {courseWishlist?.data.feedback}
                 />
                 <Flex gap={100}>
                     <Flex direction='column' gap='xl'>
-                        <Card miw={450} shadow='xl' radius='lg' p={36}>
+                        <Card miw={350} shadow='xl' radius='lg' p={36}>
                             <Flex direction='column' gap="xl">
                                 <Title order={1} color='blue' mb={12}>Add a wish</Title>
                                 <Autocomplete
@@ -220,7 +221,7 @@ const CourseWishlistPage = () => {
                     </Flex>
                     <Divider orientation='vertical' />
                     <Card 
-                        miw={700} 
+                        miw={500} 
                         shadow='xl' 
                         radius='lg' 
                         p={36}

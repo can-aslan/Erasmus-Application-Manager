@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form";
 import { IconCheck, IconSearch, IconX } from "@tabler/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { getPreviouslyRequestedCourses, makeCourseRequest } from "../../api/Student/CourseService";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useCourses } from "../../hooks/useCourses";
@@ -31,7 +32,11 @@ const CourseRequestPage = () => {
         mutationKey: ['courseRequest'],
         mutationFn: (course: CourseRequest) => makeCourseRequest(axiosSecure, course),
         onSuccess: () => {
+            toast.success("Course requested successfully!");
             queryClient.invalidateQueries(['previousCourseRequests'])
+        },
+        onError: () => {
+            toast.error("Course request failed.");
         }
     })
 
@@ -56,15 +61,15 @@ const CourseRequestPage = () => {
             <LoadingPage />
         )
     }
-        
+
     if (isPreviousError || isCoursesError || !dataPrevious) {
         return (
             <ErrorPage />
         )
     }
-        
+
     const allCoursesBilkent = courses.data.map(c => c.courseCode);
-    
+
     const handleRequestCourse = () => {
         const validate = form.validate();
         if (searchedBilkentCourseInfo === '') {
@@ -84,18 +89,13 @@ const CourseRequestPage = () => {
                 syllabusLink: form.values.syllabusLink,
                 hostEcts: form.values.ectsCredits,
                 bilkentCode: searchedBilkentCourseInfo,
-                destination: isElective ? 'COORDINATOR' : 'INSTRUCTOR'
+                destination: isElective ? 'COORDINATOR' : 'INSTRUCTOR',
             }
             mutateCourseRequest(courseRequest)
             console.log("error yok");
         }
     }
 
-    // const previouslyRequestedCoursesList = [
-    //     { courseCode: "Zart", courseName: "Zart Dersi", bilkentCode: "CS - 319", bilkentCredits: "4", ectsCredits: "6", requestStatus: 0 },
-    //     { courseCode: "Zurt", courseName: "Zurt Dersi", bilkentCode: "CS - 201", bilkentCredits: "3", ectsCredits: "6", requestStatus: 1 },
-    //     { courseCode: "Zort", courseName: "Zort Dersi", bilkentCode: "CS - 315", bilkentCredits: "3", ectsCredits: "6", requestStatus: 2 },
-    // ]
     const previouslyRequestedCoursesList: Array<CourseRequest> = dataPrevious.data;
     const previouslyRequestedRows = previouslyRequestedCoursesList.map((course) => (
         <tr key={course.requestId} >
@@ -106,11 +106,12 @@ const CourseRequestPage = () => {
             <td style={{ maxWidth: "200" }}>{""}
                 <Group>
                     {course.status == 'APPROVED' ? <IconCheck color={"#2f9e44"} /> : course.status == 'PENDING' ? <IconSearch color={"#1971c2"} /> : <IconX color={"#e03131"} />}
-                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}> 
+                    <Text color={course.status == 'APPROVED' ? "#2f9e44" : course.status == 'PENDING' ? "#1971c2" : "#e03131"}>
                         {course.status == 'APPROVED' ? "Approved" : course.status == 'PENDING' ? "Pending Approval" : "Rejected"}
                     </Text>
                 </Group>
             </td>
+            <td style={{wordWrap:"break-word"}}>{course.feedback}</td>
         </tr>
     ));
 
@@ -162,11 +163,11 @@ const CourseRequestPage = () => {
                                 onSearchChange={setBilkentOnSearchChange}
                                 searchValue={searchedBilkentCourseInfo}
                                 data={isElective ? ELECTIVE_TYPES : allCoursesBilkent} />
-                            <Button 
+                            <Button
                                 onClick={handleRequestCourse}
                                 loading={isCourseRequestLoading}
                             >
-                                    Request Course
+                                Request Course
                             </Button>
                         </Stack>
                     </form>
@@ -174,7 +175,7 @@ const CourseRequestPage = () => {
             </Box>
             <Divider orientation="vertical" />
             <Box
-                sx={{ minWidth: 300 }}
+                sx={{ minWidth: 200 }}
                 mx="auto"
             >
                 <Stack
@@ -189,6 +190,7 @@ const CourseRequestPage = () => {
                                 <th>ECTS Credits</th>
                                 <th>Bilkent Equivalent</th>
                                 <th>Request Status</th>
+                                <th>Rejection Feedback</th>
                             </tr>
                         </thead>
                         <tbody>{previouslyRequestedRows}</tbody>
